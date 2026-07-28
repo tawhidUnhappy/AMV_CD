@@ -1,9 +1,9 @@
 """Compose YouTube thumbnails from real frames — no image generation.
 
-Follows the house style calibrated against D:\\thumbnail_examples: big ALL-CAPS
-yellow #FFE600 labels, black stroke ~12% of font size, slight tilt, fat block
-arrows pointing at the character each label names, bottom-right left clear for
-YouTube's duration overlay.
+House style used here: big ALL-CAPS yellow #FFE600 labels, black stroke ~12% of
+font size, slight tilt, fat block arrows pointing at the character each label
+names, and the bottom-right corner left clear for YouTube's duration overlay.
+If you have your own reference thumbnails, calibrate against those first.
 
 Text and arrows are drawn through libass, which gives rotation, thick outlines
 and vector shapes in a single pass — ffmpeg's drawtext cannot rotate.
@@ -18,7 +18,9 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+from amv import config
+
+ROOT = config.ROOT
 CAND = ROOT / "data" / "qa" / "thumbcand"
 OUT_DIR = ROOT / "data" / "out" / "thumbnails"
 FONT_DIR = ROOT / "data" / "work" / "thumbfonts"
@@ -31,11 +33,17 @@ WHITE = "&H00FFFFFF&"
 BLACK = "&H00000000&"
 RED = "&H002222CC&"
 
+# Families libass will be asked for. Whatever font files are found on this
+# machine get staged into a private fontsdir; if a family is missing, libass
+# substitutes and the thumbnail still renders (just in a different face).
 LABEL_FONT = "Arial Black"
 BRUSH_FONT = "Edo"
 
-SYSTEM_FONTS = Path("C:/Windows/Fonts")
-USER_FONTS = Path.home() / "AppData/Local/Microsoft/Windows/Fonts"
+# Candidate filenames per family, searched across the platform's font dirs.
+FONT_FILES: dict[str, tuple[str, ...]] = {
+    LABEL_FONT: ("ariblk.ttf", "Arial Black.ttf", "DejaVuSans-Bold.ttf", "LiberationSans-Bold.ttf"),
+    BRUSH_FONT: ("edo.ttf", "edosz.ttf"),
+}
 
 
 @dataclass
@@ -121,10 +129,10 @@ class Thumb:
 def face_targets(image: Path, halves: int = 2) -> list[tuple[int, int]]:
     """Best-effort face position per vertical band, in 1280x720 coordinates.
 
-    UNRELIABLE ON THIS SOURCE — do not trust it blind. Mirai Nikki is full of
-    warm tan interiors (tatami rooms, wood panelling, sunset light) that satisfy
-    the skin predicate, so the density peak lands on a wall. It works on frames
-    with cool or dark backgrounds and is useless on warm ones.
+    UNRELIABLE ON WARM SOURCES — do not trust it blind. Tan interiors, wood
+    panelling and sunset light all satisfy the skin predicate, so the density
+    peak lands on a wall. It works on frames with cool or dark backgrounds and
+    is useless on warm ones.
 
     Treat the output as a hint, set `Arrow.to_xy` from what you actually see in
     the rendered thumbnail, and verify by looking at the result either way.
@@ -238,10 +246,21 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 def stage_fonts() -> Path:
+    """Copy whatever label/brush fonts exist on this machine into a fontsdir."""
     FONT_DIR.mkdir(parents=True, exist_ok=True)
-    for source in (SYSTEM_FONTS / "ariblk.ttf", USER_FONTS / "edo.ttf", ROOT / "assets" / "georgiab.ttf"):
-        if source.exists():
-            shutil.copy(source, FONT_DIR / source.name)
+    staged: list[str] = []
+    for family, names in FONT_FILES.items():
+        found = config.find_font(*names)
+        if found is not None:
+            shutil.copy(found, FONT_DIR / found.name)
+            staged.append(f"{family} -> {found.name}")
+        else:
+            print(f"NOTE: no font file found for {family!r}; libass will substitute", flush=True)
+    lyric_font = config.load().lyric_font_file
+    if lyric_font.is_file():
+        shutil.copy(lyric_font, FONT_DIR / lyric_font.name)
+    if staged:
+        print("  fonts: " + ", ".join(staged), flush=True)
     return FONT_DIR
 
 

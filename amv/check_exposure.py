@@ -14,7 +14,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT = ROOT / "data" / "out" / "amv_black_salt_halo.mp4"
+DEFAULT = ROOT / "data" / "out" / "amv.mp4"
 
 
 def main() -> None:

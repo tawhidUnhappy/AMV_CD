@@ -13,18 +13,20 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
+from amv import config
 from amv.lyrics import TimedPhrase, timed_phrases, validate
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = config.ROOT
 DEFAULT_OUT = ROOT / "data" / "work" / "lyrics.ass"
 
-WIDTH, HEIGHT = 1920, 1080
-# Georgia Bold, not the originally supplied Kranky: Kranky is an outline face
-# whose hollow strokes washed out over the footage. Georgia is a solid
-# high-contrast serif and matches the reference stills. `assets/georgiab.ttf` is
-# copied in so libass resolves it via fontsdir rather than the system config.
-FONT_NAME = "Georgia"
-FONT_BOLD = -1
+_CFG = config.load()
+WIDTH, HEIGHT = _CFG.width, _CFG.height
+# Font comes from config.json. Prefer a solid, high-contrast face: an *outline*
+# typeface (hollow strokes) washes out completely over footage — see the skill
+# notes. The file is copied into assets/ so libass resolves it through
+# `fontsdir` rather than depending on system font configuration.
+FONT_NAME = _CFG.lyric_font_family
+FONT_BOLD = -1 if _CFG.lyric_font_bold else 0
 
 # ASS colours are &HAABBGGRR — byte order is reversed from hex RGB.
 WHITE = "&H00F2F2F2&"

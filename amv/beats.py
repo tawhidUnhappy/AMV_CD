@@ -14,8 +14,9 @@ from pathlib import Path
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_SONG = ROOT / "assets" / "black_salt_halo.mp3"
+from amv import config
+
+ROOT = config.ROOT
 DEFAULT_OUT = ROOT / "data" / "song" / "beats.json"
 
 
@@ -64,11 +65,12 @@ def extend_grid(beats: list[float], duration: float) -> list[float]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--song", type=Path, default=DEFAULT_SONG)
+    parser.add_argument("--song", type=Path, default=None,
+                        help="track to analyse (default: song from config.json)")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     args = parser.parse_args()
 
-    data = detect(args.song)
+    data = detect(args.song or config.load().require_song())
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(data, indent=1), encoding="utf-8")
 

@@ -11,18 +11,21 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_SONG = ROOT / "assets" / "black_salt_halo.mp3"
+from amv import config
+
+ROOT = config.ROOT
 DEFAULT_OUT = ROOT / "data" / "song" / "vocals.wav"
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--song", type=Path, default=DEFAULT_SONG)
+    parser.add_argument("--song", type=Path, default=None,
+                        help="input track (default: song from config.json)")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--model", default="htdemucs")
     parser.add_argument("--device", default="cuda")
     args = parser.parse_args()
+    song = args.song or config.load().require_song()
 
     from amv import torch_compat
 
@@ -37,7 +40,7 @@ def main() -> None:
     model.to(args.device).eval()
     print(f"{args.model}: sources={model.sources} sr={model.samplerate}", flush=True)
 
-    waveform, sample_rate = torchaudio.load(str(args.song))
+    waveform, sample_rate = torchaudio.load(str(song))
     if sample_rate != model.samplerate:
         waveform = torchaudio.functional.resample(waveform, sample_rate, model.samplerate)
     if waveform.shape[0] == 1:

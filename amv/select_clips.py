@@ -23,9 +23,10 @@ from pathlib import Path
 
 import numpy as np
 
+from amv import config
 from amv.timeline import SECTION_EPISODES, Slot, build_slots
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = config.ROOT
 SCENE_INDEX = ROOT / "data" / "subs" / "scene_index.json"
 EDL_PATH = ROOT / "data" / "edl.json"
 
@@ -346,7 +347,7 @@ def main() -> None:
         chosen.append(pick)
 
     edl = {
-        "song": str(ROOT / "assets" / "black_salt_halo.mp3"),
+        "song": str(config.load().song),
         "slots": [
             {
                 "index": slot.index,

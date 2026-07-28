@@ -21,14 +21,17 @@ def add_cudnn_to_dll_path() -> None:
     """
     import os
     import sys
-    from pathlib import Path
 
     if sys.platform != "win32":
         return
 
-    site_packages = Path(__file__).resolve().parent.parent / ".venv" / "Lib" / "site-packages"
+    from amv.config import site_packages
+
+    root = site_packages()
+    if root is None:
+        return
     for rel in ("nvidia/cudnn/bin", "nvidia/cublas/bin", "nvidia/cuda_nvrtc/bin"):
-        candidate = site_packages / rel
+        candidate = root / rel
         if candidate.is_dir():
             os.add_dll_directory(str(candidate))
             os.environ["PATH"] = f"{candidate};{os.environ.get('PATH', '')}"

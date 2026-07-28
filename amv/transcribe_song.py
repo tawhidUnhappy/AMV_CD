@@ -10,14 +10,17 @@ import argparse
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_AUDIO = ROOT / "assets" / "black_salt_halo.mp3"
-DEFAULT_OUT = ROOT / "data" / "song" / "transcript.json"
+from amv import config
+
+ROOT = config.ROOT
+DEFAULT_OUT = ROOT / "data" / "song" / "transcript_vocals.json"
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--audio", type=Path, default=DEFAULT_AUDIO)
+    # Default to the separated vocal stem: transcribing a full mix misplaces and
+    # drops lyrics badly (see amv/isolate_vocals.py).
+    parser.add_argument("--audio", type=Path, default=ROOT / "data" / "song" / "vocals.wav")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--model", default="large-v3")
     parser.add_argument("--language", default="en")

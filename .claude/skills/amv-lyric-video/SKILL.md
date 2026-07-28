@@ -5,9 +5,15 @@ description: Build a beat-synced anime music video with burned-in lyrics from lo
 
 # AMV / lyric-video pipeline
 
-Reference implementation: `D:\AMV_CD` (Mirai Nikki S1 x "Black Salt Halo").
-Read this before rebuilding anything — most of it was learned the hard way and
-several "obvious" approaches are documented here **because they failed**.
+How to build a beat-synced music video with burned-in lyrics from a folder of
+episode files and a song. Read this before rebuilding anything — most of it was
+learned the hard way, and several "obvious" approaches are documented here
+**because they failed**.
+
+A working implementation of everything below lives alongside this file (`amv/`,
+driven by `config.json`). Numbers quoted as evidence come from one real build:
+a 26-episode series cut to a 3:19 track. Treat them as calibration, not as
+constants for your own material.
 
 ## 0. Golden rules
 
@@ -20,6 +26,17 @@ several "obvious" approaches are documented here **because they failed**.
    that overturned a guess.
 5. **A failed detector is a result.** Two detectors here did not work. They are
    documented so nobody rebuilds them.
+
+## 0.5 Make it configurable from the start
+
+Put `source_dir`, `episode_pattern`, `song`, font and output format in a
+`config.json` read by one module, and default every CLI flag from it. Hardcoding
+a media path into each script means the project only ever works for one person
+on one machine, and untangling it later touches every file.
+
+Likewise: locate site-packages via `sysconfig`, not a literal `.venv/Lib/...`,
+and look up system fonts through a per-platform directory list rather than
+`C:/Windows/Fonts`.
 
 ## 1. Environment (Windows + NVIDIA)
 
@@ -34,7 +51,7 @@ several "obvious" approaches are documented here **because they failed**.
 
 Two runtime shims are required (`amv/torch_compat.py`):
 
-- **cuDNN 8 on the DLL path.** `os.add_dll_directory(.venv/Lib/site-packages/nvidia/cudnn/bin)`
+- **cuDNN 8 on the DLL path.** `os.add_dll_directory(<site-packages>/nvidia/cudnn/bin)`
   *before* `import ctranslate2`. torch's own cuDNN 9 lives in `torch/lib` and is
   registered automatically; ctranslate2's is not.
 - **torch 2.6 `weights_only` flip.** The pyannote VAD checkpoint fails the safe
@@ -44,18 +61,17 @@ Two runtime shims are required (`amv/torch_compat.py`):
 
 ## 2. Pipeline order
 
-```powershell
-$env:PYTHONPATH="<project>"
-uv run python amv\isolate_vocals.py      # Demucs -> vocals.wav      (~8s on a 3060)
-uv run python amv\transcribe_song.py --audio data\song\vocals.wav `
-    --out data\song\transcript_vocals.json
-uv run python amv\beats.py               # librosa -> beat grid
-uv run python amv\extract_subs.py        # episodes -> ASS + scene index
-uv run python amv\select_clips.py --candidates 8    # -> data/edl.json
-uv run python amv\contact_sheet.py       # QA — REVIEW THIS BEFORE RENDERING
-uv run python amv\lyric_overlay.py       # -> lyrics.ass   (reads edl.json!)
-uv run python amv\render.py              # -> final mp4
-uv run python amv\check_lyric_timing.py  # verify text sits over singing
+```bash
+export PYTHONPATH=.                    # Windows: $env:PYTHONPATH="."
+uv run python amv/isolate_vocals.py    # Demucs -> vocal stem (~8s on a 3060)
+uv run python amv/transcribe_song.py   # WhisperX on the stem -> word timings
+uv run python amv/beats.py             # librosa -> beat grid
+uv run python amv/extract_subs.py      # episodes -> subtitles + scene index
+uv run python amv/select_clips.py --candidates 8    # -> data/edl.json
+uv run python amv/contact_sheet.py     # QA — REVIEW THIS BEFORE RENDERING
+uv run python amv/lyric_overlay.py     # -> lyrics.ass   (reads edl.json!)
+uv run python amv/render.py            # -> final mp4
+uv run python amv/check_lyric_timing.py  # verify text sits over singing
 ```
 
 Ordering traps: `lyric_overlay.py` reads `data/edl.json`, so it must run *after*
@@ -64,18 +80,18 @@ Ordering traps: `lyric_overlay.py` reads `data/edl.json`, so it must run *after*
 ## 3. Lyric timing — transcribe the vocal stem
 
 **Whisper on a full music mix produces wrong and missing lyrics.** Measured on
-this project:
+one 3:19 track:
 
 | | Full mix | Demucs vocal stem |
 | --- | --- | --- |
 | Aligned words | 222 | 287 |
-| First line "I woke up" | **2.71s** (wrong) | **11.54s** (correct) |
+| First sung line | **2.71s** (wrong) | **11.54s** (correct) |
 | Whole lines dropped | 5 | 0 |
 
-The full-mix pass invented a 0.02s-long "I" at 2.71s and smeared "woke" across
-3.3s of instrumental, so the opening block appeared **nine seconds early**. It
-also silently dropped five entire lines and misheard others ("pierce"→"kiss",
-"back room"→"background"). Demucs `htdemucs` costs ~8 seconds. Always run it.
+The full-mix pass invented a 0.02s-long word at 2.71s and smeared the next
+across 3.3s of instrumental, so the opening block appeared **nine seconds
+early**. It also silently dropped five entire lines and misheard others.
+Demucs `htdemucs` costs ~8 seconds on a mid-range GPU. Always run it.
 
 Then **verify**: `check_lyric_timing.py` measures each displayed block against
 energy in the vocal stem.
@@ -99,10 +115,15 @@ If the edit "doesn't click", **check sync numerically before assuming a bug.**
 measured **+0.000s**. The looseness was editorial: cuts sat on vocal onsets and
 a flat 0.75s grid.
 
-Fix: `librosa.beat.beat_track` (this song: 172.27 BPM, 0.348s, std 0.011s), then
-snap every proposed cut to the nearest beat within ~half a beat. Result: all 154
-cuts within 0.0000s of a beat. Also give lyric blocks a **~0.18s lead-in** so
-they are readable *on* the beat rather than starting at it.
+Fix: `librosa.beat.beat_track` (one track measured 172.27 BPM, 0.348s spacing,
+std 0.011s), then snap every proposed cut to the nearest beat within ~half a
+beat interval. Result there: all 154 cuts within 0.0000s of a beat. Also give
+lyric blocks a **~0.18s lead-in** so they are readable *on* the beat rather than
+starting at it.
+
+Note that `beat_track` often locks onto a subdivision (172 BPM is likely 86 BPM
+counted in eighths). That is fine — any consistent subdivision is a valid grid;
+just choose the cut spacing as a multiple of it.
 
 Because text timing comes from the vocal alignment and cuts come from the beat
 grid, snapping cuts never desyncs the words.
@@ -115,17 +136,24 @@ render exact counts with `-frames:v`. Residual: 8ms.
 ## 5. Clip selection
 
 Use the episode's **embedded subtitle track** as the index of where things
-happen — it gives ~7,850 timestamped, text-labelled, speaker-labelled moments to
-search instead of blind sampling.
+happen. A 26-episode season yielded ~7,850 timestamped, text-labelled,
+speaker-labelled moments to search over instead of sampling blind.
+
+(If a release has no text subtitle track, this whole approach is unavailable and
+you fall back to scene detection plus much heavier visual QA.)
 
 ### Subtitle extraction traps
 
-- **Take the `Format:` line from `[Events]`, not the first one.** `[V4+ Styles]`
-  has its own with 23 columns. Using it silently parses **zero** events.
-- Speaker names are often abbreviated (`Yuk`=Yukiteru, `Yun`=Yuno, `Mur`=Murmur).
-  They are gold for character-targeted selection.
-- Some releases **burn typesetting into the video** (diary/phone screens). No
-  subtitle data marks these. See §5.3.
+- **Take the `Format:` line from `[Events]`, not the first one.** In ASS,
+  `[V4+ Styles]` has its own `Format:` with a different column set. Parsing
+  Dialogue rows against it silently yields **zero** events — a bug that looks
+  like "the file has no subtitles".
+- Speaker names are often present but abbreviated (three-letter tags). Dump the
+  distribution first; they are gold for character-targeted selection.
+- Some releases **burn typesetting into the video** (on-screen text, phone or
+  computer screens). No subtitle data marks these. See §5.3.
+- Prefer an English *text* track (`ass`/`subrip`); bitmap tracks (PGS/VobSub)
+  carry no parsable text.
 
 ### 5.1 What works
 
@@ -154,15 +182,19 @@ search instead of blind sampling.
 
 Since the text-screen detector failed, avoid those shots structurally:
 
-- Skip subtitle lines that quote a diary entry (`"`, `(`, `「`).
+- Skip subtitle lines that quote on-screen text (`"`, `(`, `「`) — those play
+  over a full-screen graphic.
 - Anchor to named main-cast speakers.
-- **Trim the episode tail hard.** Post-ED omake ("Murmur's Counseling Room"),
-  next-episode previews and credits occupy roughly the **last 90 seconds**. A
-  25s tail trim let SD-comedy title cards into the edit; use ≥95s.
-- Detect OP/ED as dialogue-free gaps ≥80s and exclude them.
+- **Trim the episode tail hard.** Post-ED omake segments, next-episode previews
+  and credits commonly occupy the **last 60–90 seconds**. A 25s tail trim let
+  SD-comedy title cards into the edit; ≥95s fixed it. Check your own release.
+- Detect OP/ED as dialogue-free gaps ≥80s and exclude them. Expect this to find
+  only one of the two in some episodes (dialogue over the ED breaks the gap) —
+  the tail trim is the backstop.
 - Keep a `BLACKLIST` of `(episode, start, end)` regions rejected on sight.
-  Bath/fanservice scenes and remaining text screens need this — no metric
-  catches them reliably.
+  Fanservice/bath scenes and remaining text screens need this — no metric
+  catches them reliably, and the cost of one slipping into a published video is
+  much higher than the cost of a manual list.
 
 ## 6. Grade
 
@@ -192,11 +224,12 @@ rotation, per-word colour, vector shapes and a real animation engine — **no GI
 or APNG is needed or wanted** for "animated text".
 
 - ASS colours are `&HAABBGGRR` — byte order reversed from hex RGB.
-- **Check whether the font is an outline face.** Kranky looked fine at thumbnail
-  size but is hollow-stroked; over footage it washed out completely. Zoom to
-  100% and look. A solid high-contrast serif (Georgia Bold) reads far better.
-- Copy the font into an `assets/` dir and pass `fontsdir=` so lookup is
-  reproducible.
+- **Check whether the font is an outline face.** One display font looked fine
+  small but is hollow-stroked; over footage it washed out completely. Zoom to
+  100% and look, or run a `font_compare` render. A solid high-contrast serif
+  reads far better over busy video.
+- Copy the font into an `assets/` dir and pass `fontsdir=` so lookup does not
+  depend on system font configuration.
 - Sizing: pick per-phrase from the longest line length. Text that looks right in
   a code review is usually **half** the size it should be — the reference AMV
   look is big.
@@ -274,6 +307,11 @@ limbs and land on a character's chest or on empty space between two people. Use
 detection only as a hint on cool/dark frames, and **always verify by rendering
 the thumbnail and looking at it.**
 
+Note the same skin heuristic *is* good enough for the coarser
+left-vs-right question in lyric placement (§7). Precision requirements differ:
+"which half of frame" tolerates noise that "point an arrow at this face" does
+not.
+
 ### Bubble preset trap
 
 ASS centres a `\p1` drawing by its **bounding box**. A speech-bubble tail
@@ -291,9 +329,13 @@ swapping to a well-centred frame took one.
 
 ## 11. Titles and description
 
-Follow the user's own shipped examples if any exist. For this user: Title Case,
-65–97 chars, 0–3 ALL-CAPS emphasis words, at most one `!`/`?`, no emoji, with a
-trailing `- <Series> AMV`.
+**If the user has shipped titles or thumbnails before, read those first and
+match them.** They encode preferences no style guide will tell you. Ask where
+they are if it is not obvious.
+
+Absent a house style, a workable default: Title Case, 65–97 characters, 0–3
+ALL-CAPS emphasis words, at most one `!`/`?`, no emoji, ending with
+`- <Series> AMV`.
 
 **Never invent a credit.** If the song's artist is not identifiable from the
 file, leave an explicit `<ARTIST>` placeholder and say so. A fabricated credit
@@ -314,6 +356,16 @@ Each of these caught a real defect:
 | `check_sync.py` | genuine A/V offset vs editorial looseness |
 | `check_exposure.py` | over-crushed grade |
 | `grade_preview.py` | grade tuning without a full render |
+
+## 12.5 Attribution and safety
+
+- **Never invent a credit.** If the song's artist is not identifiable from the
+  file, leave a visible `<ARTIST>` placeholder and say so. A fabricated credit
+  gets published as fact.
+- Include a fair-use / non-profit note and credit the studio and artist.
+- Do not commit the source video, the song, the separated stem, or licensed
+  fonts. `.gitignore` should cover `data/` and the media extensions in
+  `assets/`; verify with `git check-ignore -v <file>`.
 
 ## 13. Windows / PowerShell notes
 

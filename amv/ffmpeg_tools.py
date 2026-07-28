@@ -1,8 +1,8 @@
 """ffmpeg/ffprobe helpers.
 
-Ported from D:\\MediaConductor mediaconductor/video_pipeline/ffmpeg_tools.py and
-trimmed to what this AMV pipeline uses. Kept self-contained so D:\\AMV_CD has no
-import dependency on MediaConductor.
+Thin wrappers over the ffmpeg CLI: command running, concat files, stream
+probing, and encoder selection. The only external requirements are `ffmpeg` and
+`ffprobe` on PATH.
 """
 
 from __future__ import annotations

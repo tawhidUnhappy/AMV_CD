@@ -11,6 +11,10 @@ wheels/
 # Virtual environments
 .venv
 
+# Local configuration: holds machine-specific media paths. config.example.json
+# is committed as the template.
+config.json
+
 # Generated data. Everything under data/ is reproducible by re-running the
 # pipeline, and the rendered video alone is ~180MB.
 data/

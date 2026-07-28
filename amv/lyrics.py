@@ -20,7 +20,9 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+from amv import config
+
+ROOT = config.ROOT
 TRANSCRIPT = ROOT / "data" / "song" / "transcript_vocals.json"
 
 

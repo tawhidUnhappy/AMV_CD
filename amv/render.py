@@ -17,6 +17,7 @@ import shutil
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from amv import config
 from amv.ffmpeg_tools import (
     choose_h264_encoder,
     h264_encoder_args,
@@ -25,18 +26,17 @@ from amv.ffmpeg_tools import (
     write_concat_file,
 )
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = config.ROOT
 EDL_PATH = ROOT / "data" / "edl.json"
 WORK_DIR = ROOT / "data" / "work"
 CLIPS_DIR = ROOT / "data" / "clips"
-OUT_PATH = ROOT / "data" / "out" / "amv_black_salt_halo.mp4"
-SONG = ROOT / "assets" / "black_salt_halo.mp3"
+OUT_PATH = ROOT / "data" / "out" / "amv.mp4"
 FONTS_DIR = ROOT / "assets"
 
-WIDTH, HEIGHT = 1920, 1080
-FPS_NUM, FPS_DEN = 24000, 1001
-FPS = f"{FPS_NUM}/{FPS_DEN}"
-FPS_VALUE = FPS_NUM / FPS_DEN
+_CFG = config.load()
+WIDTH, HEIGHT = _CFG.width, _CFG.height
+FPS = _CFG.fps
+FPS_VALUE = _CFG.fps_value
 
 
 def slot_frames(slots: list[dict]) -> list[int]:
@@ -252,7 +252,7 @@ def main() -> None:
             "ffmpeg", "-hide_banner", "-y",
             "-i", str(silent),
             "-loop", "1", "-i", str(mask),
-            "-i", str(SONG),
+            "-i", str(config.load().require_song()),
             "-filter_complex", filtergraph,
             "-map", "[v]", "-map", "2:a",
             *h264_encoder_args(encoder, args.preset, args.final_cq),

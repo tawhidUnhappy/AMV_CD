@@ -13,14 +13,12 @@ import re
 from dataclasses import dataclass, asdict
 from pathlib import Path
 
+from amv import config
 from amv.ffmpeg_tools import probe_duration, run, subtitle_stream_index
 
-ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_SOURCE = Path(r"C:\Users\voidn\OneDrive\Documents\Future dairy - Season 1")
+ROOT = config.ROOT
 DEFAULT_SUBS_DIR = ROOT / "data" / "subs"
 DEFAULT_INDEX = ROOT / "data" / "subs" / "scene_index.json"
-
-EPISODE_RE = re.compile(r"Ep-(\d+)")
 
 # ASS inline override blocks {\pos(..)} / {\an8} etc, and drawing commands.
 ASS_TAG_RE = re.compile(r"\{[^}]*\}")
@@ -112,30 +110,46 @@ def is_dialogue(event: SceneEvent) -> bool:
     return True
 
 
-def episode_number(path: Path) -> int | None:
-    match = EPISODE_RE.search(path.name)
+def episode_number(path: Path, pattern: re.Pattern[str]) -> int | None:
+    match = pattern.search(path.name)
     return int(match.group(1)) if match else None
 
 
+VIDEO_EXTENSIONS = ("*.mkv", "*.mp4", "*.m4v", "*.avi", "*.ts")
+
+
 def main() -> None:
+    cfg = config.load()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
+    parser.add_argument("--source", type=Path, default=None,
+                        help="episode directory (default: source_dir from config.json)")
+    parser.add_argument("--episode-pattern", default=cfg.episode_pattern,
+                        help="regex with one capture group for the episode number")
     parser.add_argument("--subs-dir", type=Path, default=DEFAULT_SUBS_DIR)
     parser.add_argument("--index", type=Path, default=DEFAULT_INDEX)
     parser.add_argument("--overwrite", action="store_true")
     args = parser.parse_args()
 
+    source = args.source or cfg.require_source()
+    pattern = re.compile(args.episode_pattern, re.IGNORECASE)
+
     args.subs_dir.mkdir(parents=True, exist_ok=True)
+    found = [p for ext in VIDEO_EXTENSIONS for p in source.glob(ext)]
     episodes = sorted(
-        (p for p in args.source.glob("*.mkv") if episode_number(p) is not None),
-        key=lambda p: episode_number(p) or 0,
+        (p for p in found if episode_number(p, pattern) is not None),
+        key=lambda p: episode_number(p, pattern) or 0,
     )
     if not episodes:
-        raise SystemExit(f"No episodes found in {args.source}")
+        raise SystemExit(
+            f"No episodes matched in {source}\n"
+            f"  files seen: {len(found)}\n"
+            f"  pattern   : {args.episode_pattern}\n"
+            f"Adjust 'episode_pattern' in config.json to match your filenames."
+        )
 
-    index: dict = {"source": str(args.source), "episodes": []}
+    index: dict = {"source": str(source), "episodes": []}
     for path in episodes:
-        number = episode_number(path)
+        number = episode_number(path, pattern)
         assert number is not None
         ass_path = args.subs_dir / f"ep{number:02d}.ass"
         if args.overwrite or not ass_path.exists():

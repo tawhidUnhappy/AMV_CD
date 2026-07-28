@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from amv.lyrics import ROOT, load_words
+from amv.lyrics import load_words
 
 
 def main() -> None:
@@ -25,7 +25,9 @@ def main() -> None:
     # up across the span, a smeared one sits over a quiet/instrumental bar.
     import whisperx
 
-    audio = whisperx.load_audio(str(ROOT / "assets" / "black_salt_halo.mp3"))
+    from amv.config import load as load_config
+
+    audio = whisperx.load_audio(str(load_config().require_song()))
     sr = 16000
 
     def rms_db(start: float, end: float) -> float:
