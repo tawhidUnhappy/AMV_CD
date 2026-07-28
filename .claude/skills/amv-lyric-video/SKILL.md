@@ -216,8 +216,20 @@ opposite the subject, using per-column skin mass.
 > skin mass over **every slot the block is on screen for**, including the
 > lead-in and hold, then pick the side that stays clear for the whole duration.
 
-Even aggregated this is approximate. Verify on a contact sheet of frames
-*sampled while text is up*, not random frames.
+Even aggregated this is approximate. **Verify on a contact sheet of frames
+sampled while text is up** — sample near each block's *end*, where a later cut
+may have swapped the shot out from under it. Random frames will not find this
+bug.
+
+Measured outcome here: aggregating took collisions from frequent to 2 of 17.
+The two that remain are the honest limits of the approach:
+
+- **Shots within one block disagree** — the subject is left in one and right in
+  the next, so no single side is clear for the whole block. Either accept it or
+  split the block so each half is placed independently.
+- **Extreme close-ups fill the frame** — there is no empty side at all. A
+  reasonable extension is to detect "both sides occupied" and fall back to the
+  top or bottom band, which is usually calmer than the centre.
 
 ## 8. Lyrics on some lines only
 

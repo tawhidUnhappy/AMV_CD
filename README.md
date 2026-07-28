@@ -148,9 +148,13 @@ Two more corrections came from measurement rather than guesswork:
   materialise out of a `\blur` haze via `\t()`, and emphasis phrases get an
   offset red ghost layer that fades out — a chromatic split that reads as unease
   rather than as a render fault.
-- **Placement** — `subject_side()` reuses the skin-fraction probe to find which
-  half of the shot the character occupies, and places the text on the opposite
-  side. The first pass centred chorus hooks and landed them on people's faces.
+- **Placement** — `clearest_side()` reuses the skin-fraction probe to find which
+  half of the frame the character occupies, and places text on the opposite
+  side. It aggregates over **every shot the block is on screen for**: a block
+  routinely spans several cuts, and sampling only the first one placed text
+  clear of that face and straight across the next. Collisions went from frequent
+  to 2 of 17; the remainder are blocks whose shots disagree, and extreme
+  close-ups with no empty side.
 
 ## Human-in-the-loop QA
 
