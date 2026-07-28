@@ -1,0 +1,53 @@
+[project]
+name = "amv-cd"
+version = "0.1.0"
+description = "Isolated AMV pipeline: Mirai Nikki S1 x 'Black Salt Halo'"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    # Song transcription with word-level timestamps (drives the lyric karaoke).
+    "whisperx>=3.4.2",
+    # Torch comes from the CUDA index below (bundles its own cuDNN 9 in torch/lib).
+    "torch>=2.6.0",
+    "torchaudio>=2.6.0",
+    "numpy>=1.26,<2.3",
+    # ctranslate2 4.4 (pinned by whisperx 3.4) imports pkg_resources and links
+    # cuDNN 8 — neither is satisfied by torch's own runtime.
+    "setuptools<81",
+    "nvidia-cudnn-cu12>=8.9,<9",
+    "librosa>=0.11.0",
+    "demucs>=4.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+]
+
+[tool.uv]
+# Windows-only pipeline. Without this the resolver also solves for Linux, where
+# torch declares a hard nvidia-cudnn-cu12==9.x dep that collides with the
+# cuDNN 8 runtime ctranslate2 4.4 needs here.
+environments = ["sys_platform == 'win32'"]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu124" }
+torchaudio = { index = "pytorch-cu124" }
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B"]
+ignore = [
+    # Every zip() here pairs sequences built to the same length in the same
+    # function (slots/frames, phrases/positions); strict= would add noise
+    # without catching anything real.
+    "B905",
+]

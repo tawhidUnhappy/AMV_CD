@@ -1,0 +1,29 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.ruff_cache/
+.pytest_cache/
+
+# Virtual environments
+.venv
+
+# Generated data. Everything under data/ is reproducible by re-running the
+# pipeline, and the rendered video alone is ~180MB.
+data/
+
+# Copyrighted / licensed inputs, supplied locally and never committed:
+# the song, the separated vocal stem, and the fonts.
+assets/*.mp3
+assets/*.wav
+assets/*.ttf
+assets/*.otf
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
