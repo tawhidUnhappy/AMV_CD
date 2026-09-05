@@ -23,7 +23,7 @@ from pathlib import Path
 from amv.core import config
 
 ROOT = config.ROOT
-TRANSCRIPT = ROOT / "data" / "song" / "transcript_vocals.json"
+TRANSCRIPT = ROOT / "tmp" / "song" / "transcript_vocals.json"
 
 
 @dataclass(frozen=True)

@@ -30,7 +30,7 @@ def decode(path: Path, seconds: float) -> np.ndarray:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--video", type=Path, default=ROOT / "data" / "out" / "amv.mp4")
+    parser.add_argument("--video", type=Path, default=ROOT / "tmp" / "out" / "amv.mp4")
     parser.add_argument("--song", type=Path, default=None,
                         help="reference track (default: song from config.json)")
     parser.add_argument("--window", type=float, default=45.0)

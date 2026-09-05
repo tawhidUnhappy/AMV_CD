@@ -13,7 +13,7 @@ from amv.thumbnail.layout import HEIGHT, WIDTH, Thumb
 
 def render(thumb: Thumb, out_dir: Path) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    work = ROOT / "data" / "work"
+    work = ROOT / "tmp" / "work"
     work.mkdir(parents=True, exist_ok=True)
     ass_path = work / f"thumb_{thumb.name}.ass"
     ass_path.write_text(build_ass(thumb), encoding="utf-8")

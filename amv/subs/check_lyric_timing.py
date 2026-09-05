@@ -15,7 +15,7 @@ import numpy as np
 
 from amv.audio.lyrics import ROOT, timed_phrases
 
-VOCALS = ROOT / "data" / "song" / "vocals.wav"
+VOCALS = ROOT / "tmp" / "song" / "vocals.wav"
 SR = 8000
 
 

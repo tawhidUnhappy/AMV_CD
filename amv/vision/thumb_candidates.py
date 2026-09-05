@@ -12,7 +12,7 @@ import json
 import subprocess
 
 from amv.core.config import ROOT
-OUT = ROOT / "data" / "qa" / "thumbcand"
+OUT = ROOT / "tmp" / "qa" / "thumbcand"
 
 
 def main() -> None:
@@ -21,7 +21,7 @@ def main() -> None:
     parser.add_argument("--min-skin", type=float, default=0.22)
     args = parser.parse_args()
 
-    slots = json.loads((ROOT / "data" / "edl.json").read_text(encoding="utf-8"))["slots"]
+    slots = json.loads((ROOT / "tmp" / "edl.json").read_text(encoding="utf-8"))["slots"]
     # Big faces, bright and punchy: high skin fraction plus strong contrast.
     ranked = sorted(
         (s for s in slots if s.get("skin", 0) >= args.min_skin and s.get("brightness", 0) > 0.18),
@@ -50,7 +50,7 @@ def main() -> None:
 
     listing = OUT / "list.txt"
     listing.write_text("".join(f"file '{p.as_posix()}'\n" for p in tiles), encoding="ascii")
-    sheet = ROOT / "data" / "qa" / "thumb_candidates.jpg"
+    sheet = ROOT / "tmp" / "qa" / "thumb_candidates.jpg"
     subprocess.run(
         ["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(listing),
          "-vf", "tile=4x3:padding=5:color=0x141414", "-frames:v", "1", str(sheet)],

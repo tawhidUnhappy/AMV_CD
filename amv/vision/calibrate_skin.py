@@ -42,7 +42,7 @@ def probe_color(path: str, start: float, duration: float) -> tuple[float, float]
 
 
 def main() -> None:
-    slots = json.loads((ROOT / "data" / "edl.json").read_text(encoding="utf-8"))["slots"]
+    slots = json.loads((ROOT / "tmp" / "edl.json").read_text(encoding="utf-8"))["slots"]
     by_index = {s["index"]: s for s in slots}
     for label, indices in [("TEXT SCREEN", BAD_TEXT), ("SCENERY/INSERT", BAD_SCENERY), ("CHARACTER", GOOD_FACES)]:
         print(f"\n{label}")

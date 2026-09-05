@@ -15,7 +15,7 @@ from pathlib import Path
 from amv.core import config
 
 ROOT = config.ROOT
-WORK = ROOT / "data" / "qa" / "fonts"
+WORK = ROOT / "tmp" / "qa" / "fonts"
 WHITE = "&H00F2F2F2&"
 RED = "&H002222CC&"
 
@@ -31,7 +31,7 @@ CANDIDATES: list[tuple[str, str, tuple[str, ...], int]] = [
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--video", type=Path, default=ROOT / "data" / "out" / "amv.mp4")
+    parser.add_argument("--video", type=Path, default=ROOT / "tmp" / "out" / "amv.mp4")
     parser.add_argument("--at", type=float, default=14.2, help="timestamp to grab the backdrop from")
     args = parser.parse_args()
 
@@ -92,7 +92,7 @@ def main() -> None:
 
     listing = WORK / "list.txt"
     listing.write_text("".join(f"file '{p.as_posix()}'\n" for p in tiles), encoding="ascii")
-    sheet = ROOT / "data" / "qa" / "font_compare.jpg"
+    sheet = ROOT / "tmp" / "qa" / "font_compare.jpg"
     subprocess.run(
         ["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(listing),
          "-vf", "tile=2x2:padding=6:color=0x101010", "-frames:v", "1", str(sheet)],

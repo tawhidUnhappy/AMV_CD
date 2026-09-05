@@ -9,7 +9,7 @@ from amv.core.config import ROOT
 
 
 def main() -> None:
-    index = json.loads((ROOT / "data" / "subs" / "scene_index.json").read_text(encoding="utf-8"))
+    index = json.loads((ROOT / "tmp" / "subs" / "scene_index.json").read_text(encoding="utf-8"))
     speakers: Counter[str] = Counter()
     for ep in index["episodes"]:
         for event in ep["events"]:

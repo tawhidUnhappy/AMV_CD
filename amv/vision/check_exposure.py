@@ -15,7 +15,7 @@ import numpy as np
 
 from amv.core.config import ROOT
 
-DEFAULT = ROOT / "data" / "out" / "amv.mp4"
+DEFAULT = ROOT / "tmp" / "out" / "amv.mp4"
 
 
 def main() -> None:

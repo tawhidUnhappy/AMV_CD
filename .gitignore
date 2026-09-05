@@ -15,9 +15,9 @@ wheels/
 # is committed as the template.
 config.json
 
-# Generated data. Everything under data/ is reproducible by re-running the
+# Generated data. Everything under tmp/ is reproducible by re-running the
 # pipeline, and the rendered video alone is ~180MB.
-data/
+tmp/
 
 # Copyrighted / licensed inputs, supplied locally and never committed:
 # the song, the separated vocal stem, and the fonts.

@@ -17,8 +17,8 @@ from amv.render.select_clips.scoring import MIN_SEPARATION, credits_zones, probe
 from amv.render.timeline import build_slots
 
 ROOT = config.ROOT
-SCENE_INDEX = ROOT / "data" / "subs" / "scene_index.json"
-EDL_PATH = ROOT / "data" / "edl.json"
+SCENE_INDEX = ROOT / "tmp" / "subs" / "scene_index.json"
+EDL_PATH = ROOT / "tmp" / "edl.json"
 
 
 def main() -> None:

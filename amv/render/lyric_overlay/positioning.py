@@ -91,7 +91,7 @@ def clearest_side(slots: list[dict]) -> str:
 def choose_positions(phrases: list, edl: Path | None = None) -> list[Position]:
     """Place each block away from the subject, varying height for rhythm."""
     slots: list[dict] = []
-    path = edl or ROOT / "data" / "edl.json"
+    path = edl or ROOT / "tmp" / "edl.json"
     if path.exists():
         slots = json.loads(path.read_text(encoding="utf-8"))["slots"]
 

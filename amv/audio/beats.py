@@ -17,7 +17,7 @@ import numpy as np
 from amv.core import config
 
 ROOT = config.ROOT
-DEFAULT_OUT = ROOT / "data" / "song" / "beats.json"
+DEFAULT_OUT = ROOT / "tmp" / "song" / "beats.json"
 
 
 def detect(song: Path, tightness: float = 100.0) -> dict:

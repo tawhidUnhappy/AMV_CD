@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 CONFIG_PATH = Path(os.environ.get("AMV_CONFIG", ROOT / "config.json"))
 EXAMPLE_PATH = ROOT / "config.example.json"
 
@@ -53,7 +53,7 @@ class Config:
 
     @property
     def data(self) -> Path:
-        return ROOT / "data"
+        return ROOT / "tmp"
 
     def require_source(self) -> Path:
         if not self.source_dir or not self.source_dir.is_dir():

@@ -47,7 +47,7 @@ def detail_ratio(path: str, start: float, duration: float) -> tuple[float, float
 
 
 def main() -> None:
-    slots = json.loads((ROOT / "data" / "edl.json").read_text(encoding="utf-8"))["slots"]
+    slots = json.loads((ROOT / "tmp" / "edl.json").read_text(encoding="utf-8"))["slots"]
     by_index = {s["index"]: s for s in slots}
 
     for label, indices in [("TEXT SCREEN", TEXT_SCREENS), ("SCENERY", SCENERY), ("GOOD", GOOD)]:

@@ -5,7 +5,11 @@ folder of episode files and a song.
 
 Self-contained: the only external requirements are `ffmpeg`/`ffprobe` on PATH,
 `uv`, and an NVIDIA GPU for the ML steps. Nothing outside this directory is
-read except the media you point it at in `config.json`.
+read except the media you point it at in `config.json`, and everything the
+pipeline generates (vocal stem, transcript, subtitle index, EDL, QA sheets,
+the rendered video) is written under `tmp/` inside this project folder — so
+the whole thing is isolated to `AMV_CD/` plus its `.venv`, portable, and
+deleting `tmp/` gets you back to a clean slate.
 
 The reference build is a Mirai Nikki × "Black Salt Halo" AMV, but nothing about
 the series or track is hard-coded.
@@ -41,10 +45,10 @@ uv run python -m amv.subs.extract_subs        # episodes -> subtitles + scene in
 uv run python -m amv.render.select_clips --candidates 8
 uv run python -m amv.vision.contact_sheet     # REVIEW THIS before rendering
 uv run python -m amv.render.lyric_overlay     # -> lyrics.ass  (needs the EDL)
-uv run python -m amv.render.pipeline          # -> data/out/amv.mp4
+uv run python -m amv.render.pipeline          # -> tmp/out/amv.mp4
 ```
 
-`lyric_overlay` reads `data/edl.json`, so run it *after* `select_clips`.
+`lyric_overlay` reads `tmp/edl.json`, so run it *after* `select_clips`.
 
 ### Adapting to your own song
 

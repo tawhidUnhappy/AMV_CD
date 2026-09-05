@@ -19,8 +19,8 @@ from amv.thumbnail.shapes import Arrow, Bubble
 from amv.thumbnail.text import Text
 
 ROOT = config.ROOT
-CAND = ROOT / "data" / "qa" / "thumbcand"
-OUT_DIR = ROOT / "data" / "out" / "thumbnails"
+CAND = ROOT / "tmp" / "qa" / "thumbcand"
+OUT_DIR = ROOT / "tmp" / "out" / "thumbnails"
 
 WIDTH, HEIGHT = 1280, 720
 

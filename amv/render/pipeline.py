@@ -39,10 +39,10 @@ from amv.render.grade import (
 )
 
 ROOT = config.ROOT
-EDL_PATH = ROOT / "data" / "edl.json"
-WORK_DIR = ROOT / "data" / "work"
-CLIPS_DIR = ROOT / "data" / "clips"
-OUT_PATH = ROOT / "data" / "out" / "amv.mp4"
+EDL_PATH = ROOT / "tmp" / "edl.json"
+WORK_DIR = ROOT / "tmp" / "work"
+CLIPS_DIR = ROOT / "tmp" / "clips"
+OUT_PATH = ROOT / "tmp" / "out" / "amv.mp4"
 FONTS_DIR = ROOT / "assets"
 
 _CFG = config.load()

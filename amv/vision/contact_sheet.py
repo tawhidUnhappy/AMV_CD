@@ -14,8 +14,8 @@ from pathlib import Path
 
 from amv.core.config import ROOT
 
-EDL_PATH = ROOT / "data" / "edl.json"
-OUT_DIR = ROOT / "data" / "qa"
+EDL_PATH = ROOT / "tmp" / "edl.json"
+OUT_DIR = ROOT / "tmp" / "qa"
 
 
 def grab(args: tuple[dict, Path]) -> None:

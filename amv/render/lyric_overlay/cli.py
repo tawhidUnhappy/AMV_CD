@@ -10,7 +10,7 @@ from amv.core import config
 from amv.render.lyric_overlay.ass import build_ass
 
 ROOT = config.ROOT
-DEFAULT_OUT = ROOT / "data" / "work" / "lyrics.ass"
+DEFAULT_OUT = ROOT / "tmp" / "work" / "lyrics.ass"
 
 
 def main() -> None:

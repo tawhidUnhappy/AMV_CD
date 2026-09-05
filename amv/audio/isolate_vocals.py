@@ -14,7 +14,7 @@ from pathlib import Path
 from amv.core import config
 
 ROOT = config.ROOT
-DEFAULT_OUT = ROOT / "data" / "song" / "vocals.wav"
+DEFAULT_OUT = ROOT / "tmp" / "song" / "vocals.wav"
 
 
 def main() -> None:

@@ -21,8 +21,8 @@ from amv.core.ffmpeg_tools import probe_duration, run, subtitle_stream_index
 from amv.subs.ass_parser import episode_number, is_dialogue, parse_ass
 
 ROOT = config.ROOT
-DEFAULT_SUBS_DIR = ROOT / "data" / "subs"
-DEFAULT_INDEX = ROOT / "data" / "subs" / "scene_index.json"
+DEFAULT_SUBS_DIR = ROOT / "tmp" / "subs"
+DEFAULT_INDEX = ROOT / "tmp" / "subs" / "scene_index.json"
 
 VIDEO_EXTENSIONS = ("*.mkv", "*.mp4", "*.m4v", "*.avi", "*.ts")
 

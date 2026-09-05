@@ -8,7 +8,7 @@ from pathlib import Path
 from amv.core import config
 
 ROOT = config.ROOT
-FONT_DIR = ROOT / "data" / "work" / "thumbfonts"
+FONT_DIR = ROOT / "tmp" / "work" / "thumbfonts"
 
 # Families libass will be asked for. Whatever font files are found on this
 # machine get staged into a private fontsdir; if a family is missing, libass
