@@ -16,6 +16,7 @@ PGS carries no speaker names, so `speaker` is always "".
 
 from __future__ import annotations
 
+import re
 import sys
 from functools import lru_cache
 from pathlib import Path
@@ -87,11 +88,26 @@ def _is_signage_frame(bmp, threshold: float = 0.35) -> bool:
     return bool(alpha.mean() > threshold)
 
 
+_LATEX_RE = re.compile(r"\\mathbb|\\mathcal|\\mathrm|\\text\{|\\frac|\\sum|\\int|\$.*\$|\\begin\{|\\alpha|\\beta|\\partial")
+
+
 def _looks_like_garbage(text: str) -> bool:
-    """Reject OCR output that's a decode loop rather than a real subtitle
-    line. Cheap safety net kept from the previous OCR engine; not something
-    this model has been observed to do, but costs nothing to keep checking."""
+    """Reject OCR output that's not a real subtitle line.
+
+    Two failure modes seen in practice, both worth checking even though
+    neither is common:
+    - A decode loop (repeated-word text) — a carryover check from the
+      previous OCR engine used here; not observed with this one, but cheap
+      to keep checking.
+    - LaTeX math notation (`$\\mathcal{L}$`, `\\mathbb{R}^2`, ...) — this
+      model is trained heavily on academic/arXiv documents, and on a subtitle
+      crop it can't read confidently it sometimes falls back to inventing
+      plausible-looking math markup instead of text. Measured on one release:
+      10.5% of all extracted lines. A real subtitle line is never LaTeX.
+    """
     if len(text) > 200:
+        return True
+    if _LATEX_RE.search(text):
         return True
     words = text.lower().split()
     if len(words) >= 6:
