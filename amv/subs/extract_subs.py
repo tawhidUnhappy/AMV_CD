@@ -40,13 +40,12 @@ def main() -> None:
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument(
         "--episodes", default=None,
-        help="Limit to these episode numbers, e.g. '1-5,10,15,20,24'. "
-             "STRONGLY recommended when subtitles are PGS/bitmap: OCR is minutes "
-             "per episode (a GPU model pass per line), not the near-free ffmpeg "
-             "text-track conversion. Don't OCR the whole series — pick episodes "
-             "from the story-arc plan you're mapping song sections onto (see "
-             "amv-clip-selection) before running this. Ignored for text-subtitle "
-             "releases, where extracting everything costs nothing.",
+        help="Optionally limit to these episode numbers, e.g. '1-5,10,15,20,24' "
+             "(default: every episode found in source_dir). Clip selection "
+             "searches the full indexed set for the best match per song "
+             "section, so a full index is generally what you want — this is "
+             "mainly for topping up coverage incrementally or re-running one "
+             "episode.",
     )
     args = parser.parse_args()
 
@@ -74,16 +73,17 @@ def main() -> None:
             print(f"NOTE: --episodes asked for {sorted(missing)}, no matching file found", flush=True)
 
     if wanted is None and len(episodes) > 6:
-        # Cheap probe (one episode) to decide whether a whole-series run is
-        # about to be expensive. Releases are near-always uniform in codec
-        # across episodes, so the first one is representative.
+        # Cheap probe (one episode) so the run at least says up front what
+        # it's about to do — matching against the full series needs the full
+        # index, so this isn't a reason to skip episodes, just to know the
+        # scale (PGS/bitmap subtitles cost a GPU OCR pass per line, not the
+        # near-free ffmpeg text-track conversion).
         _, probe_codec = subtitle_stream_index(episodes[0].resolve())
         if probe_codec in BITMAP_SUBTITLE_CODECS:
             print(
-                f"WARNING: {len(episodes)} episodes with PGS/bitmap subtitles and no --episodes "
-                f"filter — this OCRs every one of them (minutes per episode, not the near-free "
-                f"text-track path). Pick episodes from your story-arc plan first: "
-                f"--episodes '1-5,10,15,20,24'. See amv-clip-selection.",
+                f"{len(episodes)} episodes with PGS/bitmap subtitles: OCR'ing all of them "
+                f"(this takes a while — minutes per episode). Already-OCR'd episodes are "
+                f"skipped on re-runs.",
                 flush=True,
             )
 

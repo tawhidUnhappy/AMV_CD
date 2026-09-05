@@ -44,23 +44,26 @@ heavier visual QA.)
     speaker-targeted selection (§ below) only works for releases with a text
     track.
 
-### PGS OCR is expensive — don't run it on the whole series
+### PGS OCR takes real GPU time — extract the full series anyway
 
 A text track costs nothing to extract (plain ffmpeg conversion, all episodes,
 always). **OCR is a GPU model pass per subtitle line** — realistically several
-minutes *per episode* (~1-2s/line x ~300+ lines), not a few seconds. Running
-`extract_subs` with no filter on a 24-episode, PGS-subtitled season means
-hours of GPU time to index episodes most of which will never be selected —
-this project burned ~45 minutes OCR'ing 5 episodes before catching that it
-should never have started an unfiltered whole-series run in the first place.
+minutes *per episode* (~1-2s/line x ~300+ lines), not a few seconds; a
+24-episode season is a few hours of GPU time.
 
-Decide the **story arc first** (which episode range each song section should
-draw from — see "What works" below), *then* run `extract_subs.py --episodes`
-scoped to only those episodes (or a small superset for slack). The index
-merges across runs, so topping up a couple more episodes later doesn't
-re-OCR what's already indexed. `extract_subs.py` prints a loud warning and
-estimate if it's about to OCR more than a handful of episodes with no
-`--episodes` filter — don't override that without a specific reason.
+Extract (and OCR) the **whole series anyway, not a guessed subset.** Theme
+matching (below) works by searching the full indexed dialogue for what
+actually fits each lyric — picking episodes ahead of time by guessing which
+ones "sound like" the song's themes throws away the thing that makes this
+approach work at all, and a guess made without real plot knowledge of the
+source is likely to be wrong in a way that's expensive to discover later
+(re-extracting the episodes that were actually needed).
+
+If you do need to economize (a very long series, or genuinely tight time),
+`extract_subs.py --episodes '1-5,10,15,20,24'` limits the run and the index
+*merges* across runs — a follow-up run topping up more episodes doesn't
+re-OCR what's already indexed, so under-provisioning isn't a dead end, just
+a slower path to the same full index.
 
 ## What works
 

@@ -69,10 +69,11 @@ fight that version conflict, it gets its own venv, `.venv-ocr/`, built by
 first use, so nothing needs to be set up by hand. Both venvs live inside the
 project folder; the project stays self-contained to `AMV_CD/` either way.
 
-**Before running it: OCR is minutes per episode, not free like text-track
-extraction.** Always pick episodes with `extract_subs.py --episodes` instead
-of OCR'ing a whole PGS-subtitled series — see
-[amv-clip-selection](../amv-clip-selection/SKILL.md#pgs-ocr-is-expensive--dont-run-it-on-the-whole-series).
+**Budget real time for it: OCR is minutes per episode, not free like
+text-track extraction** — a full season is a few hours of GPU time, and that's
+expected. See
+[amv-clip-selection](../amv-clip-selection/SKILL.md#pgs-ocr-takes-real-gpu-time--extract-the-full-series-anyway)
+for why extracting the whole series (not a guessed subset) is worth that time.
 
 DeepSeek-OCR-2 quirks worth knowing if you touch `tools/deepseek_ocr/run_ocr.py`:
 
