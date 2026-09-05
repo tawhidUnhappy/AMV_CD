@@ -29,30 +29,30 @@ cp config.example.json config.json     # then edit it
 
 Paths may be absolute or relative to the project root; `~` and environment
 variables are expanded. Every value can also be overridden per-run with a
-command-line flag. `uv run python amv/config.py` prints what resolved.
+command-line flag. `uv run python -m amv.core.config` prints what resolved.
 
 ## Running the pipeline
 
 ```bash
-export PYTHONPATH=.          # Windows: $env:PYTHONPATH="."
-uv run python amv/isolate_vocals.py    # Demucs -> vocal stem
-uv run python amv/transcribe_song.py   # WhisperX -> word-level timings
-uv run python amv/beats.py             # librosa -> beat grid
-uv run python amv/extract_subs.py      # episodes -> subtitles + scene index
-uv run python amv/select_clips.py --candidates 8
-uv run python amv/contact_sheet.py     # REVIEW THIS before rendering
-uv run python amv/lyric_overlay.py     # -> lyrics.ass  (needs the EDL)
-uv run python amv/render.py            # -> data/out/amv.mp4
+uv run python -m amv.audio.isolate_vocals     # Demucs -> vocal stem
+uv run python -m amv.audio.transcribe_song    # WhisperX -> word-level timings
+uv run python -m amv.audio.beats              # librosa -> beat grid
+uv run python -m amv.subs.extract_subs        # episodes -> subtitles + scene index
+uv run python -m amv.render.select_clips --candidates 8
+uv run python -m amv.vision.contact_sheet     # REVIEW THIS before rendering
+uv run python -m amv.render.lyric_overlay     # -> lyrics.ass  (needs the EDL)
+uv run python -m amv.render.pipeline          # -> data/out/amv.mp4
 ```
 
-`lyric_overlay.py` reads `data/edl.json`, so run it *after* `select_clips.py`.
+`lyric_overlay` reads `data/edl.json`, so run it *after* `select_clips`.
 
 ### Adapting to your own song
 
-`amv/lyrics.py` holds the lyric plan: phrases mapped to word-index ranges in the
-transcript, with line breaks, a red emphasis word, and a `show` flag. Rebuild it
-for a new track by dumping the aligned words (`amv/dump_words.py`) and writing
-phrases against them. `validate()` guards against index drift.
+`amv/audio/lyrics.py` holds the lyric plan: phrases mapped to word-index ranges
+in the transcript, with line breaks, a red emphasis word, and a `show` flag.
+Rebuild it for a new track by dumping the aligned words
+(`amv/subs/dump_words.py`) and writing phrases against them. `validate()`
+guards against index drift.
 
 ## How it works
 
@@ -77,18 +77,19 @@ Each of these caught a real defect; run them after changes:
 
 | Script | Catches |
 | --- | --- |
-| `contact_sheet.py` | wrong, ugly or off-tone footage — the biggest win |
-| `check_lyric_timing.py` | lyric text not sitting over singing |
-| `check_sync.py` | genuine A/V offset vs merely loose editing |
-| `check_exposure.py` | an over-crushed grade |
-| `grade_preview.py` | grade tuning without a full re-render |
-| `font_compare.py` | outline fonts that wash out over footage |
+| `amv.vision.contact_sheet` | wrong, ugly or off-tone footage — the biggest win |
+| `amv.subs.check_lyric_timing` | lyric text not sitting over singing |
+| `amv.subs.check_sync` | genuine A/V offset vs merely loose editing |
+| `amv.vision.check_exposure` | an over-crushed grade |
+| `amv.render.grade_preview` | grade tuning without a full re-render |
+| `amv.render.font_compare` | outline fonts that wash out over footage |
 
 ## Extras
 
-- `amv/thumbnail.py` composes YouTube thumbnails from real frames (three
-  layouts: label-arrow, speech bubble, split). No image generation.
-- `amv/thumb_candidates.py` pulls strong frames to choose from.
+- `amv/thumbnail/` composes YouTube thumbnails from real frames (three
+  layouts: label-arrow, speech bubble, split). No image generation. Run with
+  `uv run python -m amv.thumbnail`.
+- `amv/vision/thumb_candidates.py` pulls strong frames to choose from.
 
 ## Environment notes (Windows + NVIDIA)
 
@@ -101,9 +102,11 @@ Four pins in `pyproject.toml` are load-bearing:
 | torch from the cu124 index | GPU WhisperX / Demucs |
 | `environments = ["sys_platform == 'win32'"]` | otherwise the resolver also solves Linux, where torch hard-pins cudnn 9 and conflicts |
 
-`amv/torch_compat.py` adds two runtime shims: it puts the pip-installed cuDNN 8
-on the DLL search path before `ctranslate2` imports, and it works around torch
-2.6's `weights_only` default for the pyannote VAD checkpoint.
+`amv/audio/torch_compat.py` adds two runtime shims: it puts the pip-installed
+cuDNN 8 on the DLL search path before `ctranslate2` imports, and it works
+around torch 2.6's `weights_only` default for the pyannote VAD checkpoint.
+`amv/audio/device.py` centralizes CUDA-vs-CPU device selection and cache
+cleanup for both GPU stages (Demucs, WhisperX).
 
 ## Design notes
 
