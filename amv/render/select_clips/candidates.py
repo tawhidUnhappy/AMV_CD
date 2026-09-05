@@ -44,7 +44,7 @@ class Candidate:
 
 def build_candidates(slot: Slot, episodes: dict[int, dict], zones: dict[int, list], rng: np.random.Generator,
                      limit: int) -> list[Candidate]:
-    low, high = SECTION_EPISODES.get(slot.section, (1, 26))
+    low, high = SECTION_EPISODES.get(slot.section, (1, 24))
     pool = [episodes[n] for n in range(low, high + 1) if n in episodes]
     duration = slot.duration
     keywords, speaker = THEMES.get(slot.lyric, ((), None))
@@ -73,13 +73,16 @@ def build_candidates(slot: Slot, episodes: dict[int, dict], zones: dict[int, lis
                 break
 
     if len(candidates) < limit:
-        # Anchor on main-cast dialogue so a character is on screen, and let the
-        # motion score pick out the kinetic ones. Sampling dialogue-free gaps
-        # instead just surfaced scenery.
+        # Anchor on dialogue so a character is on screen, and let the motion
+        # score pick out the kinetic ones. Sampling dialogue-free gaps instead
+        # just surfaced scenery. When the subtitle source has real speaker
+        # tags, prefer named main-cast lines; PGS-sourced events carry no
+        # speaker at all (see amv/subs/pgs_ocr.py), so MAIN_SPEAKERS being
+        # empty means "any dialogue line" rather than "no lines at all".
         anchors: list[tuple[dict, float]] = []
         for episode in pool:
             for event in episode["events"]:
-                if event["speaker"] not in MAIN_SPEAKERS or is_diary_reading(event):
+                if (MAIN_SPEAKERS and event["speaker"] not in MAIN_SPEAKERS) or is_diary_reading(event):
                     continue
                 anchors.append((episode, max(0.0, event["start"] - 0.3)))
         rng.shuffle(anchors)  # type: ignore[arg-type]

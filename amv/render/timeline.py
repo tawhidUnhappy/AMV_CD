@@ -13,31 +13,33 @@ from dataclasses import dataclass
 
 from amv.audio.lyrics import song_duration, timed_phrases, validate
 
-# Per-section story arc. Mirai Nikki builds chronologically, so walking the
-# episode range forward across the song gives the AMV a shape instead of a
-# uniform shuffle.
+# Per-section story arc. Mushoku Tensei S1 builds chronologically, so walking
+# the episode range forward across the song gives the AMV a shape instead of
+# a uniform shuffle.
+#
+# "Who I Am Anymore" has one verse+prechorus+chorus, sung twice (a ~32s
+# instrumental gap between the two passes), then an outro recap. Phrases
+# after 60s auto-relabel verse/prechorus/chorus -> verse2/prechorus2/chorus2
+# (see describe() below) — the second AND third (reprise) occurrence both
+# land there, so those episode ranges get reused for the reprise rather than
+# advancing further; a minor loss of arc granularity, not a bug.
 SECTION_EPISODES: dict[str, tuple[int, int]] = {
-    "intro": (1, 3),
-    "verse": (1, 5),
-    "prechorus": (3, 9),
-    "chorus": (4, 11),
-    "verse2": (8, 15),
-    "prechorus2": (11, 17),
-    "chorus2": (12, 19),
-    "bridge": (17, 24),
-    "finale": (22, 26),
-    "outro": (24, 26),
+    "intro": (1, 2),
+    "verse": (1, 3),
+    "prechorus": (2, 5),
+    "chorus": (4, 7),
+    "verse2": (7, 11),
+    "prechorus2": (10, 13),
+    "chorus2": (12, 16),
+    "outro": (22, 24),
     # One entry per real instrumental break, walking the arc forward with the
-    # song. There are seven; clamping them onto fewer labels lumped half the
-    # montage into a single episode range.
-    "break1": (3, 6),
-    "break2": (5, 10),
-    "break3": (8, 13),
-    "break4": (11, 16),
-    "break5": (15, 20),
-    "break6": (18, 23),
-    "break7": (21, 26),
-    "lull": (1, 26),
+    # song. There are four: before the first line, between chorus 1 and
+    # verse 2, the long reprise gap, and a short one near the end.
+    "break1": (1, 2),
+    "break2": (6, 8),
+    "break3": (14, 20),
+    "break4": (21, 23),
+    "lull": (1, 24),
 }
 
 # Longest a single shot may hold before it is split into multiple cuts.

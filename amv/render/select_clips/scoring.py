@@ -85,14 +85,25 @@ def probe_stats(path: str, start: float, duration: float) -> tuple[float, float,
     none. It is therefore weighted, never used as a gate.
     """
     width, height, fps = 96, 54, 8
-    command = [
+    filters = f"scale={width}:{height},fps={fps},format=rgb24"
+    gpu_command = [
+        "ffmpeg", "-hwaccel", "cuda", "-v", "error", "-ss", f"{start:.3f}", "-t", f"{duration:.3f}", "-i", path,
+        "-vf", filters, "-f", "rawvideo", "-",
+    ]
+    cpu_command = [
         "ffmpeg", "-v", "error", "-ss", f"{start:.3f}", "-t", f"{duration:.3f}", "-i", path,
-        "-vf", f"scale={width}:{height},fps={fps},format=rgb24", "-f", "rawvideo", "-",
+        "-vf", filters, "-f", "rawvideo", "-",
     ]
     try:
-        result = subprocess.run(command, capture_output=True, check=True)
+        result = subprocess.run(gpu_command, capture_output=True, check=True)
     except subprocess.CalledProcessError:
-        return 0.0, 0.0, 0.0, 0.0
+        # NVDEC can refuse a handful of streams a software decoder tolerates
+        # (an odd profile/level, a corrupt-ish GOP); fall back per-window
+        # rather than let one bad clip zero out its whole probe.
+        try:
+            result = subprocess.run(cpu_command, capture_output=True, check=True)
+        except subprocess.CalledProcessError:
+            return 0.0, 0.0, 0.0, 0.0
     frame_size = width * height * 3
     count = len(result.stdout) // frame_size
     if count < 2:
