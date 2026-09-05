@@ -15,12 +15,12 @@ from __future__ import annotations
 MAIN_SPEAKERS: set[str] = set()
 
 # Regions rejected on sight during contact-sheet QA (episode, start, end).
-# Empty until a contact-sheet pass over Mushoku Tensei S1 finds anything that
-# needs excluding structurally (see amv-clip-selection: bath/fanservice beats
-# and burned-in text screens are the usual candidates, and no visual metric
-# catches them reliably) -- add entries here after reviewing amv.vision.contact_sheet
-# output, before final render.
-BLACKLIST: tuple[tuple[int, float, float], ...] = ()
+# Both entries here are staff/credits text cards -- unusable as footage
+# regardless of content judgment, not a content-appropriateness call.
+BLACKLIST: tuple[tuple[int, float, float], ...] = (
+    (8, 1235.0, 1255.0),   # full-screen end-credits staff card, burned-in text
+    (21, 60.0, 80.0),      # full-screen end-credits staff card, burned-in text
+)
 
 # Per-lyric search terms. Keys are the joined display lines from
 # amv/audio/lyrics.py. Mushoku Tensei S1 follows Rudeus, reincarnated as a
