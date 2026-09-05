@@ -30,11 +30,10 @@ heavier visual QA.)
   in `amv/core/ffmpeg_tools.py` picks it automatically.
 - **A bitmap track (PGS/VobSub) is not a dead end — OCR it.** `amv/subs/pgs.py`
   decodes the bitmaps and `amv/subs/pgs_ocr.py` runs them through
-  DeepSeek-OCR-2 (see [amv-environment-setup](../amv-environment-setup/SKILL.md)
-  for why that model needs its own venv), producing the same timestamped-event
-  shape `extract_subs.py` builds from a text track — clip selection downstream
-  doesn't need to know which source it came from. Two things this needed that
-  a text track wouldn't:
+  LightOnOCR-2-1B (see [amv-environment-setup](../amv-environment-setup/SKILL.md)
+  for model notes), producing the same timestamped-event shape `extract_subs.py`
+  builds from a text track — clip selection downstream doesn't need to know
+  which source it came from. Two things this needed that a text track wouldn't:
   - **Multiple PGS tracks per episode is normal** — a small "signs only" one
     alongside the full dialogue track. Picking by decoded byte size
     (`NUMBER_OF_BYTES` tag) reliably finds the real one; one release here had
@@ -47,9 +46,12 @@ heavier visual QA.)
 ### PGS OCR takes real GPU time — extract the full series anyway
 
 A text track costs nothing to extract (plain ffmpeg conversion, all episodes,
-always). **OCR is a GPU model pass per subtitle line** — realistically several
-minutes *per episode* (~1-2s/line x ~300+ lines), not a few seconds; a
-24-episode season is a few hours of GPU time.
+always). **OCR is a GPU model pass per subtitle line** — with LightOnOCR-2-1B,
+realistically a couple of minutes *per episode* (~300+ lines), not a few
+seconds; a 24-episode season is well under an hour of GPU time. (An earlier
+version of this pipeline used a heavier model that took ~10x longer per
+episode — see amv-environment-setup — so if a run looks like it's taking
+20+ min/episode, something's regressed.)
 
 Extract (and OCR) the **whole series anyway, not a guessed subset.** Theme
 matching (below) works by searching the full indexed dialogue for what

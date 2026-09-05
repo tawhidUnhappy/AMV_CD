@@ -113,8 +113,7 @@ def main() -> None:
                      str(sup_path)],
                     print_command=False,
                 )
-            ocr_work_dir = args.subs_dir / "ocr" / f"ep{number:02d}"
-            events = extract_pgs_events(sup_path, number, ocr_work_dir)
+            events = extract_pgs_events(sup_path, number)
             subs_source = str(sup_path)
         else:
             ass_path = args.subs_dir / f"ep{number:02d}.ass"

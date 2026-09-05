@@ -10,7 +10,6 @@ wheels/
 
 # Virtual environments
 .venv
-.venv-ocr
 
 # Local configuration: holds machine-specific media paths. config.example.json
 # is committed as the template.

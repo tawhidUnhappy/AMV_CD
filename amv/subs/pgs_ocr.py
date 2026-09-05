@@ -2,101 +2,79 @@
 
 This release's episodes carry PGS subtitles — pre-rendered bitmaps, not
 text — so extract_subs.py's normal `-c:s ass` conversion has nothing to
-parse. pgs.py decodes the bitmaps; this module crops each one, hands the
-crops to DeepSeek-OCR-2 (running in its own venv — see tools/deepseek_ocr/,
-and amv-environment-setup for why it's isolated), and returns
-ass_parser.SceneEvent-shaped events so the rest of the pipeline (clip
-selection, etc.) doesn't need to know the source subtitle track was an
-image format.
+parse. pgs.py decodes the bitmaps; this module crops each one and hands the
+crops to LightOnOCR-2-1B, returning ass_parser.SceneEvent-shaped events so
+the rest of the pipeline (clip selection, etc.) doesn't need to know the
+source subtitle track was an image format.
+
+LightOnOCR-2-1B runs directly in this venv — no isolated environment needed
+(see amv-environment-setup for why that was a real concern with the model
+originally tried here, DeepSeek-OCR-2, and wasn't with this one).
 
 PGS carries no speaker names, so `speaker` is always "".
 """
 
 from __future__ import annotations
 
-import json
-import subprocess
 import sys
+from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageFilter
+import torch
+from PIL import Image
+from transformers import LightOnOcrForConditionalGeneration, LightOnOcrProcessor
 
-from amv.core.config import ROOT
 from amv.subs.ass_parser import SceneEvent
 from amv.subs.pgs import decode_sup
 
-OCR_VENV_PYTHON = ROOT / ".venv-ocr" / "bin" / "python"
-OCR_SCRIPT = ROOT / "tools" / "deepseek_ocr" / "run_ocr.py"
-
-# DeepSeek-OCR-2's crop_mode only skips its document-tiling path (built for
-# multi-page scans, and badly suited to a single wide/thin subtitle strip —
-# it hallucinates fabricated tables on one) when both dimensions are <=768;
-# its own global-view resize+pad already handles arbitrary source sizes, so
-# there's nothing to gain by upscaling small crops — only downscale if a
-# subtitle bitmap happens to exceed this (some run past 1000px wide at
-# 1080p).
-MAX_DIM = 768
+MODEL_NAME = "lightonai/LightOnOCR-2-1B"
+# A subtitle line is a handful of words; capping generation short is what
+# keeps the model from occasionally running on past the real line into
+# invented continuation text (seen at higher caps) rather than stopping.
+MAX_NEW_TOKENS = 48
 
 
-def _crop_path(work_dir: Path, episode: int, index: int) -> Path:
-    return work_dir / f"ep{episode:02d}_{index:04d}.png"
+@lru_cache(maxsize=1)
+def _load_model():
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    dtype = torch.bfloat16 if device == "cuda" else torch.float32
+    print(f"Loading {MODEL_NAME} onto {device}...", file=sys.stderr, flush=True)
+    model = LightOnOcrForConditionalGeneration.from_pretrained(MODEL_NAME, torch_dtype=dtype).to(device)
+    model.eval()
+    processor = LightOnOcrProcessor.from_pretrained(MODEL_NAME)
+    return model, processor, device, dtype
 
 
-def _save_crops(bitmaps, episode: int, work_dir: Path) -> list[dict]:
-    work_dir.mkdir(parents=True, exist_ok=True)
-    manifest = []
-    for i, bmp in enumerate(bitmaps):
-        image = Image.fromarray(bmp.image, "RGBA")
-        # Flatten onto black: OCR wants a flat image, and PGS subtitles are
-        # near-white text meant to sit over video, so black keeps contrast.
-        flat = Image.new("RGB", image.size, (0, 0, 0))
-        flat.paste(image, mask=image.split()[3])
-        # This release's PGS mux dithers anti-aliasing as an alternating-row
-        # comb pattern rather than true alpha gradients (visible as horizontal
-        # "teeth" through glyph strokes at full zoom). A light vertical blur
-        # merges the dither rows back into a smooth edge before OCR sees it.
-        flat = flat.filter(ImageFilter.GaussianBlur(radius=1.2))
-        scale = min(1.0, MAX_DIM / flat.width, MAX_DIM / flat.height)
-        if scale < 1.0:
-            flat = flat.resize((max(1, int(flat.width * scale)), max(1, int(flat.height * scale))), Image.LANCZOS)
-        path = _crop_path(work_dir, episode, i)
-        flat.save(path)
-        manifest.append({"id": path.stem, "path": str(path)})
-    return manifest
+def _flatten(bmp) -> Image.Image:
+    """Composite the RGBA subtitle bitmap onto black.
+
+    Just a flatten — no blur/resize needed. Unlike the model originally
+    tried here, this one handles this release's dithered anti-aliasing (a
+    comb pattern through glyph strokes, visible at full zoom) and arbitrarily
+    wide/thin crops correctly without help; its own processor resizes to fit
+    its longest-edge budget.
+    """
+    image = Image.fromarray(bmp.image, "RGBA")
+    flat = Image.new("RGB", image.size, (0, 0, 0))
+    flat.paste(image, mask=image.split()[3])
+    return flat
 
 
-SETUP_SCRIPT = ROOT / "tools" / "deepseek_ocr" / "setup.sh"
-
-
-def _ensure_ocr_venv() -> None:
-    """Build .venv-ocr on first use instead of making every fresh clone run
-    a manual setup step before OCR extraction works."""
-    if OCR_VENV_PYTHON.exists():
-        return
-    print("OCR venv not found — building it now via tools/deepseek_ocr/setup.sh "
-          "(one-time; downloads torch+transformers into an isolated venv)...", file=sys.stderr, flush=True)
-    subprocess.run(["bash", str(SETUP_SCRIPT)], check=True, cwd=str(ROOT))
-    if not OCR_VENV_PYTHON.exists():
-        raise SystemExit(f"{SETUP_SCRIPT} ran but {OCR_VENV_PYTHON} still doesn't exist.")
-
-
-def _run_ocr(manifest: list[dict], work_dir: Path) -> dict[str, str]:
-    _ensure_ocr_venv()
-    manifest_path = work_dir / "manifest.json"
-    results_path = work_dir / "results.jsonl"
-    manifest_path.write_text(json.dumps({"images": manifest}), encoding="utf-8")
-    subprocess.run(
-        [str(OCR_VENV_PYTHON), str(OCR_SCRIPT), str(manifest_path), str(results_path)],
-        check=True,
-        cwd=str(ROOT),
+def _ocr_one(image: Image.Image) -> str:
+    model, processor, device, dtype = _load_model()
+    conversation = [{"role": "user", "content": [{"type": "image", "image": image}]}]
+    inputs = processor.apply_chat_template(
+        conversation, add_generation_prompt=True, tokenize=True, return_dict=True, return_tensors="pt"
     )
-    results: dict[str, str] = {}
-    for line in results_path.read_text(encoding="utf-8").splitlines():
-        if line.strip():
-            row = json.loads(line)
-            results[row["id"]] = row["text"]
-    return results
+    inputs = {k: (v.to(device=device, dtype=dtype) if v.is_floating_point() else v.to(device))
+              for k, v in inputs.items()}
+    with torch.inference_mode():
+        output_ids = model.generate(**inputs, max_new_tokens=MAX_NEW_TOKENS)
+    text = processor.decode(output_ids[0, inputs["input_ids"].shape[1]:], skip_special_tokens=True)
+    # A subtitle line is one block; a blank line marks where invented
+    # continuation text (if any) starts.
+    return text.split("\n\n")[0].strip()
 
 
 def _is_signage_frame(bmp, threshold: float = 0.35) -> bool:
@@ -110,13 +88,9 @@ def _is_signage_frame(bmp, threshold: float = 0.35) -> bool:
 
 
 def _looks_like_garbage(text: str) -> bool:
-    """Reject OCR output that's a decode loop rather than a real subtitle line.
-
-    Seen on the shortest/widest crops (heavily downscaled to fit the model's
-    768px tiling limit — see MAX_DIM): the model gets stuck repeating one
-    token, e.g. "math, math, math, math, ...". A real subtitle line is short
-    and doesn't hammer the same word.
-    """
+    """Reject OCR output that's a decode loop rather than a real subtitle
+    line. Cheap safety net kept from the previous OCR engine; not something
+    this model has been observed to do, but costs nothing to keep checking."""
     if len(text) > 200:
         return True
     words = text.lower().split()
@@ -127,17 +101,15 @@ def _looks_like_garbage(text: str) -> bool:
     return False
 
 
-def extract_events(sup_path: Path, episode: int, work_dir: Path) -> list[SceneEvent]:
+def extract_events(sup_path: Path, episode: int) -> list[SceneEvent]:
     bitmaps = decode_sup(sup_path)
     if not bitmaps:
         return []
-    manifest = _save_crops(bitmaps, episode, work_dir)
-    print(f"  ep{episode:02d}: OCR'ing {len(manifest)} subtitle bitmaps...", file=sys.stderr, flush=True)
-    texts = _run_ocr(manifest, work_dir)
+    print(f"  ep{episode:02d}: OCR'ing {len(bitmaps)} subtitle bitmaps...", file=sys.stderr, flush=True)
 
     events = []
-    for bmp, entry in zip(bitmaps, manifest):
-        text = texts.get(entry["id"], "").strip()
+    for bmp in bitmaps:
+        text = _ocr_one(_flatten(bmp)).strip()
         if not text or _looks_like_garbage(text):
             continue
         events.append(

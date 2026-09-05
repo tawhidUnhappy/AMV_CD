@@ -53,50 +53,45 @@ before any GPU work:
 All pipeline output (vocal stem, transcript, subtitle index, EDL, QA sheets,
 rendered video) lives under `tmp/` in the project root — delete it to reset.
 
-## A second, isolated venv for PGS subtitle OCR
+## PGS subtitle OCR (same venv — no isolation needed)
 
 Some releases carry PGS/VobSub **bitmap** subtitles instead of text (see
 [amv-clip-selection](../amv-clip-selection/SKILL.md)) — ffmpeg's normal
 `-c:s ass` conversion has nothing to parse, so `amv/subs/pgs.py` decodes the
 bitmaps directly and `amv/subs/pgs_ocr.py` OCRs the crops with
-DeepSeek-OCR-2.
+**LightOnOCR-2-1B** (`lightonai/LightOnOCR-2-1B`, Apache-2.0), loaded and run
+in-process — no subprocess, no second venv.
 
-That model's tested stack pins `transformers==4.46.3`, which conflicts with
-the newer transformers whisperx/pyannote need in the main `.venv`. Rather than
-fight that version conflict, it gets its own venv, `.venv-ocr/`, built by
-`tools/deepseek_ocr/setup.sh` and invoked as a subprocess from
-`amv/subs/pgs_ocr.py` — `_ensure_ocr_venv()` runs that script automatically on
-first use, so nothing needs to be set up by hand. Both venvs live inside the
-project folder; the project stays self-contained to `AMV_CD/` either way.
+An earlier version of this used DeepSeek-OCR-2 in an isolated `.venv-ocr/`
+(that model pinned `transformers==4.46.3`, conflicting with the newer
+transformers whisperx/pyannote need here). LightOnOCR-2-1B needs
+`transformers>=5.0` — already what this project's main `.venv` runs — so that
+whole isolation problem doesn't exist for this model; it's just another
+import. Concretely better too, not merely simpler to install: on the same
+crops, LightOnOCR-2-1B was faster (~2.4 min for a 346-line episode vs ~24 min)
+*and* correct on inputs that broke DeepSeek-OCR-2 (a wide/thin crop that made
+DeepSeek hallucinate a fabricated table came out as a plausible dialogue line
+here), all without the blur/resize preprocessing DeepSeek-OCR-2 needed to
+handle this release's dithered anti-aliasing at all.
 
-**Budget real time for it: OCR is minutes per episode, not free like
-text-track extraction** — a full season is a few hours of GPU time, and that's
-expected. See
+**Budget real time for it anyway: OCR is still real GPU work, not free like
+text-track extraction** — expect single-digit minutes per episode, so a full
+season is well under an hour, not instant. See
 [amv-clip-selection](../amv-clip-selection/SKILL.md#pgs-ocr-takes-real-gpu-time--extract-the-full-series-anyway)
 for why extracting the whole series (not a guessed subset) is worth that time.
 
-DeepSeek-OCR-2 quirks worth knowing if you touch `tools/deepseek_ocr/run_ocr.py`:
+Things worth knowing if you touch `amv/subs/pgs_ocr.py`:
 
-- Load the model straight into bf16 (`torch_dtype=torch.bfloat16,
-  low_cpu_mem_usage=True`) — the default fp32 load followed by
-  `.cuda().to(bfloat16)` transiently doubles VRAM use (~13.5GB for this model)
-  while the fp32 copy still exists, which doesn't fit a 12GB card.
-- `model.infer()` only *returns* the decoded text when called with
-  `eval_mode=True`; otherwise it streams to stdout and returns `None` (it's
-  built for a human watching a demo, not a script capturing output).
-- Its `crop_mode=True` default (needed — the alternative hits an unrelated bug,
-  an `UnboundLocalError` on `param_img` in `deepencoderv2.py`, for any
-  `image_size` other than 768/1024) tiles the image into a multi-page-scan
-  layout whenever either dimension exceeds 768px. A subtitle line is a wide,
-  thin strip, not a document — tiled that way, the model hallucinates
-  fabricated document content (tables, unrelated text) instead of OCR'ing the
-  line. Fix: keep crops within 768x768 (downscale only, never upscale) so
-  `crop_ratio` stays `[1, 1]` and tiling never triggers.
-- Even with the sizing fixed, the model occasionally free-runs into a
-  repeated-token loop on very short/heavily-downscaled crops (e.g. `"math,
-  math, math, ..."`). `pgs_ocr._looks_like_garbage()` rejects output that's
-  implausibly long or dominated by one repeated word rather than trying to
-  prevent every such loop at generation time.
+- Cap `max_new_tokens` short (48 here) for a subtitle-line-length generation.
+  Without a cap the model occasionally runs on past the real line into
+  invented continuation text; the code also truncates at the first blank line
+  as a second line of defense.
+- Load once and cache (`functools.lru_cache` on the loader) — `extract_subs.py`
+  calls into this per episode, and reloading a ~2GB model 24 times would waste
+  most of the time this switch saved.
+- The `_looks_like_garbage()` repeated-word filter carried over from the
+  DeepSeek-OCR-2 version is kept as a cheap safety net even though this model
+  hasn't been observed to loop the way DeepSeek-OCR-2 did.
 
 ## Windows / PowerShell notes
 
