@@ -72,9 +72,60 @@ def add_cudnn_to_ld_library_path() -> None:
                 pass  # a version-suffixed duplicate or an unrelated .so; harmless
 
 
+def fix_ctranslate2_exec_stack() -> None:
+    """Clear the executable-stack ELF flag on ctranslate2's bundled .so.
+
+    The shipped wheel's libctranslate2 was built with `GNU_STACK` marked
+    executable (a harmless build-default relic — nothing in it actually needs
+    an executable stack). Recent kernels/glibc refuse to load that instead of
+    silently granting it, which surfaces as ImportError: "cannot enable
+    executable stack as shared object requires". `execstack`/`paxctl` would
+    normally clear this, but neither is a project dependency and the fix is
+    one bit in the ELF program header, so do it directly and skip needing
+    system packages or sudo. Idempotent: does nothing once already clear, and
+    self-heals a fresh `uv sync` on any machine that hits this.
+    """
+    import struct
+    import sys
+
+    if sys.platform == "win32":
+        return
+
+    from amv.core.config import site_packages
+
+    root = site_packages()
+    if root is None:
+        return
+    libs_dir = root / "ctranslate2.libs"
+    if not libs_dir.is_dir():
+        return
+
+    PT_GNU_STACK = 0x6474E551
+    PF_X = 0x1
+    for so in sorted(libs_dir.glob("libctranslate2*.so*")):
+        try:
+            with open(so, "r+b") as f:
+                header = f.read(64)
+                if header[:4] != b"\x7fELF" or header[4] != 2:  # not 64-bit ELF
+                    continue
+                e_phoff, = struct.unpack_from("<Q", header, 0x20)
+                e_phentsize, = struct.unpack_from("<H", header, 0x36)
+                e_phnum, = struct.unpack_from("<H", header, 0x38)
+                for i in range(e_phnum):
+                    off = e_phoff + i * e_phentsize
+                    f.seek(off)
+                    p_type, p_flags = struct.unpack("<II", f.read(8))
+                    if p_type == PT_GNU_STACK and p_flags & PF_X:
+                        f.seek(off + 4)
+                        f.write(struct.pack("<I", p_flags & ~PF_X))
+        except OSError as exc:
+            print(f"WARNING: could not check/patch {so.name} for exec-stack: {exc}", flush=True)
+
+
 def patch() -> None:
     add_cudnn_to_dll_path()
     add_cudnn_to_ld_library_path()
+    fix_ctranslate2_exec_stack()
 
     import torch.serialization as serialization
 
