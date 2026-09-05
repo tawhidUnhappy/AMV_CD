@@ -38,7 +38,13 @@ before any GPU work:
   before `import ctranslate2` (torch's own cuDNN 9 in `torch/lib` is registered
   automatically; ctranslate2's bundled cuDNN 8 is not). Linux: the equivalent
   via `LD_LIBRARY_PATH` + `ctypes.CDLL(..., RTLD_GLOBAL)` — note Linux gets
-  cuDNN **9** from torch itself (see the pin above), not 8.
+  cuDNN **9** from torch itself (see the pin above), not 8, and ctranslate2's
+  own bundled cuDNN 8 (`ctranslate2.libs/libcudnn-*.so.8.9.7`) is enough to
+  *import* but not enough to actually *run* a model on GPU — that needs the
+  old split-per-component cuDNN 8 files, auto-downloaded into `.cudnn8/` on
+  first use (~700MB, one-time). Full story, plus a second, easily-confused
+  failure mode from Pyannote's VAD needing a *different* cuDNN 8 packaging:
+  see [amv-lyric-sync](../amv-lyric-sync/SKILL.md#linux-vad-needs-care-two-failure-modes-not-one).
 - **ctranslate2's executable-stack ELF flag.** Linux only. The shipped wheel's
   `libctranslate2*.so` has `GNU_STACK` marked executable — a harmless build
   default that recent kernels refuse to load (`cannot enable executable stack

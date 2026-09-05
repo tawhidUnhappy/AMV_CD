@@ -11,6 +11,10 @@ wheels/
 # Virtual environments
 .venv
 
+# Auto-provisioned cuDNN 8 split libraries (Linux, ~1.1GB) -- see
+# amv/audio/torch_compat.py._ensure_cudnn8_libs(). Fetched on first use.
+.cudnn8/
+
 # Local configuration: holds machine-specific media paths. config.example.json
 # is committed as the template.
 config.json

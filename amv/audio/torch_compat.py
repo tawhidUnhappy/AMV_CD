@@ -37,16 +37,84 @@ def add_cudnn_to_dll_path() -> None:
             os.environ["PATH"] = f"{candidate};{os.environ.get('PATH', '')}"
 
 
+def _cudnn8_dir():
+    """Where this project keeps the old split-style cuDNN 8.x .so's on Linux.
+
+    Deliberately outside the uv-managed venv/site-packages: torch's Linux
+    wheel hard-pins `nvidia-cudnn-cu12==9.x` (see pyproject.toml), so pip
+    can't also have 8.x installed as that package without a resolver
+    conflict. These files are fetched straight from the wheel instead and
+    kept in the project folder, entirely outside dependency resolution.
+    """
+    from amv.core.config import ROOT
+
+    return ROOT / ".cudnn8" / "nvidia" / "cudnn" / "lib"
+
+
+def _ensure_cudnn8_libs() -> None:
+    """Download+extract cuDNN 8.x's .so's on first use, if not already staged.
+
+    ctranslate2 4.4's bundled cuDNN (`ctranslate2.libs/libcudnn-*.so.8.9.7`,
+    one monolithic file) is enough for `ctranslate2.get_cuda_device_count()`
+    but NOT for actually running a model on GPU — real inference dlopens the
+    old split-per-component naming (`libcudnn_ops_infer.so.8`,
+    `libcudnn_cnn_infer.so.8`, ...) that torch's own bundled cuDNN 9 (a
+    different, incompatible major version) doesn't provide either. Without
+    these, whisperx's ASR pass dies with `SIGABRT` right after VAD --
+    "Could not load library libcudnn_ops_infer.so.8" -- not a Python
+    exception, so it's easy to mistake for something else failing silently.
+    """
+    import sys
+    import zipfile
+
+    if sys.platform == "win32":
+        return
+    lib_dir = _cudnn8_dir()
+    if lib_dir.is_dir() and any(lib_dir.glob("libcudnn_ops_infer.so*")):
+        return
+
+    import subprocess
+    import tempfile
+    from pathlib import Path
+
+    print("cuDNN 8 split libraries not found — downloading them now "
+          "(one-time, ~700MB; needed for actual GPU inference, not just import)...",
+          flush=True)
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        subprocess.run(
+            [sys.executable, "-m", "pip", "download", "--no-deps", "--resume-retries", "5",
+             "-d", str(tmp_path), "nvidia-cudnn-cu12==8.9.7.29"],
+            check=True,
+        )
+        wheel = next(tmp_path.glob("nvidia_cudnn_cu12-*.whl"))
+        with zipfile.ZipFile(wheel) as zf:
+            zf.extractall(tmp_path / "extracted")
+        lib_dir.parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / "extracted" / "nvidia" / "cudnn" / "lib").rename(lib_dir)
+    print(f"cuDNN 8 libraries staged at {lib_dir}", flush=True)
+
+
 def add_cudnn_to_ld_library_path() -> None:
-    """Linux equivalent of `add_cudnn_to_dll_path`: put pip's cuDNN 8 .so's on
+    """Linux equivalent of `add_cudnn_to_dll_path`: put cuDNN 8 .so's on
     LD_LIBRARY_PATH before ctranslate2 loads.
 
     Unlike Windows' `os.add_dll_directory`, glibc's dynamic linker only ever
     reads LD_LIBRARY_PATH at process start, so mutating `os.environ` here has
     no effect on the *current* process — this only helps a subprocess spawned
-    afterwards. As a same-process fallback, also `dlopen` the .so's directly
-    with RTLD_GLOBAL so already-loaded code (ctranslate2's own dlopen calls)
-    can resolve the symbols.
+    afterwards. As a same-process fallback, also `dlopen` the cuDNN .so's
+    directly with RTLD_GLOBAL so already-loaded code (ctranslate2's own dlopen
+    calls) can resolve the symbols.
+
+    Only cuDNN libraries are force-loaded this way — NOT everything found in
+    these directories. `nvidia/cublas/lib` also contains `libnvblas.so`, a
+    transparent BLAS-call interceptor: `dlopen`ing it with RTLD_GLOBAL (as an
+    earlier version of this function did, globbing every `.so` in each dir)
+    activates that interception process-wide. Without an `nvblas.conf`
+    specifying a CPU BLAS fallback, any BLAS call NVBLAS intercepts segfaults
+    (SIGSEGV, no Python traceback) — this took down whisperx's ASR pass
+    immediately after VAD, downstream of the loop that caused it and giving
+    no indication CUDA/cuDNN was the actual origin.
     """
     import ctypes
     import os
@@ -55,21 +123,23 @@ def add_cudnn_to_ld_library_path() -> None:
     if sys.platform == "win32":
         return
 
+    _ensure_cudnn8_libs()
+
     from amv.core.config import site_packages
 
+    candidates = [_cudnn8_dir()]
     root = site_packages()
-    if root is None:
-        return
-    for rel in ("nvidia/cudnn/lib", "nvidia/cublas/lib", "nvidia/cuda_nvrtc/lib"):
-        candidate = root / rel
+    if root is not None:
+        candidates += [root / "nvidia/cudnn/lib", root / "nvidia/cublas/lib", root / "nvidia/cuda_nvrtc/lib"]
+    for candidate in candidates:
         if not candidate.is_dir():
             continue
         os.environ["LD_LIBRARY_PATH"] = f"{candidate}:{os.environ.get('LD_LIBRARY_PATH', '')}"
-        for so in sorted(candidate.glob("lib*.so*")):
+        for so in sorted(candidate.glob("libcudnn*.so*")):
             try:
                 ctypes.CDLL(str(so), mode=ctypes.RTLD_GLOBAL)
             except OSError:
-                pass  # a version-suffixed duplicate or an unrelated .so; harmless
+                pass  # a version-suffixed duplicate; harmless
 
 
 def fix_ctranslate2_exec_stack() -> None:

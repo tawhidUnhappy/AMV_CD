@@ -1,17 +1,24 @@
-"""Curated lyric plan for 'Black Salt Halo'.
+"""Curated lyric plan for 'Who I Am Anymore'.
 
 Timings come from WhisperX run on the **Demucs-isolated vocal stem**
-(`data/song/transcript_vocals.json`). Transcribing the full mix put the opening
-"I woke up" at 2.71s when it is actually sung at 11.54s, and dropped five whole
-lines ("if i was born from a torn down prayer", "demon lord, is that what i
-wear?", "crimes of smoke in my braided hair", "i don't need mercy, i need a
-sign", "cold and silver, pulling me in").
+(`tmp/song/transcript_vocals.json`), on the combined ~3:35 track (two rips of
+the same song concatenated back-to-back — see assets/song.mp3). Structure:
+verse + chorus, a ~32s instrumental gap, the same verse + chorus again with
+minor lyric variation on the last line, then an outro recap that closes on an
+unresolved line ("I don't even know why") rather than the title hook.
 
 Every phrase is timed, because the cut structure follows the whole song. Only
-phrases with `show=True` are drawn on screen — an AMV puts text on the hooks and
-the striking images, not on every line.
+phrases with `show=True` are drawn on screen — an AMV puts text on the hooks
+and the striking images, not on every line.
 
-Word indices refer to `data/song/words_vocals.txt` (see amv/subs/dump_words.py).
+Two known ASR mishearings, corrected in the display text (not the word
+indices, which still point at the real audio):
+- Word 73 transcribes as "snacks"; the second occurrence of the same line
+  (word 138) transcribes clearly as "scars" — the intended lyric.
+- Word 52-53 transcribes as "Gotta laugh"; the clearer second occurrence
+  (words 206-208) gives the intended "always gotta last?".
+
+Word indices refer to `tmp/song/words_vocals.txt` (see amv/subs/dump_words.py).
 """
 
 from __future__ import annotations
@@ -51,72 +58,66 @@ class TimedPhrase:
         return self.end - self.start
 
 
-# Word 0 is a spurious "Bye." the ASR hallucinated in the intro silence.
 PHRASES: tuple[Phrase, ...] = (
-    # --- Verse 1 -----------------------------------------------------------
-    Phrase(1, 8, ("I WOKE UP", "WITH ASH ON MY TONGUE"), "ASH", show=True, section="intro"),
-    Phrase(9, 14, ("IN YOUR MIRROR", "I LOOK UNSUNG"), "MIRROR"),
-    Phrase(15, 23, ("MY HANDS ARE CLEAN", "BUT THEY DON'T FEEL MINE"), "CLEAN", show=True),
-    Phrase(24, 29, ("LIKE SOMEBODY ELSE", "CROSSED THAT LINE"), "CROSSED", show=True),
-    Phrase(30, 37, ("I KEEP THE PILLS", "IN A SUGAR TIN"), "PILLS"),
-    Phrase(38, 46, ("I SMILE TOO HARD", "WHEN I LET YOU IN"), "SMILE"),
-    Phrase(47, 55, ("IF I WAS BORN", "FROM A TORN DOWN PRAYER"), "PRAYER", show=True),
-    Phrase(56, 62, ("WHY DO I STILL", "LOOK FOR CARE"), "CARE", section="prechorus"),
-    # --- Chorus 1 ----------------------------------------------------------
-    Phrase(63, 67, ("TELL ME", "WHAT YOU SEE"), None, section="chorus"),
-    Phrase(68, 72, ("WHEN YOU", "LOOK AT ME"), None, section="chorus"),
-    Phrase(73, 81, ("A GIRL, A GATE", "OR THE SHAPE OF FATE"), "GATE", show=True, section="chorus"),
-    Phrase(82, 84, ("AM I", "IMMORTAL?"), "IMMORTAL?", section="chorus"),
-    Phrase(85, 87, ("AM I", "IMMORTAL?"), "IMMORTAL?", show=True, section="chorus"),
-    Phrase(88, 91, ("SAY MY NAME", "SLOW"), None, section="chorus"),
-    Phrase(92, 95, ("WATCH THE", "BACK ROOM"), None, section="chorus"),
-    Phrase(96, 98, ("AM I", "IMMORTAL?"), "IMMORTAL?", section="chorus"),
-    Phrase(99, 101, ("AM I", "IMMORTAL?"), "IMMORTAL?", section="chorus"),
-    Phrase(102, 111, ("HOLD ME CLOSE NOW", "I'M THE SOURCE", "OF ALL SINS"), "SINS",
-           show=True, section="chorus"),
+    # --- Verse 1 -------------------------------------------------------
+    Phrase(0, 4, ("LOST IN MY HEAD", "AGAIN"), "AGAIN", show=True, section="intro"),
+    Phrase(5, 13, ("STARING AT THE CEILING", "WHILE THE CLOCK RUNS DOWN")),
+    Phrase(14, 22, ("TRYING TO BLOCK THE NOISE", "INSIDE THIS EMPTY TOWN")),
+    Phrase(23, 31, ("YOU SAID YOU'D STAY FOREVER", "BUT YOU WALKED AWAY"), "AWAY", show=True),
+    Phrase(32, 41, ("NOW I'M DROWNING", "IN THE WORDS THAT I COULDN'T SAY")),
+    Phrase(42, 53, ("AND EVERY MEMORY CUTS LIKE GLASS", "WHY DOES THE PAIN", "GOTTA LAUGH"),
+           section="prechorus"),
+    # --- Chorus 1 --------------------------------------------------------
+    Phrase(54, 62, ("NOW I'M FIGHTING DEMONS", "IN THE DEAD OF NIGHT"), "NIGHT", show=True, section="chorus"),
+    Phrase(63, 70, ("LOSING WHO I WAS", "JUST TO FEEL ALRIGHT"), "ALRIGHT", show=True, section="chorus"),
+    Phrase(71, 80, ("GOT THESE SCARS ON MY CHEST", "TEARS ON THE FLOOR"), "SCARS", show=True, section="chorus"),
+    Phrase(81, 88, ("I DON'T EVEN KNOW", "WHO I AM ANYMORE"), "ANYMORE", show=True, section="chorus"),
     # --- Verse 2 -----------------------------------------------------------
-    Phrase(112, 119, ("YOUR MOUTH SAYS ANGEL", "YOUR EYES SAY RUN"), "RUN", show=True),
-    Phrase(120, 127, ("MY SHADOW MOVES", "WHEN THE ROOM GOES NUMB"), "SHADOW"),
-    Phrase(128, 134, ("I TASTE THE RIVER", "UNDER MY SKIN"), "RIVER"),
-    Phrase(135, 140, ("COLD AND SILVER", "PULLING ME IN"), "SILVER"),
-    Phrase(141, 147, ("DEMON LORD", "IS THAT WHAT I WEAR?"), "DEMON", show=True),
-    Phrase(148, 154, ("CRIMES OF SMOKE", "IN MY BRAIDED HAIR"), "CRIMES"),
-    Phrase(155, 162, ("I DON'T NEED MERCY", "I NEED A SIGN"), "MERCY", show=True),
-    Phrase(163, 169, ("ARE YOU AFRAID", "OF WHAT YOU'LL FIND?"), "AFRAID",
-           show=True, section="prechorus"),
-    # --- Chorus 2 ----------------------------------------------------------
-    Phrase(170, 174, ("TELL ME", "WHAT YOU SEE"), None, section="chorus"),
-    Phrase(175, 179, ("WHEN YOU", "LOOK AT ME"), None, section="chorus"),
-    Phrase(180, 188, ("A GIRL, A GATE", "OR THE SHAPE OF FATE"), "FATE", section="chorus"),
-    Phrase(189, 191, ("AM I", "IMMORTAL?"), "IMMORTAL?", section="chorus"),
-    Phrase(192, 194, ("AM I", "IMMORTAL?"), "IMMORTAL?", section="chorus"),
-    Phrase(195, 198, ("SAY MY NAME", "SLOW"), None, section="chorus"),
-    # ASR hears "bad boom"; the sung line is "back room".
-    Phrase(199, 202, ("WATCH THE", "BACK ROOM"), None, section="chorus"),
-    Phrase(203, 206, ("AM I", "A MONSTER?"), "MONSTER?", show=True, section="chorus"),
-    Phrase(207, 210, ("AM I", "A MONSTER?"), "MONSTER?", section="chorus"),
-    Phrase(211, 220, ("HOLD ME CLOSE NOW", "I'M THE SOURCE", "OF ALL SINS"), "SINS", section="chorus"),
-    # --- Bridge ------------------------------------------------------------
-    Phrase(221, 229, ("IF I WAS MADE", "IN THE MOUTH OF NIGHT"), "NIGHT", show=True, section="bridge"),
-    Phrase(230, 237, ("THEN WHY DO I", "STILL WANT THE LIGHT?"), "LIGHT?", show=True, section="bridge"),
-    Phrase(238, 245, ("PIERCE IN MY THROAT", "PRAYER IN MY TEETH"), "PRAYER", section="bridge"),
-    Phrase(246, 254, ("I SPLIT IN TWO", "WHEN YOU SPEAK TO ME"), "SPLIT", show=True, section="bridge"),
-    # --- Finale ------------------------------------------------------------
-    Phrase(255, 257, ("AM I", "IMMORTAL?"), "IMMORTAL?", section="finale"),
-    Phrase(258, 260, ("AM I", "IMMORTAL?"), "IMMORTAL?", section="finale"),
-    Phrase(261, 264, ("SAY MY NAME", "SLOW"), None, section="finale"),
-    Phrase(265, 268, ("WATCH THE", "BACK ROOM"), None, section="finale"),
-    Phrase(269, 272, ("AM I", "A MONSTER?"), "MONSTER?", section="finale"),
-    Phrase(273, 276, ("AM I", "A MONSTER?"), "MONSTER?", show=True, section="finale"),
-    Phrase(277, 286, ("HOLD ME CLOSE NOW", "I'M THE SOURCE", "OF ALL SINS"), "SINS",
-           show=True, section="finale"),
+    Phrase(89, 95, ("POPPING MEMORIES", "LIKE PILLS, TRYING TO FORGET")),
+    Phrase(96, 101, ("EVERY BROKEN PROMISE", "EVERY DEEP REGRET")),
+    Phrase(102, 110, ("HARD TO TRUST ANYBODY", "WHEN YOU'RE DOWN THIS LOW")),
+    Phrase(111, 118, ("FAKE SMILES ON MY FACE", "BUT NOBODY KNOWS"), "NOBODY", show=True),
+    # --- Chorus 2 ------------------------------------------------------
+    Phrase(119, 127, ("NOW I'M FIGHTING DEMONS", "IN THE DEAD OF NIGHT"), section="chorus"),
+    Phrase(128, 135, ("LOSING WHO I WAS", "JUST TO FEEL ALRIGHT"), section="chorus"),
+    Phrase(136, 145, ("GOT THESE SCARS ON MY CHEST", "TEARS ON THE FLOOR"), section="chorus"),
+    Phrase(146, 153, ("I DON'T EVEN KNOW", "WHO I AM ANYMORE"), "ANYMORE", show=True, section="chorus"),
+    # --- Verse 1 (reprise, ~32s instrumental gap before this) -------------
+    Phrase(154, 158, ("LOST IN MY HEAD", "AGAIN"), section="verse"),
+    Phrase(159, 167, ("STARING AT THE CEILING", "WHILE THE CLOCK RUNS DOWN")),
+    Phrase(168, 176, ("TRY TO BLOCK THE NOISE", "INSIDE THIS EMPTY TOWN")),
+    Phrase(177, 185, ("YOU SAID YOU'D STAY FOREVER", "BUT YOU WALKED AWAY")),
+    Phrase(186, 195, ("NOW I'M DROWNING", "IN THE WORDS THAT I COULDN'T SAY")),
+    Phrase(196, 208, ("AND EVERY MEMORY CUTS LIKE GLASS", "WHY DOES THE PAIN", "ALWAYS GOTTA LAST?"),
+           "LAST?", show=True, section="prechorus"),
+    # --- Chorus 1 (reprise) ------------------------------------------------
+    Phrase(209, 217, ("NOW I'M FIGHTING DEMONS", "IN THE DEAD OF NIGHT"), "DEMONS", show=True, section="chorus"),
+    Phrase(218, 225, ("LOSING WHO I WAS", "JUST TO FEEL ALRIGHT"), section="chorus"),
+    Phrase(226, 235, ("GOT THESE SCARS ON MY CHEST", "TEARS ON THE FLOOR"), section="chorus"),
+    Phrase(236, 243, ("I DON'T EVEN KNOW", "WHO I AM ANYMORE"), "ANYMORE", show=True, section="chorus"),
+    # --- Outro (recap, closes unresolved) -----------------------------
+    Phrase(244, 248, ("YEAH", "WHO I AM ANYMORE"), "ANYMORE", show=True, section="outro"),
+    Phrase(249, 255, ("POPPING MEMORIES", "LIKE PILLS, TRYING TO FORGET"), section="outro"),
+    Phrase(256, 261, ("EVERY BROKEN PROMISE", "EVERY DEEP REGRET"), section="outro"),
+    Phrase(262, 270, ("HARD TO TRUST ANYBODY", "WHEN YOU'RE DOWN THIS LOW"), section="outro"),
+    Phrase(271, 278, ("FAKE SMILES ON MY FACE", "BUT NOBODY KNOWS"), section="outro"),
+    Phrase(279, 287, ("NOW I'M FIGHTING DEMONS", "IN THE DEAD OF NIGHT"), "DEMONS", show=True, section="outro"),
+    Phrase(288, 295, ("LOSING ALL I WANT", "JUST TO FEEL ALRIGHT"), "ALRIGHT", show=True, section="outro"),
+    Phrase(296, 305, ("GOT THESE SCARS ON MY CHEST", "TEARS ON THE FLOOR"), section="outro"),
+    # Ends unresolved -- "why", not "anymore" -- the one line in the whole
+    # song that doesn't land back on the title hook. Worth showing for that.
+    Phrase(306, 310, ("I DON'T EVEN KNOW", "WHY"), "WHY", show=True, section="outro"),
+    # Word 311 ("Yeah.") is a single 0.18s trailing ad-lib ~12s after the
+    # previous line, as the track fades out -- too short to read on screen.
+    Phrase(311, 311, ("YEAH",), section="outro"),
 )
 
 # First word of each phrase, lowercased and stripped, as a guard against the
 # indices silently drifting if the transcript is ever regenerated.
 EXPECTED_FIRST_WORD = {
-    1: "i", 24: "like", 47: "if", 73: "a", 102: "hold", 112: "your",
-    141: "demon", 155: "i", 180: "a", 203: "am", 221: "if", 277: "hold",
+    0: "lost", 23: "you", 42: "and", 54: "now", 63: "losing", 71: "got",
+    81: "i", 89: "popping", 119: "now", 154: "lost", 196: "and", 209: "now",
+    244: "yeah", 279: "now", 306: "i", 311: "yeah",
 }
 
 

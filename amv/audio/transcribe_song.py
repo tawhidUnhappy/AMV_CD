@@ -48,6 +48,14 @@ def main() -> None:
         device,
         compute_type=compute_type,
         language=args.language,
+        # Pyannote's default VAD runs through onnxruntime-gpu, which wants the
+        # old split cuDNN-8 shared libraries (libcudnn_ops_infer.so.8, ...) by
+        # exact filename -- unrelated to, and not satisfied by, either torch's
+        # bundled cuDNN 9 or ctranslate2's own bundled cuDNN 8 (a different,
+        # monolithic .so). Silero VAD is a plain torch model, so it needs
+        # none of that; it's also lighter for a 3-4 minute song than the
+        # accuracy VAD choice matters for.
+        vad_method="silero",
     )
 
     audio = whisperx.load_audio(str(args.audio))
