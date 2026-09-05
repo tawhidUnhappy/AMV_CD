@@ -14,7 +14,13 @@ dependencies = [
     # ctranslate2 4.4 (pinned by whisperx 3.4) imports pkg_resources and links
     # cuDNN 8 — neither is satisfied by torch's own runtime.
     "setuptools<81",
-    "nvidia-cudnn-cu12>=8.9,<9",
+    # Windows only: torch's Windows wheel doesn't declare an nvidia-cudnn-cu12
+    # dependency (it bundles cuDNN 9 in torch/lib instead), so this pin is free
+    # to ask for 8.x for ctranslate2. On Linux, torch's wheel hard-pins
+    # nvidia-cudnn-cu12==9.x itself — pinning <9 here would conflict with that
+    # and make the project unresolvable, so on Linux we take torch's cuDNN 9
+    # and rely on ctranslate2 tolerating it (see amv/audio/torch_compat.py).
+    "nvidia-cudnn-cu12>=8.9,<9; sys_platform == 'win32'",
     "librosa>=0.11.0",
     "demucs>=4.1.0",
 ]
@@ -25,10 +31,8 @@ dev = [
 ]
 
 [tool.uv]
-# Windows-only pipeline. Without this the resolver also solves for Linux, where
-# torch declares a hard nvidia-cudnn-cu12==9.x dep that collides with the
-# cuDNN 8 runtime ctranslate2 4.4 needs here.
-environments = ["sys_platform == 'win32'"]
+# Windows and Linux only (the two platforms this has actually been run on).
+environments = ["sys_platform == 'win32'", "sys_platform == 'linux'"]
 
 [tool.uv.sources]
 torch = { index = "pytorch-cu124" }

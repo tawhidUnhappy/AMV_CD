@@ -37,8 +37,44 @@ def add_cudnn_to_dll_path() -> None:
             os.environ["PATH"] = f"{candidate};{os.environ.get('PATH', '')}"
 
 
+def add_cudnn_to_ld_library_path() -> None:
+    """Linux equivalent of `add_cudnn_to_dll_path`: put pip's cuDNN 8 .so's on
+    LD_LIBRARY_PATH before ctranslate2 loads.
+
+    Unlike Windows' `os.add_dll_directory`, glibc's dynamic linker only ever
+    reads LD_LIBRARY_PATH at process start, so mutating `os.environ` here has
+    no effect on the *current* process — this only helps a subprocess spawned
+    afterwards. As a same-process fallback, also `dlopen` the .so's directly
+    with RTLD_GLOBAL so already-loaded code (ctranslate2's own dlopen calls)
+    can resolve the symbols.
+    """
+    import ctypes
+    import os
+    import sys
+
+    if sys.platform == "win32":
+        return
+
+    from amv.core.config import site_packages
+
+    root = site_packages()
+    if root is None:
+        return
+    for rel in ("nvidia/cudnn/lib", "nvidia/cublas/lib", "nvidia/cuda_nvrtc/lib"):
+        candidate = root / rel
+        if not candidate.is_dir():
+            continue
+        os.environ["LD_LIBRARY_PATH"] = f"{candidate}:{os.environ.get('LD_LIBRARY_PATH', '')}"
+        for so in sorted(candidate.glob("lib*.so*")):
+            try:
+                ctypes.CDLL(str(so), mode=ctypes.RTLD_GLOBAL)
+            except OSError:
+                pass  # a version-suffixed duplicate or an unrelated .so; harmless
+
+
 def patch() -> None:
     add_cudnn_to_dll_path()
+    add_cudnn_to_ld_library_path()
 
     import torch.serialization as serialization
 
