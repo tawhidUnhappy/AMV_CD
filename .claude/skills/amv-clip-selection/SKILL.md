@@ -1,6 +1,6 @@
 ---
 name: amv-clip-selection
-description: Select AMV footage using embedded episode subtitle tracks for story arc, theme match, and a tiny-decode visual probe, while structurally avoiding burned-in text screens and end-of-episode filler. Use when picking which source moments go on which song section (amv/extract_subs.py, amv/select_clips.py), or when clip choices look wrong/off-tone.
+description: Select AMV footage using embedded episode subtitle tracks (text or OCR'd PGS bitmap) for story arc, theme match, and a tiny-decode visual probe, while structurally avoiding burned-in text screens and end-of-episode filler. Use when picking which source moments go on which song section (amv/subs/extract_subs.py, amv/render/select_clips/), or when clip choices look wrong/off-tone.
 ---
 
 # AMV pipeline: clip selection
@@ -11,8 +11,9 @@ Use the episode's **embedded subtitle track** as the index of where things
 happen. A 26-episode season yielded ~7,850 timestamped, text-labelled,
 speaker-labelled moments to search over instead of sampling blind.
 
-(If a release has no text subtitle track, this whole approach is unavailable and
-you fall back to scene detection plus much heavier visual QA.)
+(If a release has no subtitle track at all — text or bitmap — this whole
+approach is unavailable and you fall back to scene detection plus much
+heavier visual QA.)
 
 ## Subtitle extraction traps
 
@@ -25,8 +26,23 @@ you fall back to scene detection plus much heavier visual QA.)
 - Some releases **burn typesetting into the video** (on-screen text, phone or
   computer screens). No subtitle data marks these. See "Structural avoidance"
   below.
-- Prefer an English *text* track (`ass`/`subrip`); bitmap tracks (PGS/VobSub)
-  carry no parsable text.
+- Prefer an English *text* track (`ass`/`subrip`) when one exists — `subtitle_stream_index()`
+  in `amv/core/ffmpeg_tools.py` picks it automatically.
+- **A bitmap track (PGS/VobSub) is not a dead end — OCR it.** `amv/subs/pgs.py`
+  decodes the bitmaps and `amv/subs/pgs_ocr.py` runs them through
+  DeepSeek-OCR-2 (see [amv-environment-setup](../amv-environment-setup/SKILL.md)
+  for why that model needs its own venv), producing the same timestamped-event
+  shape `extract_subs.py` builds from a text track — clip selection downstream
+  doesn't need to know which source it came from. Two things this needed that
+  a text track wouldn't:
+  - **Multiple PGS tracks per episode is normal** — a small "signs only" one
+    alongside the full dialogue track. Picking by decoded byte size
+    (`NUMBER_OF_BYTES` tag) reliably finds the real one; one release here had
+    a 228KB signs track (19 subtitle events for a 23-minute episode) next to a
+    10.7MB dialogue track (346 events) with an identical language tag.
+  - PGS carries **no speaker names** — every OCR'd event has `speaker=""`, so
+    speaker-targeted selection (§ below) only works for releases with a text
+    track.
 
 ## What works
 

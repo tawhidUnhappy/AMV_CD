@@ -67,31 +67,57 @@ def probe_duration(path: Path) -> float:
     return max(0.08, float(value))
 
 
-def subtitle_stream_index(path: Path) -> int:
-    """Index of the English text-subtitle stream, relative to subtitle streams.
+TEXT_SUBTITLE_CODECS = {"ass", "ssa", "subrip", "srt", "mov_text", "webvtt"}
+BITMAP_SUBTITLE_CODECS = {"hdmv_pgs_subtitle", "dvd_subtitle", "dvb_subtitle"}
 
-    ffmpeg's `-map 0:s:N` numbering is per-type, so this returns N (not the
-    absolute stream index). Prefers an English ass/subrip track; falls back to
-    the first text track.
-    """
-    data = probe_json(path, "stream=index,codec_type,codec_name:stream_tags=language")
-    text_codecs = {"ass", "ssa", "subrip", "srt", "mov_text", "webvtt"}
-    subtitle_position = 0
-    fallback: int | None = None
+
+def subtitle_streams(path: Path) -> list[dict]:
+    """All subtitle streams, each tagged with its per-type `position` (what
+    `-map 0:s:N` expects) alongside ffprobe's fields."""
+    data = probe_json(path, "stream=index,codec_type,codec_name:stream_tags=language,NUMBER_OF_BYTES")
+    streams = []
+    position = 0
     for stream in data.get("streams", []):
         if stream.get("codec_type") != "subtitle":
             continue
+        stream["position"] = position
+        streams.append(stream)
+        position += 1
+    return streams
+
+
+def subtitle_stream_index(path: Path) -> tuple[int, str]:
+    """(position, codec_name) of the best subtitle stream to use.
+
+    ffmpeg's `-map 0:s:N` numbering is per-type, so the returned position is N
+    (not the absolute stream index). Prefers an English text track. Falls back
+    to a bitmap (PGS/VobSub) track when that's all there is — some releases
+    ship multiple PGS tracks (e.g. a small "signs only" one alongside the full
+    dialogue track), so among bitmap tracks pick the largest by encoded byte
+    size, which is reliably the full-dialogue one (see amv-clip-selection).
+    """
+    streams = subtitle_streams(path)
+    text_fallback: int | None = None
+    best_bitmap: tuple[int, int] | None = None  # (position, size)
+    for stream in streams:
         codec = stream.get("codec_name", "")
         language = (stream.get("tags", {}) or {}).get("language", "").lower()
-        if codec in text_codecs:
-            if fallback is None:
-                fallback = subtitle_position
+        position = stream["position"]
+        if codec in TEXT_SUBTITLE_CODECS:
+            if text_fallback is None:
+                text_fallback = position
             if language in {"eng", "en"}:
-                return subtitle_position
-        subtitle_position += 1
-    if fallback is None:
-        raise ValueError(f"No text subtitle stream found in {path}")
-    return fallback
+                return position, codec
+        elif codec in BITMAP_SUBTITLE_CODECS:
+            size = int((stream.get("tags", {}) or {}).get("NUMBER_OF_BYTES", 0) or 0)
+            if best_bitmap is None or size > best_bitmap[1]:
+                best_bitmap = (position, size)
+    if text_fallback is not None:
+        return text_fallback, next(s["codec_name"] for s in streams if s["position"] == text_fallback)
+    if best_bitmap is not None:
+        position = best_bitmap[0]
+        return position, next(s["codec_name"] for s in streams if s["position"] == position)
+    raise ValueError(f"No subtitle stream found in {path}")
 
 
 def available_encoders() -> set[str]:

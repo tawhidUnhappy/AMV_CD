@@ -17,8 +17,9 @@ from dataclasses import asdict
 from pathlib import Path
 
 from amv.core import config
-from amv.core.ffmpeg_tools import probe_duration, run, subtitle_stream_index
+from amv.core.ffmpeg_tools import BITMAP_SUBTITLE_CODECS, probe_duration, run, subtitle_stream_index
 from amv.subs.ass_parser import episode_number, is_dialogue, parse_ass
+from amv.subs.pgs_ocr import extract_events as extract_pgs_events
 
 ROOT = config.ROOT
 DEFAULT_SUBS_DIR = ROOT / "tmp" / "subs"
@@ -60,14 +61,30 @@ def main() -> None:
     for path in episodes:
         number = episode_number(path, pattern)
         assert number is not None
-        ass_path = args.subs_dir / f"ep{number:02d}.ass"
-        if args.overwrite or not ass_path.exists():
-            stream = subtitle_stream_index(path)
-            run(
-                ["ffmpeg", "-hide_banner", "-y", "-i", str(path), "-map", f"0:s:{stream}", "-c:s", "ass", str(ass_path)],
-                print_command=False,
-            )
-        events = parse_ass(ass_path, number)
+        stream, codec = subtitle_stream_index(path)
+        if codec in BITMAP_SUBTITLE_CODECS:
+            # Bitmap subtitles (PGS/VobSub) have no text for ffmpeg to convert
+            # to ASS — decode + OCR instead. See amv/subs/pgs_ocr.py.
+            sup_path = args.subs_dir / f"ep{number:02d}.sup"
+            if args.overwrite or not sup_path.exists():
+                run(
+                    ["ffmpeg", "-hide_banner", "-y", "-i", str(path), "-map", f"0:s:{stream}", "-c:s", "copy",
+                     str(sup_path)],
+                    print_command=False,
+                )
+            ocr_work_dir = args.subs_dir / "ocr" / f"ep{number:02d}"
+            events = extract_pgs_events(sup_path, number, ocr_work_dir)
+            subs_source = str(sup_path)
+        else:
+            ass_path = args.subs_dir / f"ep{number:02d}.ass"
+            if args.overwrite or not ass_path.exists():
+                run(
+                    ["ffmpeg", "-hide_banner", "-y", "-i", str(path), "-map", f"0:s:{stream}", "-c:s", "ass",
+                     str(ass_path)],
+                    print_command=False,
+                )
+            events = parse_ass(ass_path, number)
+            subs_source = str(ass_path)
         dialogue = [e for e in events if is_dialogue(e)]
         # Sign/note events mark on-screen typesetting — diary screens, captions.
         # This release burns that typesetting in, so those spans are unusable as
@@ -79,7 +96,7 @@ def main() -> None:
                 "episode": number,
                 "file": str(path),
                 "duration": duration,
-                "ass": str(ass_path),
+                "subs_source": subs_source,
                 "event_count": len(events),
                 "dialogue_count": len(dialogue),
                 "events": [asdict(e) for e in dialogue],

@@ -20,26 +20,77 @@ Likewise: locate site-packages via `sysconfig`, not a literal `.venv/Lib/...`,
 and look up system fonts through a per-platform directory list rather than
 `C:/Windows/Fonts`.
 
-## Environment (Windows + NVIDIA)
+## Environment (Windows + Linux, NVIDIA)
 
 `uv init`, then these pins — each one blocks the pipeline if wrong:
 
 | Pin | Reason |
 | --- | --- |
 | `setuptools<81` | ctranslate2 4.4 imports `pkg_resources`, removed in setuptools 81 |
-| `nvidia-cudnn-cu12>=8.9,<9` | ctranslate2 4.4 links cuDNN **8**; torch cu124 bundles only cuDNN 9 |
+| `nvidia-cudnn-cu12>=8.9,<9 ; sys_platform == 'win32'` | ctranslate2 4.4 links cuDNN **8**, which only the Windows torch wheel leaves room for — the Linux wheel hard-pins cuDNN 9 itself, so this pin is Windows-only or the dependency set is unresolvable |
 | torch from `https://download.pytorch.org/whl/cu124` | GPU WhisperX/Demucs |
-| `[tool.uv] environments = ["sys_platform == 'win32'"]` | Otherwise the resolver also solves Linux, where torch hard-pins cudnn 9 and conflicts with the cuDNN 8 above |
+| `[tool.uv] environments = ["sys_platform == 'win32'", "sys_platform == 'linux'"]` | Restrict the resolver to the two platforms this is actually tested on |
 
-Two runtime shims are required (`amv/torch_compat.py`):
+Runtime shims live in `amv/audio/torch_compat.py`, called once via `patch()`
+before any GPU work:
 
-- **cuDNN 8 on the DLL path.** `os.add_dll_directory(<site-packages>/nvidia/cudnn/bin)`
-  *before* `import ctranslate2`. torch's own cuDNN 9 lives in `torch/lib` and is
-  registered automatically; ctranslate2's is not.
+- **cuDNN on the shared-library path.** Windows: `os.add_dll_directory(<site-packages>/nvidia/cudnn/bin)`
+  before `import ctranslate2` (torch's own cuDNN 9 in `torch/lib` is registered
+  automatically; ctranslate2's bundled cuDNN 8 is not). Linux: the equivalent
+  via `LD_LIBRARY_PATH` + `ctypes.CDLL(..., RTLD_GLOBAL)` — note Linux gets
+  cuDNN **9** from torch itself (see the pin above), not 8.
+- **ctranslate2's executable-stack ELF flag.** Linux only. The shipped wheel's
+  `libctranslate2*.so` has `GNU_STACK` marked executable — a harmless build
+  default that recent kernels refuse to load (`cannot enable executable stack
+  as shared object requires`). `patch()` clears that one flag in-place before
+  the import; self-healing, so a fresh `uv sync` on a new machine needs no
+  manual fix.
 - **torch 2.6 `weights_only` flip.** The pyannote VAD checkpoint fails the safe
   unpickler. Retry with `weights_only=False` **and `args[0].seek(0)` first** —
   lightning passes an open file handle that the failed attempt leaves consumed.
   Do not chase the allowlist; the required globals differ per release.
+
+All pipeline output (vocal stem, transcript, subtitle index, EDL, QA sheets,
+rendered video) lives under `tmp/` in the project root — delete it to reset.
+
+## A second, isolated venv for PGS subtitle OCR
+
+Some releases carry PGS/VobSub **bitmap** subtitles instead of text (see
+[amv-clip-selection](../amv-clip-selection/SKILL.md)) — ffmpeg's normal
+`-c:s ass` conversion has nothing to parse, so `amv/subs/pgs.py` decodes the
+bitmaps directly and `amv/subs/pgs_ocr.py` OCRs the crops with
+DeepSeek-OCR-2.
+
+That model's tested stack pins `transformers==4.46.3`, which conflicts with
+the newer transformers whisperx/pyannote need in the main `.venv`. Rather than
+fight that version conflict, it gets its own venv, `.venv-ocr/`, built by
+`tools/deepseek_ocr/setup.sh` and invoked as a subprocess from
+`amv/subs/pgs_ocr.py` — `_ensure_ocr_venv()` runs that script automatically on
+first use, so nothing needs to be set up by hand. Both venvs live inside the
+project folder; the project stays self-contained to `AMV_CD/` either way.
+
+DeepSeek-OCR-2 quirks worth knowing if you touch `tools/deepseek_ocr/run_ocr.py`:
+
+- Load the model straight into bf16 (`torch_dtype=torch.bfloat16,
+  low_cpu_mem_usage=True`) — the default fp32 load followed by
+  `.cuda().to(bfloat16)` transiently doubles VRAM use (~13.5GB for this model)
+  while the fp32 copy still exists, which doesn't fit a 12GB card.
+- `model.infer()` only *returns* the decoded text when called with
+  `eval_mode=True`; otherwise it streams to stdout and returns `None` (it's
+  built for a human watching a demo, not a script capturing output).
+- Its `crop_mode=True` default (needed — the alternative hits an unrelated bug,
+  an `UnboundLocalError` on `param_img` in `deepencoderv2.py`, for any
+  `image_size` other than 768/1024) tiles the image into a multi-page-scan
+  layout whenever either dimension exceeds 768px. A subtitle line is a wide,
+  thin strip, not a document — tiled that way, the model hallucinates
+  fabricated document content (tables, unrelated text) instead of OCR'ing the
+  line. Fix: keep crops within 768x768 (downscale only, never upscale) so
+  `crop_ratio` stays `[1, 1]` and tiling never triggers.
+- Even with the sizing fixed, the model occasionally free-runs into a
+  repeated-token loop on very short/heavily-downscaled crops (e.g. `"math,
+  math, math, ..."`). `pgs_ocr._looks_like_garbage()` rejects output that's
+  implausibly long or dominated by one repeated word rather than trying to
+  prevent every such loop at generation time.
 
 ## Windows / PowerShell notes
 
