@@ -44,6 +44,24 @@ heavier visual QA.)
     speaker-targeted selection (§ below) only works for releases with a text
     track.
 
+### PGS OCR is expensive — don't run it on the whole series
+
+A text track costs nothing to extract (plain ffmpeg conversion, all episodes,
+always). **OCR is a GPU model pass per subtitle line** — realistically several
+minutes *per episode* (~1-2s/line x ~300+ lines), not a few seconds. Running
+`extract_subs` with no filter on a 24-episode, PGS-subtitled season means
+hours of GPU time to index episodes most of which will never be selected —
+this project burned ~45 minutes OCR'ing 5 episodes before catching that it
+should never have started an unfiltered whole-series run in the first place.
+
+Decide the **story arc first** (which episode range each song section should
+draw from — see "What works" below), *then* run `extract_subs.py --episodes`
+scoped to only those episodes (or a small superset for slack). The index
+merges across runs, so topping up a couple more episodes later doesn't
+re-OCR what's already indexed. `extract_subs.py` prints a loud warning and
+estimate if it's about to OCR more than a handful of episodes with no
+`--episodes` filter — don't override that without a specific reason.
+
 ## What works
 
 - **Story arc**: map each song section to an episode range so the edit walks the

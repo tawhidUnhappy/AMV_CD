@@ -69,6 +69,11 @@ fight that version conflict, it gets its own venv, `.venv-ocr/`, built by
 first use, so nothing needs to be set up by hand. Both venvs live inside the
 project folder; the project stays self-contained to `AMV_CD/` either way.
 
+**Before running it: OCR is minutes per episode, not free like text-track
+extraction.** Always pick episodes with `extract_subs.py --episodes` instead
+of OCR'ing a whole PGS-subtitled series — see
+[amv-clip-selection](../amv-clip-selection/SKILL.md#pgs-ocr-is-expensive--dont-run-it-on-the-whole-series).
+
 DeepSeek-OCR-2 quirks worth knowing if you touch `tools/deepseek_ocr/run_ocr.py`:
 
 - Load the model straight into bf16 (`torch_dtype=torch.bfloat16,
