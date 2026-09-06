@@ -7,9 +7,10 @@ verse + chorus, a ~32s instrumental gap, the same verse + chorus again with
 minor lyric variation on the last line, then an outro recap that closes on an
 unresolved line ("I don't even know why") rather than the title hook.
 
-Every phrase is timed, because the cut structure follows the whole song. Only
-phrases with `show=True` are drawn on screen — an AMV puts text on the hooks
-and the striking images, not on every line.
+Every phrase is timed, because the cut structure follows the whole song, and
+every phrase is also displayed: this is a subtitle track, not a selective
+lyric-video treatment. Each phrase is a single line so it sits on one row at
+the bottom of frame.
 
 Two known ASR mishearings, corrected in the display text (not the word
 indices, which still point at the real audio):
@@ -39,7 +40,10 @@ class Phrase:
     last_word: int
     lines: tuple[str, ...]
     emphasis: str | None = None
-    show: bool = False
+    # Every line is subtitled now, so this defaults on. It stays as a field
+    # because the cut structure still follows phrases that are never displayed
+    # in other configurations.
+    show: bool = True
     section: str = "verse"
 
 
@@ -59,56 +63,43 @@ class TimedPhrase:
 
 
 PHRASES: tuple[Phrase, ...] = (
-    # --- Verse 1 -------------------------------------------------------
-    Phrase(0, 4, ("LOST IN MY HEAD", "AGAIN"), "AGAIN", show=True, section="intro"),
-    Phrase(5, 13, ("STARING AT THE CEILING", "WHILE THE CLOCK RUNS DOWN")),
-    Phrase(14, 22, ("TRYING TO BLOCK THE NOISE", "INSIDE THIS EMPTY TOWN")),
-    Phrase(23, 31, ("YOU SAID YOU'D STAY FOREVER", "BUT YOU WALKED AWAY"), "AWAY", show=True),
-    Phrase(32, 41, ("NOW I'M DROWNING", "IN THE WORDS THAT I COULDN'T SAY")),
-    Phrase(42, 53, ("AND EVERY MEMORY CUTS LIKE GLASS", "WHY DOES THE PAIN", "GOTTA LAUGH"),
-           section="prechorus"),
-    # --- Chorus 1 --------------------------------------------------------
-    Phrase(54, 62, ("NOW I'M FIGHTING DEMONS", "IN THE DEAD OF NIGHT"), "NIGHT", show=True, section="chorus"),
-    Phrase(63, 70, ("LOSING WHO I WAS", "JUST TO FEEL ALRIGHT"), "ALRIGHT", show=True, section="chorus"),
-    Phrase(71, 80, ("GOT THESE SCARS ON MY CHEST", "TEARS ON THE FLOOR"), "SCARS", show=True, section="chorus"),
-    Phrase(81, 88, ("I DON'T EVEN KNOW", "WHO I AM ANYMORE"), "ANYMORE", show=True, section="chorus"),
-    # --- Verse 2 -----------------------------------------------------------
-    Phrase(89, 95, ("POPPING MEMORIES", "LIKE PILLS, TRYING TO FORGET")),
-    Phrase(96, 101, ("EVERY BROKEN PROMISE", "EVERY DEEP REGRET")),
-    Phrase(102, 110, ("HARD TO TRUST ANYBODY", "WHEN YOU'RE DOWN THIS LOW")),
-    Phrase(111, 118, ("FAKE SMILES ON MY FACE", "BUT NOBODY KNOWS"), "NOBODY", show=True),
-    # --- Chorus 2 ------------------------------------------------------
-    Phrase(119, 127, ("NOW I'M FIGHTING DEMONS", "IN THE DEAD OF NIGHT"), section="chorus"),
-    Phrase(128, 135, ("LOSING WHO I WAS", "JUST TO FEEL ALRIGHT"), section="chorus"),
-    Phrase(136, 145, ("GOT THESE SCARS ON MY CHEST", "TEARS ON THE FLOOR"), section="chorus"),
-    Phrase(146, 153, ("I DON'T EVEN KNOW", "WHO I AM ANYMORE"), "ANYMORE", show=True, section="chorus"),
-    # --- Verse 1 (reprise, ~32s instrumental gap before this) -------------
-    Phrase(154, 158, ("LOST IN MY HEAD", "AGAIN"), section="verse"),
-    Phrase(159, 167, ("STARING AT THE CEILING", "WHILE THE CLOCK RUNS DOWN")),
-    Phrase(168, 176, ("TRY TO BLOCK THE NOISE", "INSIDE THIS EMPTY TOWN")),
-    Phrase(177, 185, ("YOU SAID YOU'D STAY FOREVER", "BUT YOU WALKED AWAY")),
-    Phrase(186, 195, ("NOW I'M DROWNING", "IN THE WORDS THAT I COULDN'T SAY")),
-    Phrase(196, 208, ("AND EVERY MEMORY CUTS LIKE GLASS", "WHY DOES THE PAIN", "ALWAYS GOTTA LAST?"),
-           "LAST?", show=True, section="prechorus"),
-    # --- Chorus 1 (reprise) ------------------------------------------------
-    Phrase(209, 217, ("NOW I'M FIGHTING DEMONS", "IN THE DEAD OF NIGHT"), "DEMONS", show=True, section="chorus"),
-    Phrase(218, 225, ("LOSING WHO I WAS", "JUST TO FEEL ALRIGHT"), section="chorus"),
-    Phrase(226, 235, ("GOT THESE SCARS ON MY CHEST", "TEARS ON THE FLOOR"), section="chorus"),
-    Phrase(236, 243, ("I DON'T EVEN KNOW", "WHO I AM ANYMORE"), "ANYMORE", show=True, section="chorus"),
-    # --- Outro (recap, closes unresolved) -----------------------------
-    Phrase(244, 248, ("YEAH", "WHO I AM ANYMORE"), "ANYMORE", show=True, section="outro"),
-    Phrase(249, 255, ("POPPING MEMORIES", "LIKE PILLS, TRYING TO FORGET"), section="outro"),
-    Phrase(256, 261, ("EVERY BROKEN PROMISE", "EVERY DEEP REGRET"), section="outro"),
-    Phrase(262, 270, ("HARD TO TRUST ANYBODY", "WHEN YOU'RE DOWN THIS LOW"), section="outro"),
-    Phrase(271, 278, ("FAKE SMILES ON MY FACE", "BUT NOBODY KNOWS"), section="outro"),
-    Phrase(279, 287, ("NOW I'M FIGHTING DEMONS", "IN THE DEAD OF NIGHT"), "DEMONS", show=True, section="outro"),
-    Phrase(288, 295, ("LOSING ALL I WANT", "JUST TO FEEL ALRIGHT"), "ALRIGHT", show=True, section="outro"),
-    Phrase(296, 305, ("GOT THESE SCARS ON MY CHEST", "TEARS ON THE FLOOR"), section="outro"),
-    # Ends unresolved -- "why", not "anymore" -- the one line in the whole
-    # song that doesn't land back on the title hook. Worth showing for that.
-    Phrase(306, 310, ("I DON'T EVEN KNOW", "WHY"), "WHY", show=True, section="outro"),
-    # Word 311 ("Yeah.") is a single 0.18s trailing ad-lib ~12s after the
-    # previous line, as the track fades out -- too short to read on screen.
+    Phrase(0, 4, ("LOST IN MY HEAD AGAIN",), section="intro"),
+    Phrase(5, 13, ("STARING AT THE CEILING WHILE THE CLOCK RUNS DOWN",), section="verse"),
+    Phrase(14, 22, ("TRYING TO BLOCK THE NOISE INSIDE THIS EMPTY TOWN",), section="verse"),
+    Phrase(23, 31, ("YOU SAID YOU'D STAY FOREVER BUT YOU WALKED AWAY",), section="verse"),
+    Phrase(32, 41, ("NOW I'M DROWNING IN THE WORDS THAT I COULDN'T SAY",), section="verse"),
+    Phrase(42, 53, ("AND EVERY MEMORY CUTS LIKE GLASS WHY DOES THE PAIN GOTTA LAUGH",), section="prechorus"),
+    Phrase(54, 62, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus"),
+    Phrase(63, 70, ("LOSING WHO I WAS JUST TO FEEL ALRIGHT",), section="chorus"),
+    Phrase(71, 80, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="chorus"),
+    Phrase(81, 88, ("I DON'T EVEN KNOW WHO I AM ANYMORE",), section="chorus"),
+    Phrase(89, 95, ("POPPING MEMORIES LIKE PILLS, TRYING TO FORGET",), section="verse"),
+    Phrase(96, 101, ("EVERY BROKEN PROMISE EVERY DEEP REGRET",), section="verse"),
+    Phrase(102, 110, ("HARD TO TRUST ANYBODY WHEN YOU'RE DOWN THIS LOW",), section="verse"),
+    Phrase(111, 118, ("FAKE SMILES ON MY FACE BUT NOBODY KNOWS",), section="verse"),
+    Phrase(119, 127, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus"),
+    Phrase(128, 135, ("LOSING WHO I WAS JUST TO FEEL ALRIGHT",), section="chorus"),
+    Phrase(136, 145, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="chorus"),
+    Phrase(146, 153, ("I DON'T EVEN KNOW WHO I AM ANYMORE",), section="chorus"),
+    Phrase(154, 158, ("LOST IN MY HEAD AGAIN",), section="verse"),
+    Phrase(159, 167, ("STARING AT THE CEILING WHILE THE CLOCK RUNS DOWN",), section="verse"),
+    Phrase(168, 176, ("TRY TO BLOCK THE NOISE INSIDE THIS EMPTY TOWN",), section="verse"),
+    Phrase(177, 185, ("YOU SAID YOU'D STAY FOREVER BUT YOU WALKED AWAY",), section="verse"),
+    Phrase(186, 195, ("NOW I'M DROWNING IN THE WORDS THAT I COULDN'T SAY",), section="verse"),
+    Phrase(196, 208, ("AND EVERY MEMORY CUTS LIKE GLASS WHY DOES THE PAIN ALWAYS GOTTA LAST?",), section="prechorus"),
+    Phrase(209, 217, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus"),
+    Phrase(218, 225, ("LOSING WHO I WAS JUST TO FEEL ALRIGHT",), section="chorus"),
+    Phrase(226, 235, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="chorus"),
+    Phrase(236, 243, ("I DON'T EVEN KNOW WHO I AM ANYMORE",), section="chorus"),
+    Phrase(244, 248, ("YEAH WHO I AM ANYMORE",), section="outro"),
+    Phrase(249, 255, ("POPPING MEMORIES LIKE PILLS, TRYING TO FORGET",), section="outro"),
+    Phrase(256, 261, ("EVERY BROKEN PROMISE EVERY DEEP REGRET",), section="outro"),
+    Phrase(262, 270, ("HARD TO TRUST ANYBODY WHEN YOU'RE DOWN THIS LOW",), section="outro"),
+    Phrase(271, 278, ("FAKE SMILES ON MY FACE BUT NOBODY KNOWS",), section="outro"),
+    Phrase(279, 287, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="outro"),
+    Phrase(288, 295, ("LOSING ALL I WANT JUST TO FEEL ALRIGHT",), section="outro"),
+    Phrase(296, 305, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="outro"),
+    Phrase(306, 310, ("I DON'T EVEN KNOW WHY",), section="outro"),
     Phrase(311, 311, ("YEAH",), section="outro"),
 )
 

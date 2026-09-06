@@ -32,11 +32,18 @@ EPISODE_STRIDE = 2000.0
 # going backwards only wins when the forward alternatives are genuinely poor,
 # which is the intended escape hatch rather than the common case.
 BACKWARD_PENALTY = 30.0
-FORWARD_BONUS = 12.0
+# Raised alongside a much tighter decay below: consecutive shots pulled from
+# the same scene cut together smoothly, while two equally good shots from
+# opposite ends of the season cut like a channel change no matter how well
+# each one scores on its own. Per amv-grade-and-transitions the cuts
+# themselves stay hard and on the beat — that is what gives an AMV its drive —
+# so the smoothness has to come from *placement*, not from softening the cut.
+FORWARD_BONUS = 20.0
 # Seconds of forward travel at which the "same scene" bonus has decayed to
-# ~1/e. Kept gentle so advancing to the next episode still earns real credit;
-# a tight decay only rewarded micro-hops and left long jumps unweighted.
-NEAR_SCALE = 900.0
+# ~1/e. At 900 this was loose enough that a jump halfway across a season
+# scored nearly as well as staying in the scene; 250 is roughly a scene's
+# length, so neighbouring moments win decisively.
+NEAR_SCALE = 250.0
 
 
 def story_position(cand: Candidate) -> float:
