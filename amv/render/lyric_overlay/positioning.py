@@ -82,9 +82,17 @@ def clearest_band(slots: list[dict]) -> str:
     aggregates away. Skin mass is summed over all covered shots, so the chosen
     band is the one that stays clear for the whole time the block is up.
 
-    Biased toward the bottom: moving the text is more disruptive than a
-    partial overlap, so the top is only chosen when the bottom is clearly
-    the busier band.
+    Heavily biased toward the bottom. At a 1.6x ratio this split roughly
+    50/50 across the song, which is the original "text appears anywhere"
+    complaint with two anchors instead of six — the eye still has to re-find
+    the words on half the blocks. The skin mask is the reason: it counts
+    hands, necks, arms and chests, which sit low in frame constantly, so
+    "bottom is busier" fires far more often than "bottom covers a face".
+
+    Bottom-third text at y=940 sits below face level in almost all anime
+    framing, and the 3.5px outline keeps it readable over a torso anyway. So
+    the top is now reserved for the rare shot where the bottom is
+    overwhelmingly occupied rather than merely busier.
     """
     import numpy as np
 
@@ -95,7 +103,7 @@ def clearest_band(slots: list[dict]) -> str:
         total = total + row_skin(slot)
     third = PROBE_H // 3
     top, bottom = float(total[:third].sum()), float(total[-third:].sum())
-    return "top" if bottom > top * 1.6 else "bottom"
+    return "top" if bottom > top * 4.0 else "bottom"
 
 
 def choose_positions(phrases: list, edl: Path | None = None) -> list[Position]:
