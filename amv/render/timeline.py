@@ -13,32 +13,38 @@ from dataclasses import dataclass
 
 from amv.audio.lyrics import song_duration, timed_phrases, validate
 
-# Per-section story arc. Mushoku Tensei S1 builds chronologically, so walking
-# the episode range forward across the song gives the AMV a shape instead of
-# a uniform shuffle.
-#
-# "Who I Am Anymore" has one verse+prechorus+chorus, sung twice (a ~32s
-# instrumental gap between the two passes), then an outro recap. Phrases
-# after 60s auto-relabel verse/prechorus/chorus -> verse2/prechorus2/chorus2
-# (see describe() below) — the second AND third (reprise) occurrence both
-# land there, so those episode ranges get reused for the reprise rather than
-# advancing further; a minor loss of arc granularity, not a bug.
+# Per-section story arc, deliberately curated against Mushoku Tensei S1's
+# real chronology rather than an even split of 24 episodes -- see
+# amv-clip-selection for the narrative reasoning behind each range. Rip A
+# (unsuffixed sections) plays first and closes unresolved ("...why"); rip B
+# ("_2" sections) plays second and closes on the title hook. The arc walks
+# forward across BOTH passes, so the story keeps advancing into rip B rather
+# than restarting -- see amv/audio/lyrics.py for why the song itself repeats.
 SECTION_EPISODES: dict[str, tuple[int, int]] = {
-    "intro": (1, 2),
-    "verse": (1, 3),
-    "prechorus": (2, 5),
-    "chorus": (4, 7),
-    "verse2": (7, 11),
-    "prechorus2": (10, 13),
-    "chorus2": (12, 16),
-    "outro": (22, 24),
-    # One entry per real instrumental break, walking the arc forward with the
-    # song. There are four: before the first line, between chorus 1 and
-    # verse 2, the long reprise gap, and a short one near the end.
-    "break1": (1, 2),
-    "break2": (6, 8),
-    "break3": (14, 20),
-    "break4": (21, 23),
+    # Rip A: birth, early identity confusion, first loss and isolation.
+    "intro": (1, 1),           # birth/rebirth -- "lost in my head again"
+    "verse1": (1, 3),          # first days in the new life
+    "prechorus": (2, 4),
+    "chorus1": (3, 6),         # early magic training under Roxy
+    "verse2": (5, 8),          # isolation, guilt over the old life
+    "chorus2": (7, 10),        # leads into the family rupture
+    # Rip B: the journey -- literal demons, real growth, real resolution.
+    "intro2": (10, 12),        # the family splits; the journey begins
+    "verse1_2": (11, 14),
+    "prechorus2": (13, 16),
+    "chorus1_2": (15, 18),     # danger on the road, the Superd arc
+    "verse2_2": (17, 20),      # hardship, what he's carrying
+    "chorus2_2": (20, 24),     # growth and resolution -- the closing hook
+    # Instrumental breaks, one entry per real gap (there are six, not the
+    # four in the previous song order -- this song has three separate
+    # instrumental stretches around its "yeah, yeah" bridge, not one).
+    "break1": (1, 1),          # opening: see OPEN_CUT below -- kept calm on purpose
+    "break2": (5, 7),          # mid rip A, between chorus 1 and verse 2
+    "break3": (8, 9),          # rip A trailing off into the bridge
+    "break4": (9, 10),         # the bridge itself -- the hinge into rip B
+    "break5": (10, 11),        # short breath just before rip B's intro
+    "break6": (22, 23),        # rip B's final instrumental before the fade
+    "bridge": (9, 11),        # the "yeah, yeah" ad-lib between the two rips
     "lull": (1, 24),
 }
 
@@ -58,6 +64,14 @@ MAX_SHOT = 4.6          # ~11 grid units; lets an emotional line linger
 BREAK_CUT = 1.67        # 4 grid units — instrumental breaks still cut faster
 MIN_SHOT = 1.05         # ~2.5 grid units
 TAIL_CUT = 3.34         # 8 grid units — the closing instrumental breathes
+# The very first gap (before any vocal) used BREAK_CUT like every other
+# instrumental, which for this song's 8.1s intro meant ~5 hard cuts of
+# unrelated establishing shots in the first moment a viewer sees the edit --
+# read as channel-surfing before the video had even started. An opener needs
+# to earn the cut, not spend its only impression proving the edit can cut
+# fast. One slower target instead: 1-2 shots, letting the viewer settle into
+# the tone before BREAK_CUT's energy kicks in at the first real break.
+OPEN_CUT = 4.2
 # How far a cut may be nudged to land on a beat. The grid is ~0.418s, so half
 # an interval is enough to reach the nearest beat from anywhere.
 SNAP_TOLERANCE = 0.19
@@ -138,7 +152,12 @@ def build_beat_slots() -> list[Slot]:
     for phrase in phrases:
         if phrase.start > cursor:
             span = phrase.start - cursor
-            step = BREAK_CUT if span >= 3.0 else span
+            if span < 3.0:
+                step = span
+            elif cursor == 0.0:
+                step = OPEN_CUT
+            else:
+                step = BREAK_CUT
             proposed.extend(a for a, _ in _split_span(cursor, phrase.start, step))
         proposed.extend(a for a, _ in _split_span(phrase.start, phrase.end, MAX_SHOT))
         cursor = phrase.end
@@ -159,21 +178,15 @@ def build_beat_slots() -> list[Slot]:
     def describe(midpoint: float) -> tuple[str, str, str]:
         for phrase in phrases:
             if phrase.start <= midpoint < phrase.end:
-                section = phrase.section
-                if section in {"verse", "prechorus", "chorus"} and phrase.start > 60:
-                    section = f"{section}2"
-                return section, "lyric", " / ".join(phrase.lines)
+                return phrase.section, "lyric", " / ".join(phrase.lines)
         for start, end in gaps:
             if start <= midpoint < end:
                 return break_section[start], "break", ""
         if midpoint >= phrases[-1].end:
-            return "outro", "break", ""
+            return "chorus2_2", "break", ""
         # A short lull between two lines belongs to the section around it.
         following = next((p for p in phrases if p.start > midpoint), phrases[-1])
-        section = following.section
-        if section in {"verse", "prechorus", "chorus"} and following.start > 60:
-            section = f"{section}2"
-        return section, "break", ""
+        return following.section, "break", ""
 
     slots: list[Slot] = []
     for start, end in zip(cuts, cuts[1:]):
@@ -210,7 +223,8 @@ def build_slots() -> list[Slot]:
         if span <= 0:
             return
         if span >= 3.0:
-            section, target = break_section.get(start, "break1"), BREAK_CUT
+            section = break_section.get(start, "break1")
+            target = OPEN_CUT if start == 0.0 else BREAK_CUT
         else:
             # A short lull between two lyric lines is still inside that part of
             # the story, so it draws from the same episodes rather than the
@@ -221,9 +235,6 @@ def build_slots() -> list[Slot]:
 
     for phrase in phrases:
         section = phrase.section
-        # Distinguish repeated sections so the arc keeps moving forward.
-        if section in {"verse", "prechorus", "chorus"} and phrase.start > 60:
-            section = f"{section}2"
         if phrase.start > cursor:
             add_break(cursor, phrase.start, section)
         for a, b in _split_span(phrase.start, phrase.end, MAX_SHOT):
@@ -233,7 +244,7 @@ def build_slots() -> list[Slot]:
     if duration > cursor:
         # Final instrumental tail: let it breathe rather than machine-gun it.
         for a, b in _split_span(cursor, duration, TAIL_CUT):
-            slots.append(Slot(len(slots), a, b, "outro", "break"))
+            slots.append(Slot(len(slots), a, b, "chorus2_2", "break"))
 
     slots = _absorb_slivers(slots)
     for i, slot in enumerate(slots):

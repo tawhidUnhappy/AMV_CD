@@ -2,22 +2,27 @@
 
 Timings come from WhisperX run on the **Demucs-isolated vocal stem**
 (`tmp/song/transcript_vocals.json`), on the combined ~3:35 track (two rips of
-the same song concatenated back-to-back — see assets/song.mp3). Structure:
-verse + chorus, a ~32s instrumental gap, the same verse + chorus again with
-minor lyric variation on the last line, then an outro recap that closes on an
-unresolved line ("I don't even know why") rather than the title hook.
+the same song concatenated back-to-back — see assets/song.mp3). Both rips
+render the same official structure in full (intro, verse 1, prechorus,
+chorus 1, verse 2, chorus 2) end to end; they differ only in the exact
+delivery of the outro line, since Suno renders the same prompt slightly
+differently take to take.
+
+The rips are deliberately ordered so the song closes on its strongest line:
+the rip whose outro trails off unresolved ("...I don't even know why") plays
+FIRST, and the rip that resolves on the title hook ("...I don't even know
+who I am anymore") plays LAST — the reverse of assets/song.mp3's original
+build order. Sections from the second rip carry a "_2"/"2" suffix.
 
 Every phrase is timed, because the cut structure follows the whole song, and
 every phrase is also displayed: this is a subtitle track, not a selective
 lyric-video treatment. Each phrase is a single line so it sits on one row at
 the bottom of frame.
 
-Two known ASR mishearings, corrected in the display text (not the word
-indices, which still point at the real audio):
-- Word 73 transcribes as "snacks"; the second occurrence of the same line
-  (word 138) transcribes clearly as "scars" — the intended lyric.
-- Word 52-53 transcribes as "Gotta laugh"; the clearer second occurrence
-  (words 206-208) gives the intended "always gotta last?".
+One ASR mishearing, corrected in the display text (not the word indices,
+which still point at the real audio): word 226 transcribes as "Dance on the
+floor"; every other occurrence of this line in the song is "Got these scars
+on my chest, tears on the floor" — corrected to the canonical lyric.
 
 Word indices refer to `tmp/song/words_vocals.txt` (see amv/subs/dump_words.py).
 """
@@ -63,52 +68,70 @@ class TimedPhrase:
 
 
 PHRASES: tuple[Phrase, ...] = (
+    # --- Rip A: first pass through the full structure --------------------
     Phrase(0, 4, ("LOST IN MY HEAD AGAIN",), section="intro"),
-    Phrase(5, 13, ("STARING AT THE CEILING WHILE THE CLOCK RUNS DOWN",), section="verse"),
-    Phrase(14, 22, ("TRYING TO BLOCK THE NOISE INSIDE THIS EMPTY TOWN",), section="verse"),
-    Phrase(23, 31, ("YOU SAID YOU'D STAY FOREVER BUT YOU WALKED AWAY",), section="verse"),
-    Phrase(32, 41, ("NOW I'M DROWNING IN THE WORDS THAT I COULDN'T SAY",), section="verse"),
-    Phrase(42, 53, ("AND EVERY MEMORY CUTS LIKE GLASS WHY DOES THE PAIN GOTTA LAUGH",), section="prechorus"),
-    Phrase(54, 62, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus"),
-    Phrase(63, 70, ("LOSING WHO I WAS JUST TO FEEL ALRIGHT",), section="chorus"),
-    Phrase(71, 80, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="chorus"),
-    Phrase(81, 88, ("I DON'T EVEN KNOW WHO I AM ANYMORE",), section="chorus"),
-    Phrase(89, 95, ("POPPING MEMORIES LIKE PILLS, TRYING TO FORGET",), section="verse"),
-    Phrase(96, 101, ("EVERY BROKEN PROMISE EVERY DEEP REGRET",), section="verse"),
-    Phrase(102, 110, ("HARD TO TRUST ANYBODY WHEN YOU'RE DOWN THIS LOW",), section="verse"),
-    Phrase(111, 118, ("FAKE SMILES ON MY FACE BUT NOBODY KNOWS",), section="verse"),
-    Phrase(119, 127, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus"),
-    Phrase(128, 135, ("LOSING WHO I WAS JUST TO FEEL ALRIGHT",), section="chorus"),
-    Phrase(136, 145, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="chorus"),
-    Phrase(146, 153, ("I DON'T EVEN KNOW WHO I AM ANYMORE",), section="chorus"),
-    Phrase(154, 158, ("LOST IN MY HEAD AGAIN",), section="verse"),
-    Phrase(159, 167, ("STARING AT THE CEILING WHILE THE CLOCK RUNS DOWN",), section="verse"),
-    Phrase(168, 176, ("TRY TO BLOCK THE NOISE INSIDE THIS EMPTY TOWN",), section="verse"),
-    Phrase(177, 185, ("YOU SAID YOU'D STAY FOREVER BUT YOU WALKED AWAY",), section="verse"),
-    Phrase(186, 195, ("NOW I'M DROWNING IN THE WORDS THAT I COULDN'T SAY",), section="verse"),
-    Phrase(196, 208, ("AND EVERY MEMORY CUTS LIKE GLASS WHY DOES THE PAIN ALWAYS GOTTA LAST?",), section="prechorus"),
-    Phrase(209, 217, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus"),
-    Phrase(218, 225, ("LOSING WHO I WAS JUST TO FEEL ALRIGHT",), section="chorus"),
-    Phrase(226, 235, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="chorus"),
-    Phrase(236, 243, ("I DON'T EVEN KNOW WHO I AM ANYMORE",), section="chorus"),
-    Phrase(244, 248, ("YEAH WHO I AM ANYMORE",), section="outro"),
-    Phrase(249, 255, ("POPPING MEMORIES LIKE PILLS, TRYING TO FORGET",), section="outro"),
-    Phrase(256, 261, ("EVERY BROKEN PROMISE EVERY DEEP REGRET",), section="outro"),
-    Phrase(262, 270, ("HARD TO TRUST ANYBODY WHEN YOU'RE DOWN THIS LOW",), section="outro"),
-    Phrase(271, 278, ("FAKE SMILES ON MY FACE BUT NOBODY KNOWS",), section="outro"),
-    Phrase(279, 287, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="outro"),
-    Phrase(288, 295, ("LOSING ALL I WANT JUST TO FEEL ALRIGHT",), section="outro"),
-    Phrase(296, 305, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="outro"),
-    Phrase(306, 310, ("I DON'T EVEN KNOW WHY",), section="outro"),
-    Phrase(311, 311, ("YEAH",), section="outro"),
+    Phrase(5, 13, ("STARING AT THE CEILING WHILE THE CLOCK RUNS DOWN",), section="verse1"),
+    Phrase(14, 22, ("TRYNA BLOCK THE NOISE INSIDE THIS EMPTY TOWN",), section="verse1"),
+    Phrase(23, 31, ("YOU SAID YOU'D STAY FOREVER BUT YOU WALKED AWAY",), section="verse1"),
+    Phrase(32, 41, ("NOW I'M DROWNING IN THE WORDS THAT I COULDN'T SAY",), section="verse1"),
+    Phrase(42, 54, ("AND EVERY MEMORY CUTS LIKE GLASS WHY DOES THE PAIN ALWAYS GOTTA LAST?",), section="prechorus"),
+    Phrase(55, 63, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus1"),
+    Phrase(64, 71, ("LOSING WHO I WAS JUST TO FEEL ALRIGHT",), section="chorus1"),
+    Phrase(72, 81, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="chorus1"),
+    Phrase(82, 89, ("I DON'T EVEN KNOW WHO I AM ANYMORE",), section="chorus1"),
+    Phrase(90, 96, ("THE MEMORIES LIKE PILLS TRYING TO FORGET",), section="verse2"),
+    Phrase(97, 102, ("EVERY BROKEN PROMISE EVERY DEEP REGRET",), section="verse2"),
+    Phrase(103, 111, ("HARD TO TRUST ANYBODY WHEN YOU'RE DOWN THIS LOW",), section="verse2"),
+    Phrase(112, 119, ("FAKE SMILES ON MY FACE BUT NOBODY KNOWS",), section="verse2"),
+    Phrase(120, 128, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus2"),
+    Phrase(129, 136, ("LOSING ALL I WANT JUST TO FEEL ALRIGHT",), section="chorus2"),
+    Phrase(137, 146, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="chorus2"),
+    # This rip's take on the outro line ends unresolved ("...why") rather
+    # than the official lyric sheet's "I don't even know who I am..." --
+    # Suno renders the same song slightly differently take to take, and this
+    # is the actual sung outro on THIS rip. Kept as sung, not corrected to
+    # the lyric sheet, since it genuinely is a different delivery.
+    Phrase(147, 151, ("I DON'T EVEN KNOW WHY",), section="chorus2"),
+    Phrase(152, 152, ("YEAH,",), section="bridge"),
+    Phrase(153, 153, ("YEAH",), section="bridge"),
+    # --- Rip B: second pass, the fuller take that closes the song ---------
+    Phrase(154, 158, ("LOST IN MY HEAD AGAIN",), section="intro2"),
+    Phrase(159, 167, ("STARING AT THE CEILING WHILE THE CLOCK RUNS DOWN",), section="verse1_2"),
+    Phrase(168, 176, ("TRYNA BLOCK THE NOISE INSIDE THIS EMPTY TOWN",), section="verse1_2"),
+    Phrase(177, 185, ("YOU SAID YOU'D STAY FOREVER BUT YOU WALKED AWAY",), section="verse1_2"),
+    Phrase(186, 195, ("NOW I'M DROWNING IN THE WORDS THAT I COULDN'T SAY",), section="verse1_2"),
+    Phrase(196, 208, ("AND EVERY MEMORY CUTS LIKE GLASS WHY DOES THE PAIN ALWAYS GOTTA LAST?",), section="prechorus2"),
+    Phrase(209, 217, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus1_2"),
+    Phrase(218, 225, ("LOSING WHO I WAS JUST TO FEEL ALRIGHT",), section="chorus1_2"),
+    # Word 226 transcribes as "Dance on the floor"; every other occurrence of
+    # this line in the song is "Got these scars on my chest, tears on the
+    # floor" -- corrected to the canonical lyric.
+    Phrase(226, 237, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR I DON'T EVEN KNOW WHO I AM ANYMORE",),
+           section="chorus1_2"),
+    Phrase(238, 244, ("POPPING MEMORIES LIKE PILLS TRYING TO FORGET",), section="verse2_2"),
+    Phrase(245, 250, ("EVERY BROKEN PROMISE EVERY DEEP REGRET",), section="verse2_2"),
+    Phrase(251, 259, ("HARD TO TRUST ANYBODY WHEN YOU'RE DOWN THIS LOW",), section="verse2_2"),
+    Phrase(260, 267, ("FAKE SMILES ON MY FACE BUT NOBODY KNOWS",), section="verse2_2"),
+    Phrase(268, 276, ("NOW I'M FIGHTING DEMONS IN THE DEAD OF NIGHT",), section="chorus2_2"),
+    Phrase(277, 284, ("LOSING WHO I WAS JUST TO FEEL ALRIGHT",), section="chorus2_2"),
+    Phrase(285, 294, ("GOT THESE SCARS ON MY CHEST TEARS ON THE FLOOR",), section="chorus2_2"),
+    # The song's strongest, most resolved line -- matching the official
+    # lyric sheet's title hook -- lands here, at the very end. Deliberately
+    # paired with the outro's episode range (see timeline.py) so the video
+    # closes on it.
+    Phrase(295, 302, ("I DON'T EVEN KNOW WHO I AM ANYMORE",), section="chorus2_2"),
+    # Trailing ad-lib as the track fades, ~10s after the last real line --
+    # too short and too late to matter for cut structure, kept only so the
+    # phrase list covers the whole song.
+    Phrase(303, 303, ("BYE-BYE",), section="chorus2_2"),
 )
 
 # First word of each phrase, lowercased and stripped, as a guard against the
 # indices silently drifting if the transcript is ever regenerated.
 EXPECTED_FIRST_WORD = {
-    0: "lost", 23: "you", 42: "and", 54: "now", 63: "losing", 71: "got",
-    81: "i", 89: "popping", 119: "now", 154: "lost", 196: "and", 209: "now",
-    244: "yeah", 279: "now", 306: "i", 311: "yeah",
+    0: "lost", 23: "you", 42: "and", 55: "now", 64: "losing", 72: "got",
+    82: "i", 90: "the", 120: "now", 152: "yeah", 154: "lost", 196: "and",
+    209: "now", 226: "dance", 238: "popping", 268: "now", 295: "i", 303: "bye-bye",
 }
 
 
