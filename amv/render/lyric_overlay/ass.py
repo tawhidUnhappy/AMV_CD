@@ -59,21 +59,23 @@ def font_size(phrase: TimedPhrase) -> int:
     An earlier pass ran 94-162px, sized to dominate the frame the way a
     lyric-video title card does. Over actual footage that buried the shot —
     the words became the composition and the animation played behind them.
-    These are classic fansub proportions for 1080p instead (~46-58px): the
-    line reads in a glance at the bottom of frame and the eye stays on the
-    picture.
+
+    Sizes here are measured off the reference AMV rather than guessed: a
+    21-character line there spans ~467px of a 1920-wide frame, i.e. ~22px of
+    advance per character, which for a bold narrow sans is a ~46px face. The
+    range below sits either side of that.
     """
     longest = max(len(line) for line in phrase.lines)
     if longest <= 15:
-        size = 58
+        size = 52
     elif longest <= 22:
-        size = 54
+        size = 48
     elif longest <= 30:
-        size = 50
-    else:
         size = 46
+    else:
+        size = 42
     if len(phrase.lines) >= 3:
-        size = min(size, 46)
+        size = min(size, 42)
     return size
 
 
@@ -110,7 +112,7 @@ YCbCr Matrix: TV.709
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Lyric,{FONT_NAME},54,{AMBER},{AMBER},&H00000000&,&H00000000&,{FONT_BOLD},0,0,0,100,100,0,0,1,2.4,1.4,2,80,80,54,1
+Style: Lyric,{FONT_NAME},48,{AMBER},{AMBER},&H00101010&,&H00000000&,{FONT_BOLD},0,0,0,100,100,3,0,1,2.0,0.9,2,80,80,52,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
