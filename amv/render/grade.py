@@ -17,18 +17,25 @@ FPS = _CFG.fps
 
 # Colour grade (this replaced the earlier full grayscale pass): cool the
 # shadows, warm the highlights, lift saturation a little and hold an S-curve for
-# contrast. Shadow point stays at 0.095 — crushing harder previously buried 15%
-# of the runtime near black.
+# contrast.
+#
+# Shadow handling was re-tuned after check_exposure measured 16.8% of runtime
+# below 0.12 luma (target ~8%) on this footage — dropped the brightness/gamma
+# darkening (brightness=-0.014, gamma=0.96) that stacked on top of an
+# already-dark source (a lot of night/cave footage, matching the song's "in
+# the dead of night" section), and raised the curve's shadow point
+# (0.20/0.085 -> 0.20/0.12) so shadow detail survives instead of crushing
+# further. Contrast/saturation/highlight curve unchanged.
 GRADE = (
     f"scale={WIDTH}:{HEIGHT}:force_original_aspect_ratio=increase,"
     f"crop={WIDTH}:{HEIGHT},setsar=1,"
-    "eq=contrast=1.17:saturation=1.05:brightness=-0.014:gamma=0.96,"
+    "eq=contrast=1.17:saturation=1.05,"
     # Cool the shadows and keep midtones/highlights close to neutral. Warming
     # the highlights washed the whole video orange — this source is full of
     # sunset scenes and the push stacked on top of them.
     "colorbalance=rs=-0.075:gs=-0.02:bs=0.11:rm=-0.015:gm=0:bm=0.025:"
     "rh=0.015:gh=0:bh=-0.015,"
-    "curves=master='0/0 0.20/0.085 0.5/0.49 0.85/0.94 1/1',"
+    "curves=master='0/0 0.20/0.12 0.5/0.51 0.85/0.94 1/1',"
     "vignette=angle=PI/5,"
     "unsharp=5:5:0.32:5:5:0.0,"
     f"fps={FPS},format=yuv420p"
