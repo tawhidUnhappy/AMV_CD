@@ -42,8 +42,8 @@ class Position:
 # Bottom-centre is the default and wins nearly always — anime framing puts
 # faces in the upper-middle. Top-centre is the escape hatch for the shots
 # where the subject genuinely sits low in frame.
-BOTTOM_CENTRE = Position(2, 960, 940)
-TOP_CENTRE = Position(8, 960, 140)
+BOTTOM_CENTRE = Position(2, 960, 1022)
+TOP_CENTRE = Position(8, 960, 62)
 POSITIONS: tuple[Position, ...] = (BOTTOM_CENTRE, TOP_CENTRE)
 
 

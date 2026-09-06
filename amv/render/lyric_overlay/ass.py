@@ -1,9 +1,15 @@
 """Build the burned-in lyric overlay ASS document text.
 
-Style follows the reference look: a stacked 2-3 line block in uppercase Kranky,
-white with a heavy drop shadow, with exactly one word per phrase in red. Blocks
-sit off-centre and move around the frame between lines rather than sitting in a
-fixed subtitle position. Where each block sits comes from positioning.py.
+Classic fansub-subtitle styling: a stacked 2-3 line block in uppercase, warm
+yellow-amber with a black outline and a light drop shadow, sitting in a fixed
+position at the bottom of frame, with exactly one word per phrase in red.
+
+This replaced a title-card look (94-162px white text moving between six
+off-centre anchors at slight angles). That version competed with the footage
+instead of accompanying it — the words became the composition and the shot
+played behind them. Subtitle scale keeps the eye on the animation.
+
+Where each block sits comes from positioning.py.
 """
 
 from __future__ import annotations
@@ -22,8 +28,13 @@ FONT_NAME = _CFG.lyric_font_family
 FONT_BOLD = -1 if _CFG.lyric_font_bold else 0
 
 # ASS colours are &HAABBGGRR — byte order is reversed from hex RGB.
+#
+# Warm yellow-orange as the body colour, the classic fansub tint: it separates
+# from anime's usual palette (skin, sky, foliage) without the glare of pure
+# white, and it reads as "subtitle" rather than as "title card".
+AMBER = "&H0000B4FF&"   # rgb(255, 180, 0)
 WHITE = "&H00F2F2F2&"
-RED = "&H002222CC&"  # rgb(204, 34, 34)
+RED = "&H002222CC&"     # rgb(204, 34, 34)
 
 # Blocks soften in and out rather than hard-cutting, but only just — an
 # earlier version resolved them out of a heavy haze (entry 12, exit 9), which
@@ -43,31 +54,33 @@ def ass_time(seconds: float) -> str:
 
 
 def font_size(phrase: TimedPhrase) -> int:
-    """Pick the largest size that still clears the safe margins.
+    """Subtitle-scale sizing: readable, but never competing with the picture.
 
-    The reference sets lyrics big enough to dominate the frame; the first pass
-    was roughly half this and read as ordinary subtitles.
+    An earlier pass ran 94-162px, sized to dominate the frame the way a
+    lyric-video title card does. Over actual footage that buried the shot —
+    the words became the composition and the animation played behind them.
+    These are classic fansub proportions for 1080p instead (~46-58px): the
+    line reads in a glance at the bottom of frame and the eye stays on the
+    picture.
     """
     longest = max(len(line) for line in phrase.lines)
-    if longest <= 10:
-        size = 162
-    elif longest <= 15:
-        size = 140
-    elif longest <= 19:
-        size = 118
-    elif longest <= 23:
-        size = 100
+    if longest <= 15:
+        size = 58
+    elif longest <= 22:
+        size = 54
+    elif longest <= 30:
+        size = 50
     else:
-        size = 94
+        size = 46
     if len(phrase.lines) >= 3:
-        size = min(size, 106)
+        size = min(size, 46)
     return size
 
 
 def render_line(line: str, emphasis: str | None, colour: str | None = None) -> str:
-    """Colour the whole line white, except the one emphasis word in red.
+    """Colour the whole line amber, except the one emphasis word in red.
 
-    `colour` overrides every word, used for the offset ghost layer.
+    `colour` overrides every word.
     """
     if colour is not None:
         return line
@@ -76,8 +89,10 @@ def render_line(line: str, emphasis: str | None, colour: str | None = None) -> s
     parts = []
     for word in line.split():
         if word == emphasis:
-            # Scale the red word up slightly so it reads as the hit.
-            parts.append(f"{{\\c{RED}\\fscx116\\fscy116}}{word}{{\\c{WHITE}\\fscx100\\fscy100}}")
+            # Scale the red word up slightly so it reads as the hit. Kept
+            # modest at subtitle size — the old 116% was tuned for 140px text
+            # and makes a 54px line visibly ragged.
+            parts.append(f"{{\\c{RED}\\fscx108\\fscy108}}{word}{{\\c{AMBER}\\fscx100\\fscy100}}")
         else:
             parts.append(word)
     return " ".join(parts)
@@ -95,7 +110,7 @@ YCbCr Matrix: TV.709
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Lyric,{FONT_NAME},140,{WHITE},{WHITE},&H000A0A0A&,&H00000000&,{FONT_BOLD},0,0,0,100,100,2,0,1,3.5,0,5,60,60,60,1
+Style: Lyric,{FONT_NAME},54,{AMBER},{AMBER},&H00000000&,&H00000000&,{FONT_BOLD},0,0,0,100,100,0,0,1,2.4,1.4,2,80,80,54,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -117,7 +132,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             start = max(start, phrases[i - 1].end + 0.02)
 
         # Drift up into place. \move rules out \pos, so placement rides on it.
-        rise = 18
+        rise = 6
         settle_ms = 340
         place = (
             f"\\an{position.an}\\move({position.x},{position.y + rise},{position.x},{position.y},0,{settle_ms})"
@@ -138,7 +153,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         exit_ms = min(340, max(120, span_ms // 4))
         exit_start = max(settle + 40, span_ms - exit_ms)
         override = (
-            f"{{{place}\\c{WHITE}\\blur{ENTRY_BLUR}"
+            f"{{{place}\\c{AMBER}\\blur{ENTRY_BLUR}"
             f"\\t(0,{settle},\\blur{REST_BLUR})"
             f"\\t({exit_start},{span_ms},\\blur{EXIT_BLUR})"
             f"\\fad(140,240)}}"

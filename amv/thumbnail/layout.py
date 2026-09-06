@@ -13,8 +13,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from amv.core import config
-from amv.thumbnail.colors import WHITE
-from amv.thumbnail.fonts import BRUSH_FONT
+from amv.thumbnail.colors import RED, WHITE, YELLOW
 from amv.thumbnail.shapes import Arrow, Bubble
 from amv.thumbnail.text import Text
 
@@ -95,53 +94,29 @@ def face_targets(image: Path, halves: int = 2) -> list[tuple[int, int]]:
 
 
 def thumbnails() -> list[Thumb]:
+    """Mushoku Tensei x "Who I Am Anymore".
+
+    cand01 is the frame this is built around: Rudeus in profile hard left,
+    facing right across an open desert horizon. Two things make it work as a
+    thumbnail — the right two-thirds is empty enough to carry text without
+    covering anything, and his eyeline runs *into* that space, so the reader's
+    eye follows him to the words instead of away from them.
+
+    Text sits right of centre, white with the single payoff word in red, and
+    stops well above the bottom-right corner so YouTube's duration chip has
+    somewhere to land.
+    """
     return [
-        # 1. label-arrow, two labels — the proven house variant. cand04 has both
-        # characters facing camera; cand00 showed Yuno from behind, so the
-        # YANDERE label pointed at the back of her head.
         Thumb(
-            name="01_label_arrow",
-            source=CAND / "cand04.png",
+            name="01_who_am_i",
+            source=CAND / "cand01.png",
             texts=[
-                Text("HER\nOBSESSION", 250, 130, an=5, size=88, angle=-4.0),
-                Text("YANDERE", 1000, 150, an=5, size=104, angle=3.0),
-            ],
-            # Targets read off the rendered frame, not guessed: Yuki's face sits
-            # at ~(310,265) and Yuno's at ~(1040,355). The angle follows.
-            arrows=[
-                Arrow(from_xy=(250, 200), to_xy=(310, 265), along=0.75, scale=1.0),
-                Arrow(from_xy=(1000, 215), to_xy=(1040, 350), along=0.72, scale=1.0),
-            ],
-        ),
-        # 2. bubble — a line pulled straight from the song, in a dark bubble
-        # with white brush text.
-        Thumb(
-            name="02_bubble",
-            source=CAND / "cand05.png",
-            bubbles=[Bubble(x=330, y=215, width=560, height=250, tail_dx=150, tail_dy=215, angle=-3.0)],
-            texts=[
-                Text("AM I A\nMONSTER?", 330, 200, an=5, size=96, colour=WHITE, angle=-3.0,
-                     font=BRUSH_FONT, outline=0),
-                Text("MIRAI NIKKI AMV", 300, 650, an=5, size=58, angle=-2.0),
-            ],
-        ),
-        # 3. split — two frames, a label under each, badge top-centre.
-        Thumb(
-            name="03_split",
-            # cand09 framed Yuno too high to survive a half-width crop — her
-            # face kept landing above the cut. cand05 centres her instead.
-            source=CAND / "cand05.png",
-            right_source=CAND / "cand07.png",
-            left_zoom=1.15,
-            left_shift=0.52,
-            left_vshift=0.30,
-            right_zoom=1.05,
-            right_shift=0.55,
-            right_vshift=0.35,
-            texts=[
-                Text("MIRAI NIKKI", 640, 68, an=5, size=58, colour=WHITE, angle=0.0),
-                Text("THE STALKER", 320, 630, an=5, size=76, angle=-3.0),
-                Text("THE PREY", 960, 630, an=5, size=76, angle=3.0),
+                # Positions read off the rendered 1280x720 frame: Rudeus's head
+                # runs to about x=700, so the block is centred at x=980 and
+                # clears him at every size below.
+                Text("WHO AM I", 980, 232, an=5, size=112, colour=WHITE, angle=-3.0),
+                Text("ANYMORE", 980, 358, an=5, size=124, colour=RED, angle=-3.0),
+                Text("MUSHOKU TENSEI AMV", 980, 470, an=5, size=40, colour=YELLOW, angle=-3.0),
             ],
         ),
     ]
