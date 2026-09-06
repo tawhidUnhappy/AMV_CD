@@ -120,9 +120,21 @@ def probe_stats(path: str, start: float, duration: float) -> tuple[float, float,
     return brightness, contrast, motion, float(skin.mean())
 
 
+# Minimum source brightness a window may have and still be selectable.
+#
+# This gate is measured on *ungraded* source, but what matters is how the shot
+# looks after the grade, which darkens (contrast 1.17 plus an S-curve). At the
+# old 0.10 floor, shots passing at 0.10-0.14 landed under 0.08 once graded:
+# with story-ordered selection pulling the montages into the darker back half
+# of the season, near-black runtime hit 14.5% against a ~4% target, and
+# lifting the grade to compensate barely moved it (14.5% -> 14.0%) because the
+# footage itself is dark. Rejecting it here works; rescuing it later does not.
+MIN_BRIGHTNESS = 0.16
+
+
 def visual_score(brightness: float, contrast: float, motion: float, skin: float, want_motion: bool) -> float:
     # Reject fades to black/white outright — they read as a dropout mid-cut.
-    if brightness < 0.10 or brightness > 0.92:
+    if brightness < MIN_BRIGHTNESS or brightness > 0.92:
         return -50.0
     if contrast < 0.055:
         return -25.0

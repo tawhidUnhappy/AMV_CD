@@ -35,6 +35,12 @@ GRADE = (
     # sunset scenes and the push stacked on top of them.
     "colorbalance=rs=-0.075:gs=-0.02:bs=0.11:rm=-0.015:gm=0:bm=0.025:"
     "rh=0.015:gh=0:bh=-0.015,"
+    # Held at 0.20/0.12. A further lift to 0.15 plus a black-point raise was
+    # tried when story-ordered selection pushed near-black runtime to 14.5%,
+    # and it barely helped (14.0%) because the problem was the footage, not
+    # the curve — that is now gated upstream by MIN_BRIGHTNESS in
+    # select_clips/scoring.py. Stacking both corrections just flattens the
+    # image.
     "curves=master='0/0 0.20/0.12 0.5/0.51 0.85/0.94 1/1',"
     "vignette=angle=PI/5,"
     "unsharp=5:5:0.32:5:5:0.0,"
