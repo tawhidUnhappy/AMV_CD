@@ -125,6 +125,35 @@ def main() -> None:
         cursor = story_position(pick)
         chosen.append(pick)
 
+    # Play each run of instrumental-break shots in chronological order.
+    #
+    # The continuity weighting above can only prefer a forward window if the
+    # slot's shortlist happens to contain one, which left ~20% of transitions
+    # still running backwards. Break slots carry no lyric, so nothing pairs a
+    # specific shot to a specific slot — the run can simply be re-ordered
+    # after the fact, which makes the montage strictly chronological instead
+    # of merely biased that way. Lyric slots are deliberately left alone:
+    # their footage was matched to the words, and resorting them would trade
+    # the thing that makes the edit mean something for tidier chronology.
+    start = 0
+    while start < len(slots):
+        if slots[start].kind != "break":
+            start += 1
+            continue
+        end = start
+        while (end < len(slots) and slots[end].kind == "break"
+               and slots[end].section == slots[start].section):
+            end += 1
+        chosen[start:end] = sorted(chosen[start:end], key=story_position)
+        start = end
+
+    # Duration belongs to the slot, not to the shot, so re-stamp it after
+    # reordering — a shot picked for a 1.3s slot that now lands on a 2.6s one
+    # would otherwise carry the short length into the render and come up
+    # frames short.
+    for slot, cand in zip(slots, chosen):
+        cand.duration = round(slot.duration, 3)
+
     edl = {
         "song": str(config.load().song),
         "slots": [
