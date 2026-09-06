@@ -13,7 +13,13 @@ import numpy as np
 
 from amv.core import config
 from amv.render.select_clips.candidates import Candidate, build_candidates
-from amv.render.select_clips.scoring import MIN_SEPARATION, credits_zones, probe_stats, visual_score
+from amv.render.select_clips.scoring import (
+    MIN_SEPARATION,
+    credits_zones,
+    match_score,
+    probe_stats,
+    visual_score,
+)
 from amv.render.timeline import build_slots
 
 ROOT = config.ROOT
@@ -85,7 +91,11 @@ def main() -> None:
     def score_one(item: tuple[int, Candidate]) -> None:
         i, cand = item
         want_motion = slots[i].kind == "break"
-        cand.brightness, cand.contrast, cand.motion, cand.skin = probe_stats(cand.file, cand.start, cand.duration)
+        probe = probe_stats(cand.file, cand.start, cand.duration)
+        cand.brightness, cand.contrast = probe.brightness, probe.contrast
+        cand.motion, cand.skin = probe.motion, probe.skin
+        cand.head_sig, cand.tail_sig = probe.head_sig, probe.tail_sig
+        cand.head_motion, cand.tail_motion = probe.head_motion, probe.tail_motion
         cand.visual_score = visual_score(cand.brightness, cand.contrast, cand.motion, cand.skin, want_motion)
 
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
@@ -111,6 +121,8 @@ def main() -> None:
             current_section = slot.section
             cursor = float("-inf")
 
+        previous = chosen[-1] if chosen else None
+
         def continuity(cand: Candidate, cursor: float = cursor) -> float:
             delta = story_position(cand) - cursor
             if delta < 0:
@@ -119,7 +131,10 @@ def main() -> None:
             # together far better than a jump across half a season.
             return FORWARD_BONUS * np.exp(-delta / NEAR_SCALE)
 
-        group.sort(key=lambda c: -(c.total + continuity(c)))
+        # Continuity editing: prefer a window that picks up where the last one
+        # left off — comparable composition, light and energy across the cut.
+        # See scoring.match_score.
+        group.sort(key=lambda c: -(c.total + continuity(c) + match_score(previous, c)))
         pick = None
         for cand in group:
             clash = any(ep == cand.episode and abs(pos - cand.start) < MIN_SEPARATION for ep, pos in used)
@@ -142,6 +157,14 @@ def main() -> None:
     # of merely biased that way. Lyric slots are deliberately left alone:
     # their footage was matched to the words, and resorting them would trade
     # the thing that makes the edit mean something for tidier chronology.
+    #
+    # Note this re-order does scramble the match-cut pairing that the pick
+    # loop computed for these slots, since `previous` changes underneath it.
+    # In practice the two mostly agree — consecutive moments from one scene
+    # share composition and light, which is exactly what match_score rewards —
+    # so chronological order tends to *produce* graphic matches rather than
+    # break them. The match term therefore does its real work on the lyric
+    # slots, which keep the order they were picked in.
     start = 0
     while start < len(slots):
         if slots[start].kind != "break":

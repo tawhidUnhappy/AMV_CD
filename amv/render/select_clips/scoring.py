@@ -8,11 +8,40 @@ from __future__ import annotations
 
 import re
 import subprocess
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 from amv.render.select_clips.themes import BLACKLIST
 from amv.vision.skin import skin_mask
+
+if TYPE_CHECKING:
+    from amv.render.select_clips.candidates import Candidate
+
+# Coarse grid the head/tail composition signature is reduced to. Deliberately
+# tiny: the question is "is the mass in the same part of frame", not "are
+# these the same picture", and a fine grid would only ever match a shot
+# against itself.
+SIG_ROWS, SIG_COLS = 3, 4
+# Ceiling on the match-cut term, in the same units as the visual score
+# (which spans roughly 0-40).
+MATCH_WEIGHT = 14.0
+
+
+@dataclass
+class ShotProbe:
+    """Everything the tiny decode measures about one candidate window."""
+
+    brightness: float = 0.0
+    contrast: float = 0.0
+    motion: float = 0.0
+    skin: float = 0.0
+    #: Coarse luma grid over the opening / closing frames, for match cutting.
+    head_sig: list[float] = field(default_factory=list)
+    tail_sig: list[float] = field(default_factory=list)
+    head_motion: float = 0.0
+    tail_motion: float = 0.0
 
 # Trim episode head/tail: studio logos, "previously on", and — the big one —
 # the post-ED "Murmur's Counseling Room" omake plus the next-episode preview,
@@ -72,7 +101,7 @@ def theme_score(event: dict, keywords: tuple[str, ...], speaker: str | None) -> 
     return score
 
 
-def probe_stats(path: str, start: float, duration: float) -> tuple[float, float, float, float]:
+def probe_stats(path: str, start: float, duration: float) -> ShotProbe:
     """Decode the window tiny and return (brightness, contrast, motion, skin).
 
     A 96x54 8fps RGB stream is enough to tell a black frame from a face and a
@@ -103,11 +132,11 @@ def probe_stats(path: str, start: float, duration: float) -> tuple[float, float,
         try:
             result = subprocess.run(cpu_command, capture_output=True, check=True)
         except subprocess.CalledProcessError:
-            return 0.0, 0.0, 0.0, 0.0
+            return ShotProbe()
     frame_size = width * height * 3
     count = len(result.stdout) // frame_size
     if count < 2:
-        return 0.0, 0.0, 0.0, 0.0
+        return ShotProbe()
     rgb = np.frombuffer(result.stdout[: count * frame_size], dtype=np.uint8)
     rgb = rgb.reshape(count, height, width, 3).astype(np.int16)
     r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
@@ -117,7 +146,68 @@ def probe_stats(path: str, start: float, duration: float) -> tuple[float, float,
     brightness = float(luma.mean())
     contrast = float(luma.std())
     motion = float(np.abs(np.diff(luma, axis=0)).mean())
-    return brightness, contrast, motion, float(skin.mean())
+
+    # How the shot opens and how it closes, for match cutting (see
+    # match_score). A cut reads as continuous when the outgoing frame and the
+    # incoming one agree about where the light and the mass sit, so the
+    # signature is a coarse GRID of the frame rather than a single average:
+    # two shots can share a mean brightness while looking nothing alike.
+    span = max(1, round(count * 0.3))
+    head, tail = luma[:span], luma[-span:]
+
+    def signature(block) -> np.ndarray:
+        frame = block.mean(axis=0)
+        rows = np.array_split(frame, SIG_ROWS, axis=0)
+        cells = [c.mean() for row in rows for c in np.array_split(row, SIG_COLS, axis=1)]
+        return np.array(cells, dtype=np.float32)
+
+    head_motion = float(np.abs(np.diff(head, axis=0)).mean()) if span > 1 else motion
+    tail_motion = float(np.abs(np.diff(tail, axis=0)).mean()) if span > 1 else motion
+    return ShotProbe(
+        brightness=brightness,
+        contrast=contrast,
+        motion=motion,
+        skin=float(skin.mean()),
+        head_sig=signature(head).tolist(),
+        tail_sig=signature(tail).tolist(),
+        head_motion=head_motion,
+        tail_motion=tail_motion,
+    )
+
+
+def match_score(prev: "Candidate | None", cand: "Candidate") -> float:
+    """How well `cand` cuts on from `prev` — the match-cut term.
+
+    Continuity editing says a cut disappears when the incoming shot picks up
+    what the outgoing one put down: comparable composition, comparable light,
+    comparable energy. Cutting from a bright wide to a dark close-up, or from
+    a fast pan to a locked-off frame, announces itself as a cut.
+
+    So this compares the END of the previous shot with the START of this one:
+      - graphic match — how closely the two coarse luma grids agree, which
+        stands in for "the mass is in the same part of frame";
+      - light match   — how close the two average brightnesses are;
+      - energy match  — whether motion carries across rather than stalling.
+
+    Returns roughly 0 (jarring) to MATCH_WEIGHT (seamless).
+    """
+    import numpy as np
+
+    if prev is None or not prev.tail_sig or not cand.head_sig:
+        return 0.0
+    tail = np.array(prev.tail_sig, dtype=np.float32)
+    head = np.array(cand.head_sig, dtype=np.float32)
+
+    # RMS difference across the grid, 0 (identical) to ~1 (inverse).
+    graphic = float(np.sqrt(((tail - head) ** 2).mean()))
+    light = abs(float(tail.mean()) - float(head.mean()))
+    energy = abs(prev.tail_motion - cand.head_motion)
+
+    score = 0.0
+    score += 0.55 * max(0.0, 1.0 - graphic / 0.28)
+    score += 0.25 * max(0.0, 1.0 - light / 0.22)
+    score += 0.20 * max(0.0, 1.0 - energy / 0.05)
+    return MATCH_WEIGHT * score
 
 
 # Minimum source brightness a window may have and still be selectable.

@@ -14,7 +14,7 @@ Selection combines three signals:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 
@@ -36,6 +36,13 @@ class Candidate:
     motion: float = 0.0
     skin: float = 0.0
     visual_score: float = 0.0
+    #: How the window opens and closes, for match cutting (see
+    #: scoring.match_score). Compared tail-to-head against the neighbouring
+    #: pick, never used on its own.
+    head_sig: list[float] = field(default_factory=list)
+    tail_sig: list[float] = field(default_factory=list)
+    head_motion: float = 0.0
+    tail_motion: float = 0.0
 
     @property
     def total(self) -> float:
