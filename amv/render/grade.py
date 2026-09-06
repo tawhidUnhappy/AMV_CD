@@ -51,9 +51,17 @@ CLOSE_FADE = 3.5
 # Radii are in units of half-frame-height, so 1.0 reaches the top/bottom edge
 # and the corners sit at ~2.06 — that keeps the clear area a true circle on a
 # 16:9 frame rather than an ellipse.
-FOCUS_INNER = 0.82
-FOCUS_OUTER = 1.62
-BLUR_SIGMA = 13
+#
+# Pulled way back from an earlier, much heavier setting (inner 0.82, outer
+# 1.62, sigma 13). That began softening well inside the frame, so anything
+# framed off-centre — which in anime is most faces — sat in the blurred ring,
+# and at sigma 13 it read as an out-of-focus render rather than as depth.
+# Now the clear circle extends past the top and bottom edges entirely and only
+# the extreme corners get a gentle falloff; the vignette does the rest of the
+# edge shaping.
+FOCUS_INNER = 1.30
+FOCUS_OUTER = 2.10
+BLUR_SIGMA = 5
 
 
 def clip_filter(fade_in: bool, fade_out: bool, duration: float) -> str:

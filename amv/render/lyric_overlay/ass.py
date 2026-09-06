@@ -25,11 +25,14 @@ FONT_BOLD = -1 if _CFG.lyric_font_bold else 0
 WHITE = "&H00F2F2F2&"
 RED = "&H002222CC&"  # rgb(204, 34, 34)
 
-# Blocks resolve out of a haze instead of hard-cutting in; a little blur is kept
-# at rest so the edges stay soft now that the drop shadow is gone.
-ENTRY_BLUR = 12
-REST_BLUR = 0.9
-EXIT_BLUR = 9
+# Blocks soften in and out rather than hard-cutting, but only just — an
+# earlier version resolved them out of a heavy haze (entry 12, exit 9), which
+# on a burned-in 1080p overlay reads as out-of-focus text rather than as an
+# effect. Rest blur stays low enough that the glyph edges are genuinely crisp
+# while the block is being read.
+ENTRY_BLUR = 3
+REST_BLUR = 0.4
+EXIT_BLUR = 3
 
 
 def ass_time(seconds: float) -> str:
@@ -121,21 +124,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             f"\\fs{size}\\frz{position.angle}"
         )
 
-        # Layer 0: an offset red ghost that resolves into the white text — a
-        # chromatic split, which reads as unease rather than as a render fault.
-        if phrase.emphasis:
-            ghost_body = "\\N".join(render_line(line, None, colour=RED) for line in phrase.lines)
-            ghost = (
-                f"{{\\an{position.an}\\pos({position.x - 7},{position.y - 4})\\fs{size}"
-                f"\\frz{position.angle}\\c{RED}\\alpha&H70&\\blur9"
-                f"\\t(0,420,\\alpha&HFF&\\blur14)}}"
-            )
-            lines.append(
-                f"Dialogue: 0,{ass_time(start)},{ass_time(min(start + 0.75, end))},Lyric,,0,0,0,,{ghost}{ghost_body}"
-            )
+        # The offset red "chromatic split" ghost layer that used to sit under
+        # every emphasis block is gone. It drew a second, blurred, offset copy
+        # of the text — on this track it read as a rendering fault rather than
+        # as unease, and it was the loudest part of the "text looks messy"
+        # problem. The emphasis word still carries red inline (render_line).
 
-        # Layer 1: the text itself — resolves out of a haze on entry and
-        # dissolves back into one on exit, rather than just cutting away.
+        # The text itself — softens in on entry and back out on exit, rather
+        # than just cutting away.
         body = "\\N".join(render_line(line, phrase.emphasis) for line in phrase.lines)
         span_ms = int((end - start) * 1000)
         settle = min(300, max(140, span_ms // 4))

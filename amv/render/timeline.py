@@ -42,12 +42,23 @@ SECTION_EPISODES: dict[str, tuple[int, int]] = {
     "lull": (1, 24),
 }
 
-# Longest a single shot may hold before it is split into multiple cuts.
-MAX_SHOT = 3.2
-# Rapid-cut pace inside instrumental breaks.
-BREAK_CUT = 0.75
-MIN_SHOT = 0.42
-# How far a cut may be nudged to land on a beat. The grid is ~0.348s, so half
+# Cut pacing, in seconds. The detected beat grid is ~0.418s, but that is a
+# subdivision lock: the track is really ~68 BPM (0.836s), and beat_track found
+# the eighths. Cutting on every grid unit therefore machine-guns a slow,
+# sombre song. These are all multiples of the grid instead (see
+# amv-beat-cutting: any consistent subdivision is valid, pick the cut spacing
+# as a multiple of it).
+#
+# The floor matters more than usual here because the source is anime, which is
+# animated on twos or threes — 8-12 unique drawings a second. An earlier
+# 0.42s floor meant shots holding only 4-5 distinct drawings, and cutting that
+# fast between them reads as stutter rather than as energy. 1.05s (~25 frames)
+# gives every shot enough drawings to register as motion.
+MAX_SHOT = 4.6          # ~11 grid units; lets an emotional line linger
+BREAK_CUT = 1.67        # 4 grid units — instrumental breaks still cut faster
+MIN_SHOT = 1.05         # ~2.5 grid units
+TAIL_CUT = 3.34         # 8 grid units — the closing instrumental breathes
+# How far a cut may be nudged to land on a beat. The grid is ~0.418s, so half
 # an interval is enough to reach the nearest beat from anywhere.
 SNAP_TOLERANCE = 0.19
 
@@ -132,7 +143,7 @@ def build_beat_slots() -> list[Slot]:
         proposed.extend(a for a, _ in _split_span(phrase.start, phrase.end, MAX_SHOT))
         cursor = phrase.end
     if duration > cursor:
-        proposed.extend(a for a, _ in _split_span(cursor, duration, 2.4))
+        proposed.extend(a for a, _ in _split_span(cursor, duration, TAIL_CUT))
 
     cuts: list[float] = []
     for time in sorted(set(proposed)):
@@ -221,7 +232,7 @@ def build_slots() -> list[Slot]:
 
     if duration > cursor:
         # Final instrumental tail: let it breathe rather than machine-gun it.
-        for a, b in _split_span(cursor, duration, 2.4):
+        for a, b in _split_span(cursor, duration, TAIL_CUT):
             slots.append(Slot(len(slots), a, b, "outro", "break"))
 
     slots = _absorb_slivers(slots)
