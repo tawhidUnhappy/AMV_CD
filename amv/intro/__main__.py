@@ -6,6 +6,9 @@ Plans cuts from the song (a calm swell, then a cut per beat from the
 orchestra's entrance), picks a shot per slot, writes a contact sheet to look
 at, and renders tmp/intro/intro.mp4. Everything lands in tmp/intro/.
 
+With --library DIR every sub-folder of DIR is a show and each shot comes from
+a different one - an intro for a channel rather than for one series.
+
 The picks are in tmp/intro/edl.json. To change a shot: reject its region with
 --skip EP:START-END (repeatable) and run again, or edit the JSON by hand and
 run with --render-only.
@@ -23,7 +26,8 @@ from amv.vision.contact_sheet import grab_all, tile
 
 def contact_sheet(slots: list[dict], out: Path) -> Path:
     frames = grab_all(slots, out.parent / "frames",
-                      lambda s: f"{s['index']:02d} {s['kind']} ep{s['episode']:02d} {s['start']:.1f}s",
+                      lambda s: f"{s['index']:02d} {s['kind']} {s.get('series', '')} ep{s['episode']:02d} "
+                                f"{s['start']:.1f}s",
                       width=480, fontsize=18)
     return tile(frames, out, cols=4, cell=(480, 270))
 
@@ -37,6 +41,13 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=6)
     parser.add_argument("--skip", action="append", default=[], metavar="EP:START-END",
                         help="reject a region of an episode, e.g. 5:600-640")
+    parser.add_argument("--library", type=Path, default=None,
+                        help="a folder of series folders: a multi-show intro, one show per shot, no subtitles needed "
+                             "(see amv.intro.library)")
+    parser.add_argument("--gallery", action="store_true",
+                        help="with --library: write candidate sheets to tmp/intro/gallery/ to choose from, and stop")
+    parser.add_argument("--picks", type=Path, default=None,
+                        help="with --library: a JSON {\"picks\": [gallery ids in slot order]} (see amv/intro/picks/)")
     parser.add_argument("--render-only", action="store_true", help="render tmp/intro/edl.json as it stands")
     parser.add_argument("--out", type=Path, default=paths.INTRO / "intro.mp4")
     args = parser.parse_args()
@@ -61,8 +72,23 @@ def main() -> None:
         slots, info = plan(song, args.seconds)
         print(f"tempo {info['tempo']:.1f} BPM, orchestra enters at "
               f"{info['entrance'] if info['entrance'] is not None else '-'}s, {len(slots)} shots", flush=True)
-        episodes = paths.load_scene_index()
-        picks = select(slots, episodes, args.seed, args.candidates, args.workers, paths.INTRO / "motion")
+        if args.library:
+            from amv.intro import library, library_select
+
+            shows = library.discover(args.library)
+            library.index(shows, paths.INTRO / "library")
+            if args.gallery:
+                listing = library_select.gallery(shows, paths.INTRO / "gallery", workers=args.workers)
+                print(f"Wrote {listing} and one sheet per kind and series beside it - pick ids, then --picks")
+                return
+            if args.picks:
+                chosen = json.loads(args.picks.read_text(encoding="utf-8"))["picks"]
+                picks = library_select.from_picks(slots, chosen, paths.INTRO / "gallery" / "gallery.json")
+            else:
+                picks = library_select.select(slots, shows, workers=args.workers)
+        else:
+            picks = select(slots, paths.load_scene_index(), args.seed, args.candidates, args.workers,
+                           paths.INTRO / "motion")
         edl = {"song": str(song), "seconds": args.seconds, "plan": info, "slots": picks}
         edl_path.write_text(json.dumps(edl, indent=1), encoding="utf-8")
         print(f"Wrote {edl_path}", flush=True)

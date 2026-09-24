@@ -49,6 +49,22 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 - **Two videos?** `./amv.sh compare A B [--watermark tr] [--frames 200-215]
   [--video]` - per-frame likeness, weak frames listed, labelled A-over-B sheet.
 
+## Multi-show (channel) intros: library -> gallery -> picks
+
+The anime library is `/mnt/datadisk/anime/<Show>/` (one folder per show,
+episode number read from the file name - see `library.EPISODE_PATTERNS`).
+`./amv.sh intro --library /mnt/datadisk/anime ...` needs no subtitles: each
+episode is decoded once to an 8 fps index (tmp/intro/library/, ~45 min for
+70 episodes), and footage that repeats across a show's episodes (OP, ED,
+eyecatches, title cards, recaps) is excluded. Scores alone picked dull shots
+(a door, a crowd pan) twice, even with spectacle terms - so the real flow is
+`--gallery` (12 sheets, start/mid/end per candidate), look, write
+`amv/intro/picks/NAME.json` (ids, optional `{"id", "shift"}`), then
+`--picks`. Per-show rejects go in `amv/intro/blacklist.json`.
+The delivered channel intro (no name on screen, 11 s) is
+`amv/intro/picks/channel_intro.json`; copies live in /mnt/datadisk/channel_intro/
+(1080p, plus a 4K/24 fps/44.1 kHz copy that joins onto remanga recaps by stream copy).
+
 ## Remaking an intro someone else cut
 
 `./amv.sh reference VIDEO --seconds N` -> tmp/intro/reference_map.json, then
@@ -69,6 +85,13 @@ frame (`ffmpeg -vf select=between(n,a,b),tile`), then rebuild.
 - **Frame-exact decoding**: no fps filter => `-fps_mode passthrough`
   (decode_tiny does it), same decoder and seek in matcher and renderer, seek
   (n-0.5)/fps for frame n. See amv-clip-selection "Frame-exact work".
+- **Never mux a looped still image and audio in one graph.** The intro's
+  focus mask (`-loop 1` image, 25 fps by default) set the picture's timing,
+  frames were dropped, and the audio got non-monotonic timestamps: 7-8 s of
+  sound under 11 s of picture, different every run. render.py now makes the
+  picture and the sound separately, joins them by stream copy, and refuses a
+  file whose sound is short. When checking any render, check the AUDIO
+  duration too (`ffprobe -show_entries stream=codec_type,duration`).
 - **Long GPU decodes** (motion map / reference index over 24 episodes) take
   ~8-10 min the first time; run them in the background and let them cache
   under tmp/intro/.

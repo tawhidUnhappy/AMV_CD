@@ -59,6 +59,12 @@ class Shot:
     tail_sig: list[float] = field(default_factory=list)
     head_motion: float = 0.0
     tail_motion: float = 0.0
+    #: Spectacle measures (see amv.intro.library_select.spectacle): colour,
+    #: how local the motion is (action moves part of the frame, a pan moves
+    #: all of it), and brightness swings (flashes, magic, impacts).
+    saturation: float = 0.0
+    concentration: float = 0.0
+    flash: float = 0.0
 
 
 def probe(shot: Shot) -> Shot:
@@ -73,6 +79,11 @@ def probe(shot: Shot) -> Shot:
     shot.brightness, shot.contrast = float(frames.mean()), float(frames.std())
     shot.motion, shot.skin = float(diffs.mean()), float(skin_mask(rgb.astype(np.int16)).mean())
     shot.has_cut = bool((diffs > CUT_DIFF).any())
+    change = np.abs(np.diff(frames, axis=0))
+    shot.concentration = float((change.std(axis=(1, 2)) / (change.mean(axis=(1, 2)) + 1e-3)).mean())
+    shot.flash = float(frames.mean(axis=(1, 2)).std())
+    rgbf = rgb.astype(np.float32)
+    shot.saturation = float(((rgbf.max(axis=-1) - rgbf.min(axis=-1)) / (rgbf.max(axis=-1) + 1.0)).mean())
     span = max(2, round(count * 0.3))
     shot.head_sig, shot.tail_sig = grid_signature(frames[:span]), grid_signature(frames[-span:])
     shot.head_motion, shot.tail_motion = float(diffs[: span - 1].mean()), float(diffs[-(span - 1):].mean())

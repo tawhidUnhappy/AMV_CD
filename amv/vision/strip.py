@@ -39,7 +39,7 @@ def main() -> None:
     jobs = []
     for s in slots:
         for k, f in enumerate(POINTS):
-            label = f"{s['index']} ep{s['episode']:02d} {s['start'] + s['duration'] * f:.1f}s"
+            label = f"{s['index']} {s.get('series', '')} ep{s['episode']:02d} {s['start'] + s['duration'] * f:.1f}s"
             jobs.append((s["file"], s["start"] + s["duration"] * f, label, work / f"{s['index']:03d}_{k}.jpg"))
 
     def grab(job: tuple[str, float, str, Path]) -> Path:

@@ -1,0 +1,11 @@
+{
+ "about": "Universal channel intro (no channel name on screen), one shot per show from /mnt/datadisk/anime, chosen by eye from `./amv.sh intro --library /mnt/datadisk/anime --gallery` on 2026-09-25. Swell: dusk mountains, then a sunset walk; the drive builds from a bright sky fight through two fires to Re:Zero's shadow hands fading into the dark as the intro ends. Ids refer to tmp/intro/gallery/gallery.json - rebuild the gallery before reusing this file after the library or scoring changes.",
+ "picks": [
+  {"id": "c-Hell_Mode-02", "shift": 1.0, "why": "past a dissolve from a monster face at the head"},
+  "c-Angel_Next_Door-04",
+  "d-Otome_Game_Mob-07",
+  "d-Mairimashita_Iruma_kun-02",
+  "d-Mushoku_Tensei-07",
+  "d-Re_Zero-08"
+ ]
+}
