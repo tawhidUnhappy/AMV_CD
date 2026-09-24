@@ -17,9 +17,15 @@ the series or track is hard-coded.
 ## Quick start
 
 ```bash
-uv sync
 cp config.example.json config.json     # then edit it
+./amv.sh list                          # every command
 ```
+
+`./amv.sh <command>` runs any stage from any directory. Everything except the
+three GPU stages runs in a small cached environment (`requirements-light.txt`:
+numpy, librosa, pillow, scipy), so there's no need to sync torch/CUDA to
+select clips, render or run a check. The GPU stages (`vocals`, `transcribe`,
+`subs`) need `uv sync` once, and then `AMV_FULL=1 ./amv.sh <command>`.
 
 `config.json` is the only file you need to touch:
 
@@ -33,20 +39,24 @@ cp config.example.json config.json     # then edit it
 
 Paths may be absolute or relative to the project root; `~` and environment
 variables are expanded. Every value can also be overridden per-run with a
-command-line flag. `uv run python -m amv.core.config` prints what resolved.
+command-line flag. `./amv.sh config` prints what resolved.
 
 ## Running the pipeline
 
 ```bash
-uv run python -m amv.audio.isolate_vocals     # Demucs -> vocal stem
-uv run python -m amv.audio.transcribe_song    # WhisperX -> word-level timings
-uv run python -m amv.audio.beats              # librosa -> beat grid
-uv run python -m amv.subs.extract_subs        # episodes -> subtitles + scene index
-uv run python -m amv.render.select_clips --candidates 8
-uv run python -m amv.vision.contact_sheet     # REVIEW THIS before rendering
-uv run python -m amv.render.lyric_overlay     # -> lyrics.ass  (needs the EDL)
-uv run python -m amv.render.pipeline          # -> tmp/out/amv.mp4
+AMV_FULL=1 ./amv.sh vocals       # Demucs -> vocal stem
+AMV_FULL=1 ./amv.sh transcribe   # WhisperX -> word-level timings
+./amv.sh beats                   # librosa -> beat grid
+AMV_FULL=1 ./amv.sh subs         # episodes -> subtitles + scene index
+./amv.sh select --candidates 8   # -> tmp/edl.json
+./amv.sh sheet                   # REVIEW THIS before rendering (./amv.sh strip for start/mid/end)
+./amv.sh lyrics                  # -> lyrics.ass  (needs the EDL)
+./amv.sh render                  # -> tmp/out/amv.mp4
 ```
+
+Changing code? Run `./amv.sh regress snapshot` first and `./amv.sh regress
+check` after. It confirms the timeline, a fresh EDL, the lyric overlay and
+every remake plan came out the same.
 
 `lyric_overlay` reads `tmp/edl.json`, so run it *after* `select_clips`.
 
@@ -92,7 +102,7 @@ Each of these caught a real defect; run them after changes:
 
 - `amv/thumbnail/` composes YouTube thumbnails from real frames (three
   layouts: label-arrow, speech bubble, split). No image generation. Run with
-  `uv run python -m amv.thumbnail`.
+  `./amv.sh thumbs`.
 - `amv/vision/thumb_candidates.py` pulls strong frames to choose from.
 
 ### Channel intro
@@ -100,7 +110,7 @@ Each of these caught a real defect; run them after changes:
 A short, lyric-free intro cut to the opening of any track:
 
 ```bash
-uv run python -m amv.intro --song "path/to/track.wav" --seconds 11
+./amv.sh intro --song "path/to/track.wav" --seconds 11
 ```
 
 It reads the song's opening as a quiet swell followed by the moment the music
@@ -119,9 +129,9 @@ scene index from `amv.subs.extract_subs`, but nothing from the lyric stages.
 To reproduce an intro someone cut from this series, frame for frame:
 
 ```bash
-uv run python -m amv.intro.reference "their_video.mp4" --seconds 11   # -> tmp/intro/reference_map.json
-# write tmp/intro/remake_plan.json from the map (see amv/intro/remake.py)
-uv run python -m amv.intro.remake                                      # -> tmp/intro/remake.mp4
+./amv.sh reference "their_video.mp4" --seconds 11      # -> tmp/intro/reference_map.json
+./amv.sh remake --spec amv/intro/remakes/NAME.json      # -> tmp/intro/remake.mp4
+./amv.sh compare "their_video.mp4" tmp/intro/remake.mp4 --seconds 11 --watermark tr
 ```
 
 `reference` finds the episode frame behind every frame of the video. It
@@ -131,7 +141,10 @@ with no close match are the effects, composites or footage from outside
 these episodes. The plan fills those in by hand from a small effect
 vocabulary: `zoom_blur`, `white_burst`, a `punch` zoom with an `rgb` split,
 a per-channel colour `grade`, and a fading `caption`. `remake` then renders
-the plan with the song laid under it.
+the plan with the song laid under it. A spec is the committed part: the footage
+frames always come from the map, so the spec holds only the frames the map
+can't match, plus the look (`amv/intro/remakes/mushoku_ep1_recap.json` is a
+worked example).
 
 ## Environment notes (Windows + NVIDIA)
 

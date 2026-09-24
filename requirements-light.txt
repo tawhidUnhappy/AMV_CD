@@ -1,0 +1,8 @@
+# Everything except the GPU stages (Demucs, WhisperX, PGS OCR) runs on these.
+# ./amv.sh uses them through `uv run --with-requirements`, which caches the
+# environment, so no `uv sync` of the full torch/CUDA stack is needed to
+# select clips, render, remake an intro or run any check.
+numpy>=1.26,<2.3
+librosa>=0.11.0
+pillow
+scipy

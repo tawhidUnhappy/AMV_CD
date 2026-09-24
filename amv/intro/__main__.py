@@ -1,6 +1,6 @@
 """Make a short channel intro from the series and the opening of a song.
 
-    uv run python -m amv.intro --song "path/to/track.wav" --seconds 11
+    ./amv.sh intro --song "path/to/track.wav" --seconds 11
 
 Plans cuts from the song (a calm swell, then a cut per beat from the
 orchestra's entrance), picks a shot per slot, writes a contact sheet to look

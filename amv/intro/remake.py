@@ -20,7 +20,15 @@ that frame; seeking to n/fps itself does not - the container's 7ms start
 offset and millisecond timestamps put some seeks one frame late or early,
 measured on every segment of the first remake.
 
-    uv run python -m amv.intro.remake [--plan PATH] [--out PATH]
+A plan is usually built from a SPEC (amv/intro/remakes/*.json, committed)
+plus the reference map amv.intro.reference wrote: the map supplies every
+footage frame, the spec only the frames the map cannot (effects, shots from
+outside these episodes) and the look (grade, caption, audio offset). See
+build_plan() for the override forms.
+
+    ./amv.sh reference VIDEO --seconds 11
+    ./amv.sh remake --spec amv/intro/remakes/NAME.json [--song PATH]
+    ./amv.sh remake --plan tmp/intro/remake_plan.json      # a plan edited by hand
 """
 
 from __future__ import annotations
@@ -130,10 +138,15 @@ def apply_grade(frame: np.ndarray, grade: dict) -> np.ndarray:
 
 
 def caption_layer(spec: dict, width: int, height: int) -> Image.Image:
-    font_path = spec.get("font") or str(config.find_font("LiberationSans-Regular.ttf", "Arial.ttf", "DejaVuSans.ttf"))
+    font_path = spec.get("font", "LiberationSans-Regular.ttf")
+    if not Path(font_path).is_file():
+        font_path = str(config.find_font(font_path, "LiberationSans-Regular.ttf", "Arial.ttf", "DejaVuSans.ttf"))
     font = ImageFont.truetype(font_path, spec["size"])
-    spacing = spec.get("spacing", 0)
     widths = [font.getlength(ch) for ch in spec["text"]]
+    # "width" asks for the whole line at that many pixels, by letter spacing.
+    spacing = spec.get("spacing")
+    if spacing is None:
+        spacing = max(0.0, (spec["width"] - sum(widths)) / (len(widths) - 1)) if "width" in spec else 0.0
     total = sum(widths) + spacing * (len(widths) - 1)
     layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer)
@@ -191,12 +204,80 @@ def render(plan: dict, out: Path) -> Path:
     return out
 
 
+def build_plan(spec: dict, reference_map: list[dict], song: Path) -> dict:
+    """A render plan from a spec and a reference map.
+
+    Every frame starts as the map's match. Then, in order, each override
+    replaces its "frames" (a list, or [first, last] as {"from": a, "to": b}):
+      - "like": i        -> the source frame of map frame i
+      - "anchor": i, "step": s -> map frame i's episode, stepping back s source
+                            frames per output frame (for frames the map could
+                            not match because they are zoomed or covered)
+    Any other key is copied onto each frame: a list as long as "frames" is
+    per frame ("punch", "rgb", "center", "fx", "strength"), anything else is
+    the same for all. "require" entries check the map before anything is
+    built, so a spec never renders against a map it was not written for.
+    """
+    frames = [{"ep": f["ep"], "n": f["n"]} for f in reference_map]
+    if len(frames) < round(spec["seconds"] * spec["fps"]):
+        raise SystemExit(f"the reference map has {len(frames)} frames; the spec needs "
+                         f"{round(spec['seconds'] * spec['fps'])}")
+    for need in spec.get("require", []):
+        got = reference_map[need["frame"]]
+        if got["corr"] < need.get("min_corr", 0.99) or ("ep" in need and got["ep"] != need["ep"]):
+            raise SystemExit(f"reference map frame {need['frame']} is {got}, the spec expects {need} - "
+                             "was the map made from the same video?")
+    special = {"frames", "from", "to", "like", "anchor", "step", "about"}
+    for override in spec.get("overrides", []):
+        targets = override.get("frames") or list(range(override["from"], override["to"] + 1))
+        for k, i in enumerate(targets):
+            if "like" in override:
+                base = reference_map[override["like"]]
+                entry = {"ep": base["ep"], "n": base["n"]}
+            elif "anchor" in override:
+                base = reference_map[override["anchor"]]
+                entry = {"ep": base["ep"], "n": base["n"] - round((override["anchor"] - i) * override["step"])}
+            else:
+                entry = dict(frames[i])
+            for key, value in override.items():
+                if key in special:
+                    continue
+                per_frame = isinstance(value, list) and len(value) == len(targets) and key != "center" \
+                    or (key == "center" and value and isinstance(value[0], list))
+                picked = value[k] if per_frame else value
+                if picked is not None:
+                    entry[key] = picked
+            frames[i] = entry
+    frames = frames[: round(spec["seconds"] * spec["fps"])]
+    return {
+        "fps": spec["fps"], "width": spec["width"], "height": spec["height"], "seconds": spec["seconds"],
+        "frames": frames, "grade": [{k: v for k, v in g.items() if k != "about"} for g in spec.get("grade", [])],
+        "caption": spec.get("caption"),
+        "audio": {"file": str(song), **spec.get("audio", {})},
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--plan", type=Path, default=paths.INTRO / "remake_plan.json")
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument("--spec", type=Path, help="a remake spec (amv/intro/remakes/*.json)")
+    source.add_argument("--plan", type=Path, help="render this plan as it stands")
+    parser.add_argument("--map", type=Path, default=paths.INTRO / "reference_map.json",
+                        help="the reference map a spec is built on")
+    parser.add_argument("--song", type=Path, default=None, help="default: song from config.json")
     parser.add_argument("--out", type=Path, default=paths.INTRO / "remake.mp4")
     args = parser.parse_args()
-    render(json.loads(args.plan.read_text(encoding="utf-8")), args.out)
+
+    if args.spec:
+        reference_map = json.loads(args.map.read_text(encoding="utf-8"))["frames"]
+        song = (args.song or config.load().require_song()).resolve()
+        plan = build_plan(json.loads(args.spec.read_text(encoding="utf-8")), reference_map, song)
+        plan_path = paths.INTRO / "remake_plan.json"
+        plan_path.write_text(json.dumps(plan, indent=0), encoding="utf-8")
+        print(f"Wrote {plan_path}", flush=True)
+    else:
+        plan = json.loads((args.plan or paths.INTRO / "remake_plan.json").read_text(encoding="utf-8"))
+    render(plan, args.out)
 
 
 if __name__ == "__main__":

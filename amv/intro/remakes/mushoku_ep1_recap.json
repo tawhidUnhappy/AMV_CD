@@ -1,0 +1,26 @@
+{
+ "about": "Remake of the 11s intro of a 'Mushoku Tensei Jobless Reincarnation Episode 1' recap video (30fps). Footage frames come from the reference map; these are the frames it cannot match. Built 2026-09-24 against: ./amv.sh reference VIDEO --seconds 11. Their channel watermark is not reproduced; the caption's typo (REINCARTION) is fixed. The green-eye shot (9.47-9.6s) is not in S1 - the ep20 logo shot's own rays stand in.",
+ "fps": 30, "width": 1920, "height": 1080, "seconds": 11.0,
+ "require": [
+  {"frame": 202, "min_corr": 0.99, "ep": 11},
+  {"frame": 216, "min_corr": 0.99, "ep": 1},
+  {"frame": 287, "min_corr": 0.5, "ep": 20}
+ ],
+ "overrides": [
+  {"about": "6.77-6.83s: the creature's last frame blurs, then flashes to white speed lines",
+   "frames": [203, 204, 205], "like": 202,
+   "fx": ["zoom_blur", "zoom_blur", "white_burst"], "strength": [0.12, 0.3, null]},
+  {"about": "6.87-7.13s: punch into the library from 3x on the cheek, RGB split fading out; source runs ~1.2 frames per output frame",
+   "frames": [206, 207, 208, 209, 210, 211, 212, 213, 214], "anchor": 216, "step": 1.2,
+   "punch": [3.0, 2.4, 1.45, 1.3, 1.2, 1.12, 1.06, 1.03, 1.0],
+   "rgb": [14, 12, 9, 7, 5, 4, 3, 2, 1],
+   "center": [[0.47, 0.5], [0.48, 0.49], [0.49, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5], [0.5, 0.5]]},
+  {"about": "9.47-9.53s: in place of the eye, the logo shot's rays, back from where the map picks it up",
+   "frames": [284, 285, 286], "anchor": 287, "step": 1.5}
+ ],
+ "grade": [{"about": "the logo's navy background pushed to near-black, golds kept", "from": 284,
+            "gain": [0.76, 0.74, 0.31], "offset": [17, 8.5, 5.5]}],
+ "caption": {"text": "\"MUSHOKU TENSEI: JOBLESS REINCARNATION\"", "from": 295, "fade": 3, "y": 0.914,
+             "size": 68, "width": 1650, "font": "LiberationSans-Regular.ttf"},
+ "audio": {"delay": 0.242, "fade_out": 0.25}
+}

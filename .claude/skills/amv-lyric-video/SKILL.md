@@ -15,7 +15,8 @@ driven by `config.json`). Numbers quoted as evidence come from one real build:
 a 26-episode series cut to a 3:19 track. Treat them as calibration, not as
 constants for your own material.
 
-This skill is the entry point; each pipeline stage has its own skill with the
+For how to run things, the code map and the check tools, load
+[amv-ops](../amv-ops/SKILL.md) first. This skill is the pipeline's entry point; each pipeline stage has its own skill with the
 details, traps and measured numbers. Load the one for the stage you're
 actually touching:
 
@@ -44,15 +45,15 @@ actually touching:
 ## Pipeline order
 
 ```bash
-uv run python -m amv.audio.isolate_vocals     # Demucs -> vocal stem (~8s on a 3060)
-uv run python -m amv.audio.transcribe_song    # WhisperX on the stem -> word timings
-uv run python -m amv.audio.beats              # librosa -> beat grid
-uv run python -m amv.subs.extract_subs        # episodes -> subtitles + scene index
-uv run python -m amv.render.select_clips --candidates 8    # -> tmp/edl.json
-uv run python -m amv.vision.contact_sheet     # QA — REVIEW THIS BEFORE RENDERING
-uv run python -m amv.render.lyric_overlay     # -> tmp/work/lyrics.ass   (reads edl.json!)
-uv run python -m amv.render.pipeline          # -> tmp/out/amv.mp4
-uv run python -m amv.subs.check_lyric_timing  # verify text sits over singing
+AMV_FULL=1 ./amv.sh vocals       # Demucs -> vocal stem (~8s on a 3060)
+AMV_FULL=1 ./amv.sh transcribe   # WhisperX on the stem -> word timings
+./amv.sh beats                   # librosa -> beat grid
+AMV_FULL=1 ./amv.sh subs         # episodes -> subtitles + scene index
+./amv.sh select --candidates 8   # -> tmp/edl.json
+./amv.sh sheet                   # QA — REVIEW THIS BEFORE RENDERING
+./amv.sh lyrics                  # -> tmp/work/lyrics.ass   (reads edl.json!)
+./amv.sh render                  # -> tmp/out/amv.mp4
+./amv.sh check-timing            # verify text sits over singing
 ```
 
 Ordering traps: `lyric_overlay` reads `tmp/edl.json`, so it must run *after*

@@ -17,7 +17,7 @@ Correlation is on mean-removed, normalised grey frames with a corner masked
 match. A reference frame with no good match (< ~0.95) is an effect, a
 composite or footage from elsewhere - remake plans handle those by hand.
 
-    uv run python -m amv.intro.reference VIDEO --seconds 11
+    ./amv.sh reference VIDEO --seconds 11
 """
 
 from __future__ import annotations
