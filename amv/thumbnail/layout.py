@@ -12,14 +12,13 @@ import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from amv.core import config
+from amv.core import paths
 from amv.thumbnail.colors import RED, WHITE, YELLOW
 from amv.thumbnail.shapes import Arrow, Bubble
 from amv.thumbnail.text import Text
 
-ROOT = config.ROOT
-CAND = ROOT / "tmp" / "qa" / "thumbcand"
-OUT_DIR = ROOT / "tmp" / "out" / "thumbnails"
+CAND = paths.QA / "thumbcand"
+OUT_DIR = paths.THUMBNAILS
 
 WIDTH, HEIGHT = 1280, 720
 

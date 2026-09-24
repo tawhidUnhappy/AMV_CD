@@ -6,16 +6,13 @@ import argparse
 from pathlib import Path
 
 from amv.audio.lyrics import timed_phrases, validate
-from amv.core import config
+from amv.core import paths
 from amv.render.lyric_overlay.ass import build_ass
-
-ROOT = config.ROOT
-DEFAULT_OUT = ROOT / "tmp" / "work" / "lyrics.ass"
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    parser.add_argument("--out", type=Path, default=paths.LYRICS_ASS)
     args = parser.parse_args()
 
     validate()

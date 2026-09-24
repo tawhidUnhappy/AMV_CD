@@ -40,6 +40,18 @@ def ffconcat_path(path: Path) -> str:
     return path.resolve().as_posix().replace("'", "'\\''")
 
 
+def subtitles_filter(ass: Path, fonts_dir: Path) -> str:
+    """The libass `subtitles` filter for an ASS file and its fonts folder.
+
+    Inside a filtergraph a path must be POSIX-ish with the drive colon
+    escaped, or `C:/...` reads as an option separator on Windows."""
+
+    def escaped(path: Path) -> str:
+        return path.resolve().as_posix().replace(":", "\\:")
+
+    return f"subtitles='{escaped(ass)}':fontsdir='{escaped(fonts_dir)}'"
+
+
 def write_concat_file(paths: list[Path], output: Path) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", encoding="utf-8", newline="\n") as f:

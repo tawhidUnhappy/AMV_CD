@@ -5,10 +5,9 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
-from amv.core import config
+from amv.core import config, paths
 
-ROOT = config.ROOT
-FONT_DIR = ROOT / "tmp" / "work" / "thumbfonts"
+FONT_DIR = paths.WORK / "thumbfonts"
 
 # Families libass will be asked for. Whatever font files are found on this
 # machine get staged into a private fontsdir; if a family is missing, libass

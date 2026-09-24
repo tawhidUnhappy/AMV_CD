@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import json
 
-from amv.core.config import ROOT
+from amv.core import paths
 
 
 def main() -> None:
-    data = json.loads((ROOT / "tmp" / "song" / "transcript.json").read_text(encoding="utf-8"))
+    data = json.loads(paths.TRANSCRIPT_MIX.read_text(encoding="utf-8"))
     segments = data["segments"]
     words = [w for s in segments for w in s.get("words", [])]
     missing = [w for w in words if "start" not in w or "end" not in w]

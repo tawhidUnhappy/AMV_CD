@@ -6,7 +6,6 @@ which would leave lyric text hanging on screen long before it is sung.
 
 from __future__ import annotations
 
-
 import numpy as np
 
 from amv.audio.lyrics import load_words

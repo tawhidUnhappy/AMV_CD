@@ -5,11 +5,11 @@ from __future__ import annotations
 import json
 from collections import Counter
 
-from amv.core.config import ROOT
+from amv.core import paths
 
 
 def main() -> None:
-    index = json.loads((ROOT / "tmp" / "subs" / "scene_index.json").read_text(encoding="utf-8"))
+    index = json.loads(paths.SCENE_INDEX.read_text(encoding="utf-8"))
     speakers: Counter[str] = Counter()
     for ep in index["episodes"]:
         for event in ep["events"]:

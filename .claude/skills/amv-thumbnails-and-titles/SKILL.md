@@ -1,6 +1,6 @@
 ---
 name: amv-thumbnails-and-titles
-description: Compose YouTube thumbnails from real frames with libass text/arrows/bubbles, and write titles/descriptions with correct attribution. Use when working on amv/thumbnail.py, when an arrow points at nothing, when a split-layout crop cuts off a face, or when drafting the video title/description/credits.
+description: Compose YouTube thumbnails from real frames with libass text/arrows/bubbles, and write titles/descriptions with correct attribution. Use when working on amv/thumbnail/, when an arrow points at nothing, when a split-layout crop cuts off a face, or when drafting the video title/description/credits.
 ---
 
 # AMV pipeline: thumbnails and titles

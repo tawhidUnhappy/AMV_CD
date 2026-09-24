@@ -7,23 +7,18 @@ separate from the "which windows do we even consider" candidate building.
 from __future__ import annotations
 
 import re
-import subprocess
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 import numpy as np
 
 from amv.render.select_clips.themes import BLACKLIST
+from amv.vision.decode import decode_tiny, grid_signature, luma
 from amv.vision.skin import skin_mask
 
 if TYPE_CHECKING:
     from amv.render.select_clips.candidates import Candidate
 
-# Coarse grid the head/tail composition signature is reduced to. Deliberately
-# tiny: the question is "is the mass in the same part of frame", not "are
-# these the same picture", and a fine grid would only ever match a shot
-# against itself.
-SIG_ROWS, SIG_COLS = 3, 4
 # Ceiling on the match-cut term, in the same units as the visual score
 # (which spans roughly 0-40).
 MATCH_WEIGHT = 14.0
@@ -67,6 +62,60 @@ def credits_zones(episode: dict) -> list[tuple[float, float]]:
     return zones
 
 
+# Song zones: a subtitled OP/ED has no dialogue-free gap for credits_zones to
+# find (this release subtitles the opening song's lyrics), but its lines
+# repeat from episode to episode where dialogue does not. Measured on
+# Mushoku Tensei S1: word 3-grams shared with 2+ other episodes, on lines
+# held 4s+ on average, found the OP in 14 of 24 episodes and the ED in 22;
+# 4-grams missed ep12's OP, whose OCR differs from episode to episode.
+SONG_NGRAM = 3
+SONG_MIN_LINES = 3
+SONG_MIN_SPAN = 30.0
+SONG_MIN_LINE_SECONDS = 4.0
+SONG_LINE_GAP = 25.0
+# The picture runs before the first sung line and after the last.
+SONG_PAD_BEFORE, SONG_PAD_AFTER = 12.0, 18.0
+
+
+def _grams(text: str) -> set[str]:
+    words = WORD_RE.findall(text.lower().replace("'", ""))
+    return {" ".join(words[i:i + SONG_NGRAM]) for i in range(len(words) - SONG_NGRAM + 1)}
+
+
+def song_zones(episodes: dict[int, dict]) -> dict[int, list[tuple[float, float]]]:
+    """OP/ED spans found as runs of subtitle lines repeated across episodes.
+
+    Complements credits_zones rather than replacing it: an unsubtitled song is
+    a gap, a subtitled one is a repeat, and a release can have both. A false
+    positive only costs a few candidate windows."""
+    seen_in: dict[str, set[int]] = {}
+    for number, episode in episodes.items():
+        for event in episode["events"]:
+            for gram in _grams(event["text"]):
+                seen_in.setdefault(gram, set()).add(number)
+
+    zones: dict[int, list[tuple[float, float]]] = {}
+    for number, episode in episodes.items():
+        runs: list[list[dict]] = []
+        for event in episode["events"]:
+            grams = _grams(event["text"])
+            shared = sum(1 for g in grams if len(seen_in[g] - {number}) >= 2)
+            if len(grams) < 2 or shared / len(grams) < 0.5:
+                continue
+            if runs and event["start"] - runs[-1][-1]["end"] < SONG_LINE_GAP:
+                runs[-1].append(event)
+            else:
+                runs.append([event])
+        zones[number] = [
+            (run[0]["start"] - SONG_PAD_BEFORE, run[-1]["end"] + SONG_PAD_AFTER)
+            for run in runs
+            if len(run) >= SONG_MIN_LINES
+            and run[-1]["end"] - run[0]["start"] >= SONG_MIN_SPAN
+            and sum(e["end"] - e["start"] for e in run) / len(run) >= SONG_MIN_LINE_SECONDS
+        ]
+    return zones
+
+
 def usable(episode: dict, start: float, duration: float, zones: list[tuple[float, float]]) -> bool:
     end = start + duration
     if start < HEAD_SKIP or end > episode["duration"] - TAIL_SKIP:
@@ -102,7 +151,8 @@ def theme_score(event: dict, keywords: tuple[str, ...], speaker: str | None) -> 
 
 
 def probe_stats(path: str, start: float, duration: float) -> ShotProbe:
-    """Decode the window tiny and return (brightness, contrast, motion, skin).
+    """Decode the window tiny and measure brightness, contrast, motion, skin
+    and the head/tail signatures match_score compares.
 
     A 96x54 8fps RGB stream is enough to tell a black frame from a face and a
     static shot from a fight, at a fraction of the cost of a real decode.
@@ -113,39 +163,12 @@ def probe_stats(path: str, start: float, duration: float) -> ShotProbe:
     tails overlap: warm food reads as skin, and an unlit night shot reads as
     none. It is therefore weighted, never used as a gate.
     """
-    width, height, fps = 96, 54, 8
-    filters = f"scale={width}:{height},fps={fps},format=rgb24"
-    gpu_command = [
-        "ffmpeg", "-hwaccel", "cuda", "-v", "error", "-ss", f"{start:.3f}", "-t", f"{duration:.3f}", "-i", path,
-        "-vf", filters, "-f", "rawvideo", "-",
-    ]
-    cpu_command = [
-        "ffmpeg", "-v", "error", "-ss", f"{start:.3f}", "-t", f"{duration:.3f}", "-i", path,
-        "-vf", filters, "-f", "rawvideo", "-",
-    ]
-    try:
-        result = subprocess.run(gpu_command, capture_output=True, check=True)
-    except subprocess.CalledProcessError:
-        # NVDEC can refuse a handful of streams a software decoder tolerates
-        # (an odd profile/level, a corrupt-ish GOP); fall back per-window
-        # rather than let one bad clip zero out its whole probe.
-        try:
-            result = subprocess.run(cpu_command, capture_output=True, check=True)
-        except subprocess.CalledProcessError:
-            return ShotProbe()
-    frame_size = width * height * 3
-    count = len(result.stdout) // frame_size
+    rgb = decode_tiny(path, 96, 54, start=start, duration=duration, fps=8)
+    count = len(rgb)
     if count < 2:
         return ShotProbe()
-    rgb = np.frombuffer(result.stdout[: count * frame_size], dtype=np.uint8)
-    rgb = rgb.reshape(count, height, width, 3).astype(np.int16)
-    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
-    skin = skin_mask(rgb)
-
-    luma = (0.299 * r + 0.587 * g + 0.114 * b).astype(np.float32) / 255.0
-    brightness = float(luma.mean())
-    contrast = float(luma.std())
-    motion = float(np.abs(np.diff(luma, axis=0)).mean())
+    frames = luma(rgb)
+    motion = float(np.abs(np.diff(frames, axis=0)).mean())
 
     # How the shot opens and how it closes, for match cutting (see
     # match_score). A cut reads as continuous when the outgoing frame and the
@@ -153,23 +176,16 @@ def probe_stats(path: str, start: float, duration: float) -> ShotProbe:
     # signature is a coarse GRID of the frame rather than a single average:
     # two shots can share a mean brightness while looking nothing alike.
     span = max(1, round(count * 0.3))
-    head, tail = luma[:span], luma[-span:]
-
-    def signature(block) -> np.ndarray:
-        frame = block.mean(axis=0)
-        rows = np.array_split(frame, SIG_ROWS, axis=0)
-        cells = [c.mean() for row in rows for c in np.array_split(row, SIG_COLS, axis=1)]
-        return np.array(cells, dtype=np.float32)
-
+    head, tail = frames[:span], frames[-span:]
     head_motion = float(np.abs(np.diff(head, axis=0)).mean()) if span > 1 else motion
     tail_motion = float(np.abs(np.diff(tail, axis=0)).mean()) if span > 1 else motion
     return ShotProbe(
-        brightness=brightness,
-        contrast=contrast,
+        brightness=float(frames.mean()),
+        contrast=float(frames.std()),
         motion=motion,
-        skin=float(skin.mean()),
-        head_sig=signature(head).tolist(),
-        tail_sig=signature(tail).tolist(),
+        skin=float(skin_mask(rgb.astype(np.int16)).mean()),
+        head_sig=grid_signature(head),
+        tail_sig=grid_signature(tail),
         head_motion=head_motion,
         tail_motion=tail_motion,
     )

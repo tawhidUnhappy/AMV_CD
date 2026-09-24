@@ -16,14 +16,10 @@ import re
 from dataclasses import asdict
 from pathlib import Path
 
-from amv.core import config
+from amv.core import config, paths
 from amv.core.ffmpeg_tools import BITMAP_SUBTITLE_CODECS, probe_duration, run, subtitle_stream_index
 from amv.subs.ass_parser import episode_number, is_dialogue, parse_ass
 from amv.subs.pgs_ocr import extract_events as extract_pgs_events
-
-ROOT = config.ROOT
-DEFAULT_SUBS_DIR = ROOT / "tmp" / "subs"
-DEFAULT_INDEX = ROOT / "tmp" / "subs" / "scene_index.json"
 
 VIDEO_EXTENSIONS = ("*.mkv", "*.mp4", "*.m4v", "*.avi", "*.ts")
 
@@ -35,8 +31,8 @@ def main() -> None:
                         help="episode directory (default: source_dir from config.json)")
     parser.add_argument("--episode-pattern", default=cfg.episode_pattern,
                         help="regex with one capture group for the episode number")
-    parser.add_argument("--subs-dir", type=Path, default=DEFAULT_SUBS_DIR)
-    parser.add_argument("--index", type=Path, default=DEFAULT_INDEX)
+    parser.add_argument("--subs-dir", type=Path, default=paths.SUBS_DIR)
+    parser.add_argument("--index", type=Path, default=paths.SCENE_INDEX)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument(
         "--episodes", default=None,

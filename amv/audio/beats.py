@@ -14,10 +14,7 @@ from pathlib import Path
 
 import numpy as np
 
-from amv.core import config
-
-ROOT = config.ROOT
-DEFAULT_OUT = ROOT / "tmp" / "song" / "beats.json"
+from amv.core import config, paths
 
 
 def detect(song: Path, tightness: float = 100.0) -> dict:
@@ -42,7 +39,7 @@ def detect(song: Path, tightness: float = 100.0) -> dict:
 
 
 def load(path: Path | None = None) -> list[float]:
-    path = path or DEFAULT_OUT
+    path = path or paths.BEATS
     return json.loads(path.read_text(encoding="utf-8"))["beats"]
 
 
@@ -67,7 +64,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--song", type=Path, default=None,
                         help="track to analyse (default: song from config.json)")
-    parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    parser.add_argument("--out", type=Path, default=paths.BEATS)
     args = parser.parse_args()
 
     data = detect(args.song or config.load().require_song())

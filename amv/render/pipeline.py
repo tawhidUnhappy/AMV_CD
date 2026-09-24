@@ -20,12 +20,13 @@ import shutil
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from amv.core import config
+from amv.core import config, paths
 from amv.core.ffmpeg_tools import (
     choose_h264_encoder,
     h264_encoder_args,
     probe_duration,
     run,
+    subtitles_filter,
     write_concat_file,
 )
 from amv.render.grade import (
@@ -39,10 +40,6 @@ from amv.render.grade import (
 )
 
 ROOT = config.ROOT
-EDL_PATH = ROOT / "tmp" / "edl.json"
-WORK_DIR = ROOT / "tmp" / "work"
-CLIPS_DIR = ROOT / "tmp" / "clips"
-OUT_PATH = ROOT / "tmp" / "out" / "amv.mp4"
 FONTS_DIR = ROOT / "assets"
 
 _CFG = config.load()
@@ -63,7 +60,7 @@ def slot_frames(slots: list[dict]) -> list[int]:
 
 
 def clip_path(index: int) -> Path:
-    return CLIPS_DIR / f"clip_{index:04d}.mp4"
+    return paths.CLIPS / f"clip_{index:04d}.mp4"
 
 
 def render_clip(args: tuple[dict, int, str, str, int, bool, bool]) -> Path:
@@ -90,8 +87,8 @@ def render_clip(args: tuple[dict, int, str, str, int, bool, bool]) -> Path:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--edl", type=Path, default=EDL_PATH)
-    parser.add_argument("--out", type=Path, default=OUT_PATH)
+    parser.add_argument("--edl", type=Path, default=paths.EDL)
+    parser.add_argument("--out", type=Path, default=paths.VIDEO)
     parser.add_argument("--encoder", default="auto")
     parser.add_argument("--preset", default="p6")
     parser.add_argument("--cq", type=int, default=19)
@@ -105,8 +102,8 @@ def main() -> None:
     slots = json.loads(args.edl.read_text(encoding="utf-8"))["slots"]
     if args.limit:
         slots = slots[: args.limit]
-    CLIPS_DIR.mkdir(parents=True, exist_ok=True)
-    WORK_DIR.mkdir(parents=True, exist_ok=True)
+    paths.CLIPS.mkdir(parents=True, exist_ok=True)
+    paths.WORK.mkdir(parents=True, exist_ok=True)
     args.out.parent.mkdir(parents=True, exist_ok=True)
 
     encoder = choose_h264_encoder(args.encoder)
@@ -141,13 +138,13 @@ def main() -> None:
             if done % 20 == 0:
                 print(f"  {done}/{len(jobs)}", flush=True)
 
-    paths = [clip_path(s["index"]) for s in slots]
-    missing = [p.name for p in paths if not p.exists()]
+    clips = [clip_path(s["index"]) for s in slots]
+    missing = [p.name for p in clips if not p.exists()]
     if missing:
         raise SystemExit(f"Missing rendered clips: {missing[:10]}")
 
-    concat_file = write_concat_file(paths, WORK_DIR / "concat.txt")
-    silent = WORK_DIR / "silent.mp4"
+    concat_file = write_concat_file(clips, paths.WORK / "concat.txt")
+    silent = paths.WORK / "silent.mp4"
     print("Concatenating...", flush=True)
     run(
         ["ffmpeg", "-hide_banner", "-y", "-f", "concat", "-safe", "0", "-i", str(concat_file),
@@ -160,14 +157,10 @@ def main() -> None:
     if abs(joined - expected) > 0.15:
         print(f"WARNING: joined length is {joined - expected:+.3f}s off the timeline", flush=True)
 
-    lyrics = WORK_DIR / "lyrics.ass"
+    lyrics = paths.WORK / "lyrics.ass"
     if not lyrics.exists():
         raise SystemExit(f"Missing {lyrics} - run 'python -m amv.render.lyric_overlay' first")
-
-    # libass needs a POSIX-ish path with the drive colon escaped inside a filter.
-    ass_arg = lyrics.resolve().as_posix().replace(":", "\\:")
-    fonts_arg = FONTS_DIR.resolve().as_posix().replace(":", "\\:")
-    mask = write_focus_mask(WORK_DIR / "focus_mask.pgm")
+    mask = write_focus_mask(paths.WORK / "focus_mask.pgm")
     print("Applying radial focus, burning lyrics, muxing audio...", flush=True)
     # Order matters: the footage is blurred first, then the lyrics are drawn on
     # top, so the text stays sharp wherever it sits in the frame.
@@ -178,7 +171,7 @@ def main() -> None:
         f"[pre]gblur=sigma={BLUR_SIGMA}:steps=2[blurred];"
         f"[1:v]format=gray,scale={WIDTH}:{HEIGHT},format=yuv420p[mask];"
         "[sharp][blurred][mask]maskedmerge[focused];"
-        f"[focused]subtitles='{ass_arg}':fontsdir='{fonts_arg}',"
+        f"[focused]{subtitles_filter(lyrics, FONTS_DIR)},"
         f"fade=t=in:st=0:d={OPEN_FADE},"
         f"fade=t=out:st={max(0.0, total - CLOSE_FADE):.3f}:d={CLOSE_FADE}[v]"
     )
@@ -203,7 +196,7 @@ def main() -> None:
     )
 
     if not args.keep_clips:
-        shutil.rmtree(CLIPS_DIR, ignore_errors=True)
+        shutil.rmtree(paths.CLIPS, ignore_errors=True)
 
     print(f"\nWrote {args.out}  ({probe_duration(args.out):.2f}s)", flush=True)
 

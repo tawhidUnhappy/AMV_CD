@@ -8,12 +8,10 @@ that gap on known-good and known-bad picks before a threshold is chosen.
 
 from __future__ import annotations
 
-import json
-import subprocess
-
 import numpy as np
 
-from amv.core.config import ROOT
+from amv.core import paths
+from amv.vision.decode import decode_tiny
 
 # Slot indices classified from the QA contact sheets.
 TEXT_SCREENS = [1, 2, 9, 19, 25]
@@ -23,18 +21,10 @@ GOOD = [3, 6, 10, 11, 13, 89, 97, 107, 111, 121]
 
 def detail_ratio(path: str, start: float, duration: float) -> tuple[float, float]:
     """Fraction of pixels sitting on a strong edge, plus histogram bimodality."""
-    width, height = 256, 144
-    command = [
-        "ffmpeg", "-v", "error", "-ss", f"{start:.3f}", "-t", f"{max(duration, 0.4):.3f}", "-i", path,
-        "-vf", f"scale={width}:{height},fps=4,format=gray", "-f", "rawvideo", "-",
-    ]
-    result = subprocess.run(command, capture_output=True, check=False)
-    frame_size = width * height
-    count = len(result.stdout) // frame_size
-    if count == 0:
+    frames = decode_tiny(path, 256, 144, start=start, duration=max(duration, 0.4), fps=4, gray=True, gpu=False)
+    if len(frames) == 0:
         return 0.0, 0.0
-    frames = np.frombuffer(result.stdout[: count * frame_size], dtype=np.uint8)
-    frames = frames.reshape(count, height, width).astype(np.float32) / 255.0
+    frames = frames.astype(np.float32) / 255.0
     gx = np.abs(np.diff(frames, axis=2))[:, :-1, :]
     gy = np.abs(np.diff(frames, axis=1))[:, :, :-1]
     grad = np.maximum(gx, gy)
@@ -47,7 +37,7 @@ def detail_ratio(path: str, start: float, duration: float) -> tuple[float, float
 
 
 def main() -> None:
-    slots = json.loads((ROOT / "tmp" / "edl.json").read_text(encoding="utf-8"))["slots"]
+    slots = paths.load_slots()
     by_index = {s["index"]: s for s in slots}
 
     for label, indices in [("TEXT SCREEN", TEXT_SCREENS), ("SCENERY", SCENERY), ("GOOD", GOOD)]:

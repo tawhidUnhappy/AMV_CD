@@ -8,11 +8,10 @@ look like" (ass.py).
 from __future__ import annotations
 
 import json
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
-from amv.core.config import ROOT
+from amv.core import paths
 
 # Text appears this far ahead of the syllable so it is readable on the beat.
 LEAD_IN = 0.18
@@ -56,19 +55,13 @@ def row_skin(slot: dict):
     """
     import numpy as np
 
+    from amv.vision.decode import decode_tiny
     from amv.vision.skin import skin_mask
 
-    command = [
-        "ffmpeg", "-v", "error", "-ss", f"{slot['start']:.3f}", "-t", f"{max(slot['duration'], 0.5):.3f}",
-        "-i", slot["file"], "-vf", f"scale={PROBE_W}:{PROBE_H},fps=4,format=rgb24", "-f", "rawvideo", "-",
-    ]
-    result = subprocess.run(command, capture_output=True, check=False)
-    frame_size = PROBE_W * PROBE_H * 3
-    count = len(result.stdout) // frame_size
-    if count == 0:
+    rgb = decode_tiny(slot["file"], PROBE_W, PROBE_H, start=slot["start"], duration=max(slot["duration"], 0.5),
+                      fps=4, gpu=False).astype(np.int16)
+    if len(rgb) == 0:
         return np.zeros(PROBE_H)
-    rgb = np.frombuffer(result.stdout[: count * frame_size], dtype=np.uint8)
-    rgb = rgb.reshape(count, PROBE_H, PROBE_W, 3).astype(np.int16)
     skin = skin_mask(rgb)
     return skin.mean(axis=(0, 2))
 
@@ -109,7 +102,7 @@ def clearest_band(slots: list[dict]) -> str:
 def choose_positions(phrases: list, edl: Path | None = None) -> list[Position]:
     """Place every block bottom-centre, lifting to the top only when needed."""
     slots: list[dict] = []
-    path = edl or ROOT / "tmp" / "edl.json"
+    path = edl or paths.EDL
     if path.exists():
         slots = json.loads(path.read_text(encoding="utf-8"))["slots"]
 

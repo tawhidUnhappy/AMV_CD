@@ -5,7 +5,8 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from amv.core.config import ROOT
+from amv.core import paths
+from amv.core.ffmpeg_tools import subtitles_filter
 from amv.thumbnail.ass import build_ass
 from amv.thumbnail.fonts import stage_fonts
 from amv.thumbnail.layout import HEIGHT, WIDTH, Thumb
@@ -13,14 +14,12 @@ from amv.thumbnail.layout import HEIGHT, WIDTH, Thumb
 
 def render(thumb: Thumb, out_dir: Path) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    work = ROOT / "tmp" / "work"
+    work = paths.WORK
     work.mkdir(parents=True, exist_ok=True)
     ass_path = work / f"thumb_{thumb.name}.ass"
     ass_path.write_text(build_ass(thumb), encoding="utf-8")
 
     fonts = stage_fonts()
-    ass_arg = ass_path.resolve().as_posix().replace(":", "\\:")
-    fonts_arg = fonts.resolve().as_posix().replace(":", "\\:")
     output = out_dir / f"{thumb.name}.jpg"
 
     if thumb.right_source is not None:
@@ -40,7 +39,7 @@ def render(thumb: Thumb, out_dir: Path) -> Path:
             f"{panel(1, thumb.right_zoom, thumb.right_shift, thumb.right_vshift)}[r];"
             f"[l][r]hstack=inputs=2,"
             f"drawbox=x={half - 4}:y=0:w=8:h={HEIGHT}:color=black@1:t=fill,"
-            f"subtitles='{ass_arg}':fontsdir='{fonts_arg}'[v]"
+            f"{subtitles_filter(ass_path, fonts)}[v]"
         )
         command = [
             "ffmpeg", "-v", "error", "-y", "-i", str(thumb.source), "-i", str(thumb.right_source),
@@ -50,7 +49,7 @@ def render(thumb: Thumb, out_dir: Path) -> Path:
         graph = (
             f"scale={WIDTH}:{HEIGHT}:force_original_aspect_ratio=increase,"
             f"crop={WIDTH}:{HEIGHT},{thumb.grade},"
-            f"subtitles='{ass_arg}':fontsdir='{fonts_arg}'"
+            f"{subtitles_filter(ass_path, fonts)}"
         )
         command = [
             "ffmpeg", "-v", "error", "-y", "-i", str(thumb.source),

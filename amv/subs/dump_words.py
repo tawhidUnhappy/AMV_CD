@@ -6,13 +6,13 @@ import argparse
 import json
 from pathlib import Path
 
-from amv.core.config import ROOT
+from amv.core import paths
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--transcript", type=Path, default=ROOT / "tmp" / "song" / "transcript_vocals.json")
-    parser.add_argument("--out", type=Path, default=ROOT / "tmp" / "song" / "words_vocals.txt")
+    parser.add_argument("--transcript", type=Path, default=paths.TRANSCRIPT)
+    parser.add_argument("--out", type=Path, default=paths.WORDS)
     args = parser.parse_args()
 
     data = json.loads(args.transcript.read_text(encoding="utf-8"))

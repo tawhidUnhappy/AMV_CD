@@ -10,17 +10,16 @@ import argparse
 import json
 from pathlib import Path
 
-from amv.core import config
+from amv.core import paths
 
-ROOT = config.ROOT
-DEFAULT_OUT = ROOT / "tmp" / "song" / "transcript_vocals.json"
+DEFAULT_OUT = paths.TRANSCRIPT
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     # Default to the separated vocal stem: transcribing a full mix misplaces and
     # drops lyrics badly (see amv/audio/isolate_vocals.py).
-    parser.add_argument("--audio", type=Path, default=ROOT / "tmp" / "song" / "vocals.wav")
+    parser.add_argument("--audio", type=Path, default=paths.VOCALS)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--model", default="large-v3")
     parser.add_argument("--language", default="en")

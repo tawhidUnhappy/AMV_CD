@@ -8,32 +8,22 @@ still land near-black in the final render.
 from __future__ import annotations
 
 import argparse
-import subprocess
 from pathlib import Path
 
 import numpy as np
 
-from amv.core.config import ROOT
-
-DEFAULT = ROOT / "tmp" / "out" / "amv.mp4"
+from amv.core import paths
+from amv.vision.decode import decode_tiny
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--video", type=Path, default=DEFAULT)
+    parser.add_argument("--video", type=Path, default=paths.VIDEO)
     parser.add_argument("--fps", type=float, default=2.0)
     args = parser.parse_args()
 
-    width, height = 96, 54
-    result = subprocess.run(
-        ["ffmpeg", "-v", "error", "-i", str(args.video),
-         "-vf", f"scale={width}:{height},fps={args.fps},format=gray", "-f", "rawvideo", "-"],
-        capture_output=True, check=True,
-    )
-    frame_size = width * height
-    count = len(result.stdout) // frame_size
-    frames = np.frombuffer(result.stdout[: count * frame_size], dtype=np.uint8)
-    frames = frames.reshape(count, height, width).astype(np.float32) / 255.0
+    frames = decode_tiny(str(args.video), 96, 54, fps=args.fps, gray=True).astype(np.float32) / 255.0
+    count = len(frames)
     luma = frames.mean(axis=(1, 2))
 
     print(f"{count} sampled frames over {count / args.fps:.1f}s")

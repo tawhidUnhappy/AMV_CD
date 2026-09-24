@@ -33,10 +33,9 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from amv.core import config
+from amv.core import paths
 
-ROOT = config.ROOT
-TRANSCRIPT = ROOT / "tmp" / "song" / "transcript_vocals.json"
+TRANSCRIPT = paths.TRANSCRIPT
 
 
 @dataclass(frozen=True)

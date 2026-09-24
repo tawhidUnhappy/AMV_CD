@@ -11,7 +11,7 @@ from pathlib import Path
 
 import numpy as np
 
-from amv.core import config
+from amv.core import config, paths
 from amv.render.select_clips.candidates import Candidate, build_candidates
 from amv.render.select_clips.scoring import (
     MIN_SEPARATION,
@@ -20,13 +20,9 @@ from amv.render.select_clips.scoring import (
     probe_stats,
     visual_score,
 )
-from amv.render.timeline import build_slots
+from amv.render.timeline import Slot, build_slots
 
-ROOT = config.ROOT
-SCENE_INDEX = ROOT / "tmp" / "subs" / "scene_index.json"
-EDL_PATH = ROOT / "tmp" / "edl.json"
-
-# Story-continuity weighting (see the pick loop in main()).
+# Story-continuity weighting (see pick()).
 # Episodes run ~1422s, so 2000 per episode index keeps positions ordered
 # across episode boundaries without overlapping.
 EPISODE_STRIDE = 2000.0
@@ -57,66 +53,50 @@ def story_position(cand: Candidate) -> float:
     return cand.episode * EPISODE_STRIDE + cand.start
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--candidates", type=int, default=6, help="windows shortlisted per slot")
-    parser.add_argument("--workers", type=int, default=8)
-    parser.add_argument("--seed", type=int, default=20260728)
-    parser.add_argument("--out", type=Path, default=EDL_PATH)
-    args = parser.parse_args()
-
-    index = json.loads(SCENE_INDEX.read_text(encoding="utf-8"))
-    episodes = {e["episode"]: e for e in index["episodes"]}
+def load_episodes() -> dict[int, dict]:
     # Episode 6 is a 2.8min special, too short to hold a usable arc position.
-    episodes = {n: e for n, e in episodes.items() if e["duration"] > 600}
-    zones = {n: credits_zones(e) for n, e in episodes.items()}
-    for n, z in sorted(zones.items()):
-        spans = ", ".join(f"{a/60:.1f}-{b/60:.1f}min" for a, b in z)
-        print(f"  ep{n:02d} credits: {spans or '(none found)'}", flush=True)
+    return {n: e for n, e in paths.load_scene_index().items() if e["duration"] > 600}
 
-    rng = np.random.default_rng(args.seed)
-    slots = build_slots()
-    print(f"\nFilling {len(slots)} slots...", flush=True)
 
-    # Break slots need a wider shortlist: they are picked almost purely on
-    # motion, so more windows means a better chance of genuinely kinetic footage.
-    all_candidates: list[list[Candidate]] = [
-        build_candidates(slot, episodes, zones, rng, args.candidates * (2 if slot.kind == "break" else 1))
-        for slot in slots
-    ]
-
-    flat = [(i, c) for i, group in enumerate(all_candidates) for c in group]
+def score_all(slots: list[Slot], groups: list[list[Candidate]], workers: int) -> None:
+    """Probe every shortlisted window and fill in its visual score."""
+    flat = [(i, c) for i, group in enumerate(groups) for c in group]
     print(f"Scoring {len(flat)} candidate windows...", flush=True)
 
     def score_one(item: tuple[int, Candidate]) -> None:
         i, cand = item
-        want_motion = slots[i].kind == "break"
         probe = probe_stats(cand.file, cand.start, cand.duration)
         cand.brightness, cand.contrast = probe.brightness, probe.contrast
         cand.motion, cand.skin = probe.motion, probe.skin
         cand.head_sig, cand.tail_sig = probe.head_sig, probe.tail_sig
         cand.head_motion, cand.tail_motion = probe.head_motion, probe.tail_motion
-        cand.visual_score = visual_score(cand.brightness, cand.contrast, cand.motion, cand.skin, want_motion)
+        cand.visual_score = visual_score(cand.brightness, cand.contrast, cand.motion, cand.skin,
+                                         slots[i].kind == "break")
 
-    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+    with ThreadPoolExecutor(max_workers=workers) as pool:
         list(pool.map(score_one, flat))
 
+
+def pick(slots: list[Slot], groups: list[list[Candidate]]) -> list[Candidate]:
+    """One candidate per slot, walking the story forward.
+
+    Story cursor: how far into the series the edit has walked so far.
+
+    Without this, each slot independently took its best-scoring window, so
+    the source timeline lurched backwards constantly (ep01@843s, then
+    ep01@304s, then ep02@461s, then ep01@687s...). Individually fine shots,
+    but consecutively they read as a shuffle rather than as a story.
+    Preferring windows that sit *after* the previous pick makes successive
+    shots advance through the series, so the edit narrates instead of
+    sampling. The cursor resets at each section boundary because sections
+    already step forward through their own episode ranges (SECTION_EPISODES)
+    — carrying an advanced cursor across would starve the new range.
+    """
     chosen: list[Candidate] = []
     used: list[tuple[int, float]] = []
-    # Story cursor: how far into the series the edit has walked so far.
-    #
-    # Without this, each slot independently took its best-scoring window, so
-    # the source timeline lurched backwards constantly (ep01@843s, then
-    # ep01@304s, then ep02@461s, then ep01@687s...). Individually fine shots,
-    # but consecutively they read as a shuffle rather than as a story.
-    # Preferring windows that sit *after* the previous pick makes successive
-    # shots advance through the series, so the edit narrates instead of
-    # sampling. The cursor resets at each section boundary because sections
-    # already step forward through their own episode ranges (SECTION_EPISODES)
-    # — carrying an advanced cursor across would starve the new range.
     cursor = float("-inf")
     current_section: str | None = None
-    for slot, group in zip(slots, all_candidates):
+    for slot, group in zip(slots, groups, strict=True):
         if slot.section != current_section:
             current_section = slot.section
             cursor = float("-inf")
@@ -135,36 +115,43 @@ def main() -> None:
         # left off — comparable composition, light and energy across the cut.
         # See scoring.match_score.
         group.sort(key=lambda c: -(c.total + continuity(c) + match_score(previous, c)))
-        pick = None
-        for cand in group:
-            clash = any(ep == cand.episode and abs(pos - cand.start) < MIN_SEPARATION for ep, pos in used)
-            if not clash and cand.visual_score > -20:
-                pick = cand
-                break
-        if pick is None:
-            pick = group[0]
-        used.append((pick.episode, pick.start))
-        cursor = story_position(pick)
-        chosen.append(pick)
+        choice = next(
+            (c for c in group
+             if c.visual_score > -20
+             and not any(ep == c.episode and abs(pos - c.start) < MIN_SEPARATION for ep, pos in used)),
+            group[0],
+        )
+        used.append((choice.episode, choice.start))
+        cursor = story_position(choice)
+        chosen.append(choice)
+    return chosen
 
-    # Play each run of instrumental-break shots in chronological order.
-    #
-    # The continuity weighting above can only prefer a forward window if the
-    # slot's shortlist happens to contain one, which left ~20% of transitions
-    # still running backwards. Break slots carry no lyric, so nothing pairs a
-    # specific shot to a specific slot — the run can simply be re-ordered
-    # after the fact, which makes the montage strictly chronological instead
-    # of merely biased that way. Lyric slots are deliberately left alone:
-    # their footage was matched to the words, and resorting them would trade
-    # the thing that makes the edit mean something for tidier chronology.
-    #
-    # Note this re-order does scramble the match-cut pairing that the pick
-    # loop computed for these slots, since `previous` changes underneath it.
-    # In practice the two mostly agree — consecutive moments from one scene
-    # share composition and light, which is exactly what match_score rewards —
-    # so chronological order tends to *produce* graphic matches rather than
-    # break them. The match term therefore does its real work on the lyric
-    # slots, which keep the order they were picked in.
+
+def order_breaks(slots: list[Slot], chosen: list[Candidate]) -> None:
+    """Play each run of instrumental-break shots in chronological order.
+
+    The continuity weighting in pick() can only prefer a forward window if the
+    slot's shortlist happens to contain one, which left ~20% of transitions
+    still running backwards. Break slots carry no lyric, so nothing pairs a
+    specific shot to a specific slot — the run can simply be re-ordered
+    after the fact, which makes the montage strictly chronological instead
+    of merely biased that way. Lyric slots are deliberately left alone:
+    their footage was matched to the words, and resorting them would trade
+    the thing that makes the edit mean something for tidier chronology.
+
+    Note this re-order does scramble the match-cut pairing that the pick
+    loop computed for these slots, since `previous` changes underneath it.
+    In practice the two mostly agree — consecutive moments from one scene
+    share composition and light, which is exactly what match_score rewards —
+    so chronological order tends to *produce* graphic matches rather than
+    break them. The match term therefore does its real work on the lyric
+    slots, which keep the order they were picked in.
+
+    Duration belongs to the slot, not to the shot, so it is re-stamped after
+    reordering — a shot picked for a 1.3s slot that now lands on a 2.6s one
+    would otherwise carry the short length into the render and come up
+    frames short.
+    """
     start = 0
     while start < len(slots):
         if slots[start].kind != "break":
@@ -176,15 +163,12 @@ def main() -> None:
             end += 1
         chosen[start:end] = sorted(chosen[start:end], key=story_position)
         start = end
-
-    # Duration belongs to the slot, not to the shot, so re-stamp it after
-    # reordering — a shot picked for a 1.3s slot that now lands on a 2.6s one
-    # would otherwise carry the short length into the render and come up
-    # frames short.
-    for slot, cand in zip(slots, chosen):
+    for slot, cand in zip(slots, chosen, strict=True):
         cand.duration = round(slot.duration, 3)
 
-    edl = {
+
+def edl_document(slots: list[Slot], chosen: list[Candidate]) -> dict:
+    return {
         "song": str(config.load().song),
         "slots": [
             {
@@ -197,14 +181,43 @@ def main() -> None:
                 "lyric": slot.lyric,
                 **{k: (round(v, 4) if isinstance(v, float) else v) for k, v in asdict(cand).items()},
             }
-            for slot, cand in zip(slots, chosen)
+            for slot, cand in zip(slots, chosen, strict=True)
         ],
     }
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--candidates", type=int, default=6, help="windows shortlisted per slot")
+    parser.add_argument("--workers", type=int, default=8)
+    parser.add_argument("--seed", type=int, default=20260728)
+    parser.add_argument("--out", type=Path, default=paths.EDL)
+    args = parser.parse_args()
+
+    episodes = load_episodes()
+    zones = {n: credits_zones(e) for n, e in episodes.items()}
+    for n, z in sorted(zones.items()):
+        spans = ", ".join(f"{a/60:.1f}-{b/60:.1f}min" for a, b in z)
+        print(f"  ep{n:02d} credits: {spans or '(none found)'}", flush=True)
+
+    rng = np.random.default_rng(args.seed)
+    slots = build_slots()
+    print(f"\nFilling {len(slots)} slots...", flush=True)
+
+    # Break slots need a wider shortlist: they are picked almost purely on
+    # motion, so more windows means a better chance of genuinely kinetic footage.
+    groups = [
+        build_candidates(slot, episodes, zones, rng, args.candidates * (2 if slot.kind == "break" else 1))
+        for slot in slots
+    ]
+    score_all(slots, groups, args.workers)
+    chosen = pick(slots, groups)
+    order_breaks(slots, chosen)
+
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(edl, indent=1), encoding="utf-8")
+    args.out.write_text(json.dumps(edl_document(slots, chosen), indent=1), encoding="utf-8")
 
     rejected = sum(1 for c in chosen if c.visual_score <= -20)
-
     print(f"\nWrote {args.out}")
     print(f"episodes used: {dict(sorted(Counter(c.episode for c in chosen).items()))}")
     print(f"sources: {dict(Counter(c.note.split(':')[0] for c in chosen))}")

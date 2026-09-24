@@ -13,9 +13,8 @@ from pathlib import Path
 
 import numpy as np
 
-from amv.core import config
+from amv.core import config, paths
 
-ROOT = config.ROOT
 SR = 8000
 
 
@@ -30,7 +29,7 @@ def decode(path: Path, seconds: float) -> np.ndarray:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--video", type=Path, default=ROOT / "tmp" / "out" / "amv.mp4")
+    parser.add_argument("--video", type=Path, default=paths.VIDEO)
     parser.add_argument("--song", type=Path, default=None,
                         help="reference track (default: song from config.json)")
     parser.add_argument("--window", type=float, default=45.0)

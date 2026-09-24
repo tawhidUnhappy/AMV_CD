@@ -8,12 +8,10 @@ dead air. Calibrated against picks classified by eye from the contact sheets.
 
 from __future__ import annotations
 
-import json
-import subprocess
-
 import numpy as np
 
-from amv.core.config import ROOT
+from amv.core import paths
+from amv.vision.decode import decode_tiny
 from amv.vision.skin import skin_mask
 
 # Judged from the current data/qa sheets.
@@ -23,18 +21,9 @@ GOOD_FACES = [0, 3, 6, 10, 17, 20, 24, 26, 35, 37, 40]
 
 
 def probe_color(path: str, start: float, duration: float) -> tuple[float, float]:
-    width, height, fps = 96, 54, 4
-    command = [
-        "ffmpeg", "-v", "error", "-ss", f"{start:.3f}", "-t", f"{max(duration, 0.4):.3f}", "-i", path,
-        "-vf", f"scale={width}:{height},fps={fps},format=rgb24", "-f", "rawvideo", "-",
-    ]
-    result = subprocess.run(command, capture_output=True, check=False)
-    frame_size = width * height * 3
-    count = len(result.stdout) // frame_size
-    if count == 0:
+    rgb = decode_tiny(path, 96, 54, start=start, duration=max(duration, 0.4), fps=4, gpu=False).astype(np.int16)
+    if len(rgb) == 0:
         return 0.0, 0.0
-    data = np.frombuffer(result.stdout[: count * frame_size], dtype=np.uint8)
-    rgb = data.reshape(count, height, width, 3).astype(np.int16)
     mx = rgb.max(axis=-1)
     mn = rgb.min(axis=-1)
     saturation = float(np.mean((mx - mn) / (mx + 1e-6)))
@@ -42,7 +31,7 @@ def probe_color(path: str, start: float, duration: float) -> tuple[float, float]
 
 
 def main() -> None:
-    slots = json.loads((ROOT / "tmp" / "edl.json").read_text(encoding="utf-8"))["slots"]
+    slots = paths.load_slots()
     by_index = {s["index"]: s for s in slots}
     for label, indices in [("TEXT SCREEN", BAD_TEXT), ("SCENERY/INSERT", BAD_SCENERY), ("CHARACTER", GOOD_FACES)]:
         print(f"\n{label}")

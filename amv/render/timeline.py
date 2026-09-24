@@ -105,6 +105,26 @@ def _split_span(start: float, end: float, target: float) -> list[tuple[float, fl
     return [(start + i * step, start + (i + 1) * step) for i in range(count)]
 
 
+# A stretch without singing at least this long is an instrumental break, not
+# a breath between two lines.
+BREAK_GAP = 3.0
+
+
+def instrumental_gaps(phrases: list) -> tuple[list[tuple[float, float]], dict[float, str]]:
+    """The instrumental breaks, and each one's section name by its start.
+
+    Numbered in song order so each maps to its own stretch of the episode arc
+    (SECTION_EPISODES), instead of every later break collapsing onto the same
+    label."""
+    gaps: list[tuple[float, float]] = []
+    cursor = 0.0
+    for phrase in phrases:
+        if phrase.start - cursor >= BREAK_GAP:
+            gaps.append((cursor, phrase.start))
+        cursor = phrase.end
+    return gaps, {start: f"break{i + 1}" for i, (start, _) in enumerate(gaps)}
+
+
 def beat_grid(duration: float) -> list[float]:
     """The song's beat times, padded to cover the whole track."""
     from amv.audio.beats import extend_grid, load
@@ -138,13 +158,7 @@ def build_beat_slots() -> list[Slot]:
     duration = song_duration()
     grid = beat_grid(duration)
 
-    gaps: list[tuple[float, float]] = []
-    cursor = 0.0
-    for phrase in phrases:
-        if phrase.start - cursor >= 3.0:
-            gaps.append((cursor, phrase.start))
-        cursor = phrase.end
-    break_section = {start: f"break{i + 1}" for i, (start, _) in enumerate(gaps)}
+    gaps, break_section = instrumental_gaps(phrases)
 
     # Propose cut points, then let the grid decide exactly where they land.
     proposed: list[float] = [0.0, duration]
@@ -152,7 +166,7 @@ def build_beat_slots() -> list[Slot]:
     for phrase in phrases:
         if phrase.start > cursor:
             span = phrase.start - cursor
-            if span < 3.0:
+            if span < BREAK_GAP:
                 step = span
             elif cursor == 0.0:
                 step = OPEN_CUT
@@ -204,16 +218,7 @@ def build_slots() -> list[Slot]:
     phrases = timed_phrases()
     duration = song_duration()
 
-    # Number the real instrumental breaks in song order so each maps to its own
-    # stretch of the episode arc, instead of every later break collapsing onto
-    # the same label.
-    gaps: list[tuple[float, float]] = []
-    cursor = 0.0
-    for phrase in phrases:
-        if phrase.start - cursor >= 3.0:
-            gaps.append((cursor, phrase.start))
-        cursor = phrase.end
-    break_section = {start: f"break{i + 1}" for i, (start, _) in enumerate(gaps)}
+    _, break_section = instrumental_gaps(phrases)
 
     slots: list[Slot] = []
     cursor = 0.0
@@ -222,7 +227,7 @@ def build_slots() -> list[Slot]:
         span = end - start
         if span <= 0:
             return
-        if span >= 3.0:
+        if span >= BREAK_GAP:
             section = break_section.get(start, "break1")
             target = OPEN_CUT if start == 0.0 else BREAK_CUT
         else:

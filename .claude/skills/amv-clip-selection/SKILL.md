@@ -103,6 +103,18 @@ Since the text-screen detector failed, avoid those shots structurally:
 - Detect OP/ED as dialogue-free gaps ≥80s and exclude them. Expect this to find
   only one of the two in some episodes (dialogue over the ED breaks the gap) —
   the tail trim is the backstop.
+- **A subtitled OP has no gap to find.** The Mushoku Tensei release subtitles
+  the opening song's lyrics, so the gap detector missed it, and the intro picked
+  a shot with credit text fading in (ep12 @128s). `scoring.song_zones` finds
+  songs as runs of lines whose word 3-grams recur in 2+ other episodes (sung
+  lines, held 4s+ on average). It found the OP in 14 of 24 episodes and the ED
+  in 22. 4-grams missed ep12's OP because the OCR varies between episodes.
+  `amv.intro` uses both detectors; the full AMV still uses only the gap one.
+- **High motion is mostly montage.** The busiest seconds of an episode are
+  fast-cut sequences, not sustained action. Rank windows by per-frame motion
+  with no cut inside them (`amv/intro/select.py:motion_map`), not by
+  per-second averages; a per-second map shortlisted 60 of 60 windows with a
+  cut in them. Guessing windows from dialogue finds motion about 1 time in 20.
 - Keep a `BLACKLIST` of `(episode, start, end)` regions rejected on sight.
   Fanservice/bath scenes and remaining text screens need this — no metric
   catches them reliably, and the cost of one slipping into a published video is

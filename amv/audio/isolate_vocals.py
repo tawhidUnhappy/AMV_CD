@@ -11,10 +11,9 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from amv.core import config
+from amv.core import config, paths
 
-ROOT = config.ROOT
-DEFAULT_OUT = ROOT / "tmp" / "song" / "vocals.wav"
+DEFAULT_OUT = paths.VOCALS
 
 
 def main() -> None:

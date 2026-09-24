@@ -95,6 +95,25 @@ Each of these caught a real defect; run them after changes:
   `uv run python -m amv.thumbnail`.
 - `amv/vision/thumb_candidates.py` pulls strong frames to choose from.
 
+### Channel intro
+
+A short, lyric-free intro cut to the opening of any track:
+
+```bash
+uv run python -m amv.intro --song "path/to/track.wav" --seconds 11
+```
+
+It reads the song's opening as a quiet swell followed by the moment the music
+comes in, and cuts to that: two calm, wide shots over the swell, a white
+flash where the music enters, then a cut every couple of beats. The swell's
+shots come from the dialogue-free stretches (establishing shots). The drive
+section uses the busiest cut-free windows from a per-episode motion map,
+which is built once and cached in `tmp/intro/motion/`. Output goes to
+`tmp/intro/`: `intro.mp4`, `edl.json` and `sheet.jpg`. **Look at the sheet.**
+To swap out a shot, reject its region with `--skip EP:START-END` and run
+again, or edit `edl.json` by hand and run with `--render-only`. It needs the
+scene index from `amv.subs.extract_subs`, but nothing from the lyric stages.
+
 ## Environment notes (Windows + NVIDIA)
 
 Four pins in `pyproject.toml` are load-bearing:

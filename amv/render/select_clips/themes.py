@@ -24,6 +24,9 @@ BLACKLIST: tuple[tuple[int, float, float], ...] = (
     # up Cliff standing in where the edit wants Rudeus. Not a content issue,
     # just the wrong character for this slot.
     (20, 1080.0, 1100.0),
+    # Eris asleep in the grass, the camera panning up her legs and skirt. She
+    # is a child; rejected on sight from the intro's contact sheet.
+    (6, 455.0, 490.0),
 )
 
 # Per-lyric search terms. Keys are the joined display lines from

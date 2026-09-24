@@ -7,14 +7,14 @@ correction looks.
 from __future__ import annotations
 
 import argparse
-import json
 import subprocess
 from pathlib import Path
 
-from amv.core.config import ROOT
+from amv.core import paths
 from amv.render.grade import GRADE
+from amv.vision.contact_sheet import tile
 
-OUT = ROOT / "tmp" / "qa" / "grade"
+OUT = paths.QA / "grade"
 
 
 def main() -> None:
@@ -23,7 +23,7 @@ def main() -> None:
     parser.add_argument("--raw", action="store_true", help="also render ungraded source for comparison")
     args = parser.parse_args()
 
-    slots = json.loads((ROOT / "tmp" / "edl.json").read_text(encoding="utf-8"))["slots"]
+    slots = paths.load_slots()
     step = max(1, len(slots) // args.count)
     picks = slots[::step][: args.count]
 
@@ -47,16 +47,7 @@ def main() -> None:
             )
             tiles.append(raw)
 
-    listing = OUT / "list.txt"
-    listing.write_text("".join(f"file '{p.as_posix()}'\n" for p in tiles), encoding="ascii")
-    columns = 4 if not args.raw else 4
-    rows = max(1, (len(tiles) + columns - 1) // columns)
-    sheet = ROOT / "tmp" / "qa" / "grade_check.jpg"
-    subprocess.run(
-        ["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(listing),
-         "-vf", f"tile={columns}x{rows}:padding=5:color=0x141414", "-frames:v", "1", str(sheet)],
-        check=True,
-    )
+    sheet = tile(tiles, paths.QA / "grade_check.jpg", cols=4, cell=None, padding=5, color="0x141414")
     print(f"Wrote {sheet}")
 
 

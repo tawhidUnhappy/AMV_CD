@@ -8,11 +8,12 @@ is deliberately cool and vignetted, which is the opposite of what reads at
 from __future__ import annotations
 
 import argparse
-import json
 import subprocess
 
-from amv.core.config import ROOT
-OUT = ROOT / "tmp" / "qa" / "thumbcand"
+from amv.core import paths
+from amv.vision.contact_sheet import tile
+
+OUT = paths.QA / "thumbcand"
 
 
 def main() -> None:
@@ -21,7 +22,7 @@ def main() -> None:
     parser.add_argument("--min-skin", type=float, default=0.22)
     args = parser.parse_args()
 
-    slots = json.loads((ROOT / "tmp" / "edl.json").read_text(encoding="utf-8"))["slots"]
+    slots = paths.load_slots()
     # Big faces, bright and punchy: high skin fraction plus strong contrast.
     ranked = sorted(
         (s for s in slots if s.get("skin", 0) >= args.min_skin and s.get("brightness", 0) > 0.18),
@@ -38,24 +39,17 @@ def main() -> None:
              "-frames:v", "1", "-vf", "scale=1280:720", str(full)],
             check=True,
         )
-        tile = OUT / f"t{i:02d}.jpg"
+        small = OUT / f"t{i:02d}.jpg"
         subprocess.run(
             ["ffmpeg", "-v", "error", "-y", "-i", str(full), "-vf",
              f"scale=440:248,drawtext=text='{i:02d} ep{slot['episode']:02d}':fontcolor=yellow:fontsize=22"
-             ":x=6:y=6:box=1:boxcolor=black@0.7:boxborderw=4", str(tile)],
+             ":x=6:y=6:box=1:boxcolor=black@0.7:boxborderw=4", str(small)],
             check=True,
         )
-        tiles.append(tile)
+        tiles.append(small)
         print(f"  cand{i:02d}  ep{slot['episode']:02d} @{mid:7.1f}s  skin={slot.get('skin', 0):.3f}")
 
-    listing = OUT / "list.txt"
-    listing.write_text("".join(f"file '{p.as_posix()}'\n" for p in tiles), encoding="ascii")
-    sheet = ROOT / "tmp" / "qa" / "thumb_candidates.jpg"
-    subprocess.run(
-        ["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(listing),
-         "-vf", "tile=4x3:padding=5:color=0x141414", "-frames:v", "1", str(sheet)],
-        check=True,
-    )
+    sheet = tile(tiles, paths.QA / "thumb_candidates.jpg", cols=4, cell=None, padding=5, color="0x141414")
     print(f"\nWrote {sheet}")
 
 

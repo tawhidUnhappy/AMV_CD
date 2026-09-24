@@ -1,6 +1,6 @@
 ---
 name: amv-lyric-sync
-description: Transcribe an isolated vocal stem (Demucs + WhisperX) for word-accurate lyric timing in an AMV, and verify blocks land on singing with check_lyric_timing.py. Use when lyric text appears at the wrong time, transcription looks wrong, or you're setting up amv/isolate_vocals.py and amv/transcribe_song.py.
+description: Transcribe an isolated vocal stem (Demucs + WhisperX) for word-accurate lyric timing in an AMV, and verify blocks land on singing with check_lyric_timing.py. Use when lyric text appears at the wrong time, transcription looks wrong, or you're setting up amv/audio/isolate_vocals.py and amv/audio/transcribe_song.py.
 ---
 
 # AMV pipeline: lyric timing (transcribe the vocal stem)
@@ -21,8 +21,8 @@ across 3.3s of instrumental, so the opening block appeared **nine seconds
 early**. It also silently dropped five entire lines and misheard others.
 Demucs `htdemucs` costs ~8 seconds on a mid-range GPU. Always run it.
 
-Run order: `amv/isolate_vocals.py` (Demucs → vocal stem) then
-`amv/transcribe_song.py` (WhisperX on the stem → word timings).
+Run order: `amv/audio/isolate_vocals.py` (Demucs → vocal stem) then
+`amv/audio/transcribe_song.py` (WhisperX on the stem → word timings).
 
 Then **verify**: `check_lyric_timing.py` measures each displayed block against
 energy in the vocal stem.

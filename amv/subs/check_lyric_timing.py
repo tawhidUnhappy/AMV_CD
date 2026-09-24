@@ -13,9 +13,9 @@ from pathlib import Path
 
 import numpy as np
 
-from amv.audio.lyrics import ROOT, timed_phrases
+from amv.audio.lyrics import timed_phrases
+from amv.core import paths
 
-VOCALS = ROOT / "tmp" / "song" / "vocals.wav"
 SR = 8000
 
 
@@ -32,7 +32,7 @@ def envelope(path: Path) -> np.ndarray:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--vocals", type=Path, default=VOCALS)
+    parser.add_argument("--vocals", type=Path, default=paths.VOCALS)
     parser.add_argument("--lead-in", type=float, default=0.18)
     args = parser.parse_args()
 

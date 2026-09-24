@@ -1,6 +1,6 @@
 ---
 name: amv-lyric-typography
-description: Render AMV lyric overlays as ASS/libass (colour, sizing, blur/move animation, face-avoiding placement) and decide which phrases get on-screen text at all. Use when working on amv/lyric_overlay.py, font_compare.py, when text overlaps a face, or when the video reads like a subtitle track instead of an AMV.
+description: Render AMV lyric overlays as ASS/libass (colour, sizing, blur/move animation, face-avoiding placement) and decide which phrases get on-screen text at all. Use when working on amv/render/lyric_overlay/, font_compare.py, when text overlaps a face, or when the video reads like a subtitle track instead of an AMV.
 ---
 
 # AMV pipeline: lyric typography (ASS / libass)

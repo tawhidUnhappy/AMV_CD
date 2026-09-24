@@ -44,20 +44,25 @@ actually touching:
 ## Pipeline order
 
 ```bash
-export PYTHONPATH=.                    # Windows: $env:PYTHONPATH="."
-uv run python amv/isolate_vocals.py    # Demucs -> vocal stem (~8s on a 3060)
-uv run python amv/transcribe_song.py   # WhisperX on the stem -> word timings
-uv run python amv/beats.py             # librosa -> beat grid
-uv run python amv/extract_subs.py      # episodes -> subtitles + scene index
-uv run python amv/select_clips.py --candidates 8    # -> data/edl.json
-uv run python amv/contact_sheet.py     # QA — REVIEW THIS BEFORE RENDERING
-uv run python amv/lyric_overlay.py     # -> lyrics.ass   (reads edl.json!)
-uv run python amv/render.py            # -> final mp4
-uv run python amv/check_lyric_timing.py  # verify text sits over singing
+uv run python -m amv.audio.isolate_vocals     # Demucs -> vocal stem (~8s on a 3060)
+uv run python -m amv.audio.transcribe_song    # WhisperX on the stem -> word timings
+uv run python -m amv.audio.beats              # librosa -> beat grid
+uv run python -m amv.subs.extract_subs        # episodes -> subtitles + scene index
+uv run python -m amv.render.select_clips --candidates 8    # -> tmp/edl.json
+uv run python -m amv.vision.contact_sheet     # QA — REVIEW THIS BEFORE RENDERING
+uv run python -m amv.render.lyric_overlay     # -> tmp/work/lyrics.ass   (reads edl.json!)
+uv run python -m amv.render.pipeline          # -> tmp/out/amv.mp4
+uv run python -m amv.subs.check_lyric_timing  # verify text sits over singing
 ```
 
-Ordering traps: `lyric_overlay.py` reads `data/edl.json`, so it must run *after*
-`select_clips.py`. Re-running `select_clips.py` invalidates lyric placement.
+Ordering traps: `lyric_overlay` reads `tmp/edl.json`, so it must run *after*
+`select_clips`. Re-running `select_clips` invalidates lyric placement.
+
+Every generated path is defined once, in `amv/core/paths.py` — import from
+there rather than joining `ROOT / "tmp" / ...` in a new module.
+
+A short channel intro (no lyrics) is its own command, `python -m amv.intro`
+— see the README.
 
 ## Verification scripts to build
 

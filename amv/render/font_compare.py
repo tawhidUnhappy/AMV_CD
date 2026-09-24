@@ -12,10 +12,11 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from amv.core import config
+from amv.core import config, paths
+from amv.core.ffmpeg_tools import subtitles_filter
+from amv.vision.contact_sheet import tile
 
-ROOT = config.ROOT
-WORK = ROOT / "tmp" / "qa" / "fonts"
+WORK = paths.QA / "fonts"
 WHITE = "&H00F2F2F2&"
 RED = "&H002222CC&"
 
@@ -31,7 +32,7 @@ CANDIDATES: list[tuple[str, str, tuple[str, ...], int]] = [
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--video", type=Path, default=ROOT / "tmp" / "out" / "amv.mp4")
+    parser.add_argument("--video", type=Path, default=paths.VIDEO)
     parser.add_argument("--at", type=float, default=14.2, help="timestamp to grab the backdrop from")
     args = parser.parse_args()
 
@@ -80,24 +81,15 @@ def main() -> None:
             encoding="utf-8",
         )
         out = WORK / f"tile_{index}.jpg"
-        ass_arg = ass.resolve().as_posix().replace(":", "\\:")
-        fonts_arg = fonts_dir.resolve().as_posix().replace(":", "\\:")
         subprocess.run(
             ["ffmpeg", "-v", "error", "-y", "-i", str(frame),
-             "-vf", f"subtitles='{ass_arg}':fontsdir='{fonts_arg}',scale=960:540",
+             "-vf", f"{subtitles_filter(ass, fonts_dir)},scale=960:540",
              "-frames:v", "1", str(out)],
             check=True,
         )
         tiles.append(out)
 
-    listing = WORK / "list.txt"
-    listing.write_text("".join(f"file '{p.as_posix()}'\n" for p in tiles), encoding="ascii")
-    sheet = ROOT / "tmp" / "qa" / "font_compare.jpg"
-    subprocess.run(
-        ["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(listing),
-         "-vf", "tile=2x2:padding=6:color=0x101010", "-frames:v", "1", str(sheet)],
-        check=True,
-    )
+    sheet = tile(tiles, paths.QA / "font_compare.jpg", cols=2, cell=None, padding=6, color="0x101010")
     print(f"Wrote {sheet}")
 
 
