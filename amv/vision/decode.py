@@ -31,7 +31,11 @@ def decode_tiny(path: str, width: int, height: int, *, start: float | None = Non
     seek = [] if start is None else ["-ss", f"{start:.3f}"]
     span = [] if duration is None else ["-t", f"{duration:.3f}"]
     filters = ([f"fps={fps}"] if fps else []) + [f"scale={width}:{height}", "format=gray" if gray else "format=rgb24"]
-    tail = [*seek, *span, "-i", path, "-an", "-sn", "-vf", ",".join(filters), "-f", "rawvideo", "-"]
+    # Without an fps filter every decoded frame is wanted exactly once. The
+    # default constant-rate output duplicates a frame to cover a start offset
+    # (these releases start at 7ms), which shifts every frame after it by one.
+    timing = [] if fps else ["-fps_mode", "passthrough"]
+    tail = [*seek, *span, "-i", path, "-an", "-sn", "-vf", ",".join(filters), *timing, "-f", "rawvideo", "-"]
     data = b""
     decoders = [["ffmpeg", "-hwaccel", "cuda", "-v", "error"]] if gpu else []
     for prefix in [*decoders, ["ffmpeg", "-v", "error"]]:

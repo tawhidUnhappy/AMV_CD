@@ -119,3 +119,20 @@ Since the text-screen detector failed, avoid those shots structurally:
   Fanservice/bath scenes and remaining text screens need this — no metric
   catches them reliably, and the cost of one slipping into a published video is
   much higher than the cost of a manual list.
+
+## Frame-exact work (amv.intro.reference / remake)
+
+- **Decode without an fps filter using `-fps_mode passthrough`.** These
+  releases start at 7ms, and ffmpeg's default constant-rate output repeats
+  the first frame to cover that, shifting every later frame by one. It showed
+  up as a remake landing one frame late at cuts. `decode_tiny` sets it
+  whenever `fps` is None.
+- **Match and render with the same decoder and the same seek.** NVDEC and
+  the CPU decoder land on different first frames after one seek. Fetch frame
+  n by seeking to (n - 0.5)/fps on the CPU, in both the matcher and the renderer.
+- **A zoomed-looking match is usually the wrong frame, not a zoom.** Animated
+  camera moves make the neighbouring frame look like a crop. Fit zoom only
+  after the time match is exact; in the first remake, every shot was full frame.
+- **Correlation means nothing on near-black frames.** Two identical black frames
+  scored 0.47. Look at them before chasing the number.
+

@@ -114,6 +114,25 @@ To swap out a shot, reject its region with `--skip EP:START-END` and run
 again, or edit `edl.json` by hand and run with `--render-only`. It needs the
 scene index from `amv.subs.extract_subs`, but nothing from the lyric stages.
 
+### Remaking an existing intro
+
+To reproduce an intro someone cut from this series, frame for frame:
+
+```bash
+uv run python -m amv.intro.reference "their_video.mp4" --seconds 11   # -> tmp/intro/reference_map.json
+# write tmp/intro/remake_plan.json from the map (see amv/intro/remake.py)
+uv run python -m amv.intro.remake                                      # -> tmp/intro/remake.mp4
+```
+
+`reference` finds the episode frame behind every frame of the video. It
+first searches a coarse 8 fps index of every episode (built once, cached in
+`tmp/intro/index/`), then matches frame by frame around each hit. Frames
+with no close match are the effects, composites or footage from outside
+these episodes. The plan fills those in by hand from a small effect
+vocabulary: `zoom_blur`, `white_burst`, a `punch` zoom with an `rgb` split,
+a per-channel colour `grade`, and a fading `caption`. `remake` then renders
+the plan with the song laid under it.
+
 ## Environment notes (Windows + NVIDIA)
 
 Four pins in `pyproject.toml` are load-bearing:
