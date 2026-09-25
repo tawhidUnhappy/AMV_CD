@@ -65,6 +65,16 @@ The delivered channel intro (no name on screen, 11 s) is
 `amv/intro/picks/channel_intro.json`; copies live in /mnt/datadisk/channel_intro/
 (1080p, plus a 4K/24 fps/44.1 kHz copy that joins onto remanga recaps by stream copy).
 
+**Montage (v2, the current channel intro):** the gallery/picks intro felt
+flat - hard cuts only, a still shot, one cut per two beats. v2 is a shot list
+(`amv/intro/montages/channel_intro.json`, `./amv.sh montage SPEC`) rendered
+frame by frame through remake.render: dissolves in the swell, a push-in on
+every shot, a whoosh into the drop, a cut on EVERY beat after it, white flash
+on the drop, zoom punch + RGB split on the two strongest accents. Beat times
+come from `amv.intro.plan` (librosa onsets). Short beat-length shots were
+found inside gallery windows by probing every 0.05 s offset for the most
+motion with no cut; override by eye when the striking moment is elsewhere.
+
 ## Remaking an intro someone else cut
 
 `./amv.sh reference VIDEO --seconds N` -> tmp/intro/reference_map.json, then

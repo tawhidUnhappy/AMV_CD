@@ -1,0 +1,153 @@
+{
+ "about": "Universal channel intro v2 (no name on screen), 24 fps to match the remanga recaps. Swell: three scenic shots joined by dissolves, each pushing in, into a whoosh on the drop. Drive: a cut on every beat (8 shots), a slow push on each, a white flash on the drop and zoom punches with an RGB split on the two strongest accents (8.29 s, 10.33 s). Beat times are the Orchestral Theme's (amv.intro.plan). Picked by eye from the library gallery on 2026-09-25.",
+ "song": "/mnt/datadisk/background_music/Orchestral Theme [R8n6gZUajp4].wav",
+ "fps": 24,
+ "width": 1920,
+ "height": 1080,
+ "seconds": 11.0,
+ "look": {
+  "contrast": 1.08,
+  "saturation": 1.12,
+  "vignette": 0.35
+ },
+ "fade_in": 0.8,
+ "fade_out": 0.45,
+ "shots": [
+  {
+   "why": "dawn over the plains",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2323.125,
+   "until": 2.206,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "center": [
+    0.5,
+    0.45
+   ]
+  },
+  {
+   "why": "a blue butterfly past a sunlit tree",
+   "file": "/mnt/datadisk/anime/Mushoku_Tensei/Mushoku_Tensei_S01_Ep14_1080p_MultiAudio_@indexjunction.mkv",
+   "at": 1255.425,
+   "until": 4.249,
+   "zoom": [
+    1.02,
+    1.1
+   ],
+   "in": {
+    "dissolve": 0.6
+   }
+  },
+  {
+   "why": "a sunset walk, pushing into the drop",
+   "file": "/mnt/datadisk/anime/Angel_Next_Door/[SO] [02 - Angel Next Door] [1080p] [Dual].mkv",
+   "at": 41.875,
+   "until": 5.573,
+   "zoom": [
+    1.0,
+    1.12
+   ],
+   "in": {
+    "dissolve": 0.6
+   },
+   "out": {
+    "whoosh": 3
+   }
+  },
+  {
+   "why": "the drop: a mecha fight",
+   "file": "/mnt/datadisk/anime/Otome_Game_Mob/04. Mind If I Go Easy on You.mkv",
+   "at": 1159.675,
+   "until": 6.246,
+   "zoom": [
+    1.04,
+    1.0
+   ],
+   "in": {
+    "flash": 0.3
+   }
+  },
+  {
+   "why": "a hawk swooping in",
+   "file": "/mnt/datadisk/anime/Hell_Mode/[SO] [07 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+   "at": 1269.05,
+   "until": 6.943,
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "why": "the fiery serpent",
+   "file": "/mnt/datadisk/anime/Mairimashita_Iruma_kun/Mairimashita!_Iruma_kun_11_1080p_Dual_Audio_Eng_Subs_.mkv",
+   "at": 326.75,
+   "until": 7.616,
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "why": "golden flame doors burning to white",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E07] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1216.15,
+   "until": 8.29,
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "why": "accent: the fire flares",
+   "file": "/mnt/datadisk/anime/Mushoku_Tensei/Mushoku_Tensei_S01_Ep09_1080p_MultiAudio_@indexjunction.mkv",
+   "at": 263.35,
+   "until": 8.963,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 5,
+    "rgb": 12
+   }
+  },
+  {
+   "why": "an airship streaking across the sky",
+   "file": "/mnt/datadisk/anime/Otome_Game_Mob/11. What I Can Do Now.mkv",
+   "at": 1004.125,
+   "until": 9.659,
+   "zoom": [
+    1.0,
+    1.06
+   ]
+  },
+  {
+   "why": "a boar charging the camera",
+   "file": "/mnt/datadisk/anime/Hell_Mode/[SO] [05 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+   "at": 438.7,
+   "until": 10.333,
+   "zoom": [
+    1.0,
+    1.08
+   ]
+  },
+  {
+   "why": "accent: the shadow hands, into the dark",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2371.65,
+   "until": 11.0,
+   "zoom": [
+    1.0,
+    1.1
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 5,
+    "rgb": 12
+   }
+  }
+ ]
+}

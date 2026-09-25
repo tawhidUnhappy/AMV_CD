@@ -59,16 +59,26 @@ def episode_files() -> dict[int, Path]:
     return files
 
 
-def fetch_frames(frames: list[dict], width: int, height: int) -> dict[tuple[int, int], np.ndarray]:
-    """Decode every distinct source frame the plan uses, one decode per run
-    of nearby frames, keyed by (episode, frame number on the source clock)."""
-    files = episode_files()
-    wanted: dict[int, set[int]] = {}
+def source_key(entry: dict) -> tuple[str | int, int]:
+    """(file path or episode number, frame number) - a frame names its source
+    either way: "ep" for the configured series, "file" for anything else."""
+    return (entry.get("file") or entry["ep"], int(entry["n"]))
+
+
+def fetch_frames(frames: list[dict], width: int, height: int) -> dict[tuple[str | int, int], np.ndarray]:
+    """Decode every distinct source frame the plan uses (a frame's "blend"
+    source included), one decode per run of nearby frames."""
+    wanted: dict[str | int, set[int]] = {}
     for f in frames:
-        wanted.setdefault(f["ep"], set()).add(int(f["n"]))
-    out: dict[tuple[int, int], np.ndarray] = {}
+        for entry in (f, f.get("blend")):
+            if entry:
+                src, n = source_key(entry)
+                wanted.setdefault(src, set()).add(n)
+    files = episode_files() if any(isinstance(src, int) for src in wanted) else {}
+    out: dict[tuple[str | int, int], np.ndarray] = {}
     size = width * height * 3
-    for ep, numbers in wanted.items():
+    for src, numbers in wanted.items():
+        path = files[src] if isinstance(src, int) else Path(src)
         ordered = sorted(numbers)
         runs: list[list[int]] = [[ordered[0]]]
         for n in ordered[1:]:
@@ -76,7 +86,7 @@ def fetch_frames(frames: list[dict], width: int, height: int) -> dict[tuple[int,
         for run in runs:
             first, last = run[0], run[-1]
             proc = subprocess.run(
-                ["ffmpeg", "-v", "error", "-ss", f"{(first - 0.5) / SOURCE_FPS:.4f}", "-i", str(files[ep]),
+                ["ffmpeg", "-v", "error", "-ss", f"{(first - 0.5) / SOURCE_FPS:.4f}", "-i", str(path),
                  "-frames:v", str(last - first + 1), "-an", "-sn", "-fps_mode", "passthrough",
                  "-vf", f"scale={width}:{height}:flags=lanczos,format=rgb24", "-f", "rawvideo", "-"],
                 capture_output=True, check=True)
@@ -84,7 +94,7 @@ def fetch_frames(frames: list[dict], width: int, height: int) -> dict[tuple[int,
             for n in run:
                 k = n - first
                 if (k + 1) * size <= len(data):
-                    out[(ep, n)] = np.frombuffer(data[k * size:(k + 1) * size], np.uint8).reshape(height, width, 3)
+                    out[(src, n)] = np.frombuffer(data[k * size:(k + 1) * size], np.uint8).reshape(height, width, 3)
     return out
 
 
@@ -120,15 +130,56 @@ def rgb_split(frame: np.ndarray, px: int) -> np.ndarray:
     return out
 
 
-def compose(entry: dict, source: np.ndarray) -> np.ndarray:
+def compose_one(entry: dict, source: np.ndarray) -> np.ndarray:
     img = Image.fromarray(source)
     if entry.get("fx") == "zoom_blur":
+        if entry.get("punch", 1.0) != 1.0:
+            img = zoom(img, entry["punch"], tuple(entry.get("center", (0.5, 0.5))))
         return zoom_blur(img, entry.get("strength", 0.25)).astype(np.uint8)
     if entry.get("fx") == "white_burst":
         return white_burst(img).astype(np.uint8)
     if entry.get("punch", 1.0) != 1.0:
         img = zoom(img, entry["punch"], tuple(entry.get("center", (0.5, 0.5))))
     return rgb_split(np.asarray(img), int(entry.get("rgb", 0)))
+
+
+def compose(entry: dict, sources: dict) -> np.ndarray:
+    """One output frame: the source with its zoom/effect, then (in order) a
+    dissolve toward "blend" at "blend.alpha", a white "flash" and a black
+    "dim", each 0-1."""
+    frame = compose_one(entry, sources[source_key(entry)])
+    blend = entry.get("blend")
+    if blend:
+        other = compose_one(blend, sources[source_key(blend)]).astype(np.float32)
+        a = float(blend["alpha"])
+        frame = (frame.astype(np.float32) * (1 - a) + other * a).astype(np.uint8)
+    if entry.get("flash"):
+        a = float(entry["flash"])
+        frame = (frame.astype(np.float32) * (1 - a) + 255.0 * a).astype(np.uint8)
+    if entry.get("dim"):
+        frame = (frame.astype(np.float32) * (1 - float(entry["dim"]))).astype(np.uint8)
+    return frame
+
+
+def look_filter(look: dict | None, width: int, height: int):
+    """The plan-wide look: contrast and saturation about mid-grey, and a
+    vignette. Returns frame -> frame (identity without a look)."""
+    if not look:
+        return lambda frame: frame
+    contrast, saturation = float(look.get("contrast", 1.0)), float(look.get("saturation", 1.0))
+    ys = (np.arange(height) - height / 2) / (height / 2)
+    xs = (np.arange(width) - width / 2) / (width / 2)
+    r = np.sqrt(xs[None, :] ** 2 * (width / height) ** 2 / 2.2 + ys[:, None] ** 2 / 1.6)
+    vignette = (1.0 - float(look.get("vignette", 0.0)) * np.clip(r - 0.35, 0, 1) ** 1.5)[..., None].astype(np.float32)
+
+    def apply(frame: np.ndarray) -> np.ndarray:
+        f = frame.astype(np.float32)
+        grey = f.mean(axis=2, keepdims=True)
+        f = grey + (f - grey) * saturation
+        f = (f - 128.0) * contrast + 128.0
+        return np.clip(f * vignette, 0, 255).astype(np.uint8)
+
+    return apply
 
 
 def apply_grade(frame: np.ndarray, grade: dict) -> np.ndarray:
@@ -166,6 +217,7 @@ def render(plan: dict, out: Path) -> Path:
     frames = plan["frames"]
     print(f"Decoding source frames for {len(frames)} output frames...", flush=True)
     sources = fetch_frames(frames, width, height)
+    look = look_filter(plan.get("look"), width, height)
     caption = plan.get("caption")
     layer = caption_layer(caption, width, height) if caption else None
 
@@ -185,8 +237,7 @@ def render(plan: dict, out: Path) -> Path:
          "-c:a", "aac", "-b:a", "320k", "-t", f"{seconds:.3f}", "-movflags", "+faststart", str(out)],
         stdin=subprocess.PIPE)
     for i, entry in enumerate(frames):
-        source = sources[(entry["ep"], int(entry["n"]))]
-        frame = compose(entry, source)
+        frame = look(compose(entry, sources))
         for grade in plan.get("grade", []):
             if i >= grade["from"]:
                 frame = apply_grade(frame, grade)
