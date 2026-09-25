@@ -8,7 +8,7 @@ next. That is the camera's (or a large subject's) movement; small moving
 subjects barely move it. Sign convention: +x = the picture content moves
 right, +y = down, in fractions of the frame width/height per second.
 
-    ./amv.sh flow POOL.json      # adds "head"/"tail" motion to every entry
+    ./amv.sh flow POOL.json      # adds head/tail motion and focal point to every entry
 """
 
 from __future__ import annotations
@@ -56,6 +56,28 @@ def motion(file: str, start: float, duration: float) -> dict:
             "strength": round(float(np.linalg.norm(vec, axis=1).mean()), 3)}
 
 
+def focus(file: str, at: float) -> list[float]:
+    """Where the eye goes in the frame at `at`, as (x, y) fractions: the
+    centroid of skin (faces, hands) when there is enough of it, else of
+    local contrast (the busiest part of the picture) - for keeping the
+    viewer's focal point in place across a cut (eye trace)."""
+    from amv.vision.skin import skin_mask
+
+    rgb = decode_tiny(file, 64, 36, start=at, duration=0.05, gpu=False)
+    if len(rgb) == 0:
+        return [0.5, 0.5]
+    frame = rgb[0].astype(np.int16)
+    ys, xs = np.mgrid[0:36, 0:64]
+    skin = skin_mask(frame).astype(np.float32)
+    if skin.mean() > 0.03:
+        weight = skin
+    else:
+        grey = frame.mean(axis=2)
+        weight = np.abs(grey - np.median(grey)) ** 2
+    total = weight.sum() + 1e-6
+    return [round(float((weight * xs).sum() / total / 63), 3), round(float((weight * ys).sum() / total / 35), 3)]
+
+
 def direction(v: list[float]) -> str:
     x, y = v
     if abs(x) < 0.03 and abs(y) < 0.03:
@@ -68,12 +90,18 @@ def main() -> None:
     parser.add_argument("pool", type=Path, help="JSON list of {id, file, start, duration}")
     args = parser.parse_args()
     pool = json.loads(args.pool.read_text(encoding="utf-8"))
+    def measure(e: dict) -> dict:
+        m = motion(e["file"], e["start"], e["duration"])
+        m["focus_head"] = focus(e["file"], e["start"] + 0.02)
+        m["focus_tail"] = focus(e["file"], e["start"] + e["duration"] - 0.06)
+        return m
+
     with ThreadPoolExecutor(max_workers=6) as ex:
-        results = list(ex.map(lambda e: motion(e["file"], e["start"], e["duration"]), pool))
+        results = list(ex.map(measure, pool))
     for e, m in zip(pool, results, strict=True):
         e.update(m)
         print(f"{e['id']:22s} head {direction(m['head']):5s} {m['head']}  tail {direction(m['tail']):5s} {m['tail']}"
-              f"  strength {m['strength']}")
+              f"  strength {m['strength']}  focus {m['focus_head']} -> {m['focus_tail']}")
     args.pool.write_text(json.dumps(pool, indent=1), encoding="utf-8")
 
 

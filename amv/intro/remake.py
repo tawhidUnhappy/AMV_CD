@@ -73,7 +73,7 @@ def fetch_frames(frames: list[dict], width: int, height: int) -> dict[tuple[str 
         for entry in (f, f.get("blend")):
             if entry:
                 src, n = source_key(entry)
-                wanted.setdefault(src, set()).add(n)
+                wanted.setdefault(src, set()).update(n - k for k in range(int(entry.get("trail", 0)) + 1))
     files = episode_files() if any(isinstance(src, int) for src in wanted) else {}
     out: dict[tuple[str | int, int], np.ndarray] = {}
     size = width * height * 3
@@ -130,7 +130,9 @@ def rgb_split(frame: np.ndarray, px: int) -> np.ndarray:
     return out
 
 
-def compose_one(entry: dict, source: np.ndarray) -> np.ndarray:
+def compose_one(entry: dict, source: np.ndarray, trail: list[np.ndarray] | None = None) -> np.ndarray:
+    if trail:  # motion blur: this frame averaged with the ones before it
+        source = np.mean([source.astype(np.float32), *(t.astype(np.float32) for t in trail)], axis=0).astype(np.uint8)
     img = Image.fromarray(source)
     if entry.get("fx") == "zoom_blur":
         if entry.get("punch", 1.0) != 1.0:
@@ -162,7 +164,11 @@ def compose(entry: dict, sources: dict) -> np.ndarray:
     """One output frame: the source with its zoom/effect, then (in order) a
     dissolve toward "blend" at "blend.alpha", a white "flash" and a black
     "dim", each 0-1."""
-    frame = compose_one(entry, sources[source_key(entry)])
+    def trail_of(e: dict) -> list[np.ndarray]:
+        src, n = source_key(e)
+        return [sources[(src, n - k)] for k in range(1, int(e.get("trail", 0)) + 1) if (src, n - k) in sources]
+
+    frame = compose_one(entry, sources[source_key(entry)], trail_of(entry))
     blend = entry.get("blend")
     if blend:
         other = compose_one(blend, sources[source_key(blend)]).astype(np.float32)

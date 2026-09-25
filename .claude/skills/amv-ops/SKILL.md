@@ -97,6 +97,21 @@ motion), so flow is mostly MADE: `pan` continuing the neighbour's direction,
 song's own accents (librosa onsets > ~6). Check the render for clips that
 burn to white or fade to black inside a slot (both happened) and move "at".
 
+**AMV flow rules (researched 2026-09-25, applied in `montages/subaru_intro.json`):**
+1. Eye trace - keep the focal point (usually a face) where it was across a cut;
+   `align: true` + `focus_head/tail` from `./amv.sh flow` does it automatically.
+2. Motion continuity - carry direction across the cut; cut DURING motion, not at
+   rest; whip along the outgoing shot's measured tail motion.
+3. Impact frame on the beat - every cut on a beat/onset, hits on the strongest.
+4. Velocity ramps - ~200% into the beat, ~20-60% after, eased (`velocity`
+   keyframes); motion blur on the fast frames (`trail`, automatic above 1.4x).
+5. Impact freeze - 10-15% speed for 3-5 frames on the big hits, then out.
+6. Scale pulse - ~1.05 -> 1.2 zoom between beats, eased.
+7. Shake on bass/impacts; flashes and whips reset the eye between unrelated shots.
+Traps met: 0.8 s scan windows slowed to fill 1.3 s slots expose fades to black
+inside the source - print per-frame luma of the window before committing it;
+night scenes at luma < 0.1 read as gaps, replace rather than lift.
+
 ## Remaking an intro someone else cut
 
 `./amv.sh reference VIDEO --seconds N` -> tmp/intro/reference_map.json, then

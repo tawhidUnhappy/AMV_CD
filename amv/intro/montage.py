@@ -32,7 +32,13 @@ Spec (times are output seconds; "at" is where a shot starts in its file;
 - "in": {"shake": {"amount": 0.02, "frames": 6}} jolts the frame on impact;
 - "pan": [[x0, y0], [x1, y1]] moves the frame centre across the shot (zoom
   in first so there is room), "ease": true eases zoom and pan in and out;
-- "speed" below 1 is slow motion (a shorter clean window can fill a longer slot).
+- "speed" below 1 is slow motion (a shorter clean window can fill a longer slot);
+  "velocity": [[fraction, speed], ...] ramps it within the shot (eased) - e.g.
+  [[0, 2.2], [0.3, 0.25], [1, 0.5]] hits fast on the beat and drifts slow, or a
+  dip to ~0.12 for a few frames is an impact freeze; above 1.4x the frame is
+  motion-blurred from the source frames before it;
+- "align": true with "focus_head"/"focus_tail" (from ./amv.sh flow) frames the
+  shot so its focal point starts where the previous shot's ended on screen.
 """
 
 from __future__ import annotations
@@ -51,17 +57,66 @@ def build(spec: dict, song: Path) -> dict:
     starts = [0.0] + [s["until"] for s in shots[:-1]]
     total = round(seconds * fps)
 
+    def velocity_offset(shot: dict, tau: float, length: float) -> tuple[float, float]:
+        """(source seconds consumed, instantaneous speed) `tau` seconds into a
+        shot. "velocity" is [[fraction, speed], ...] keyframes, eased between -
+        the velocity-edit ramp: fast into the beat, slow drift after it."""
+        keys = shot.get("velocity")
+        if not keys:
+            v = shot.get("speed", 1.0)
+            return tau * v, v
+        keys = sorted(keys)
+
+        def speed_at(f: float) -> float:
+            if f <= keys[0][0]:
+                return keys[0][1]
+            for (f0, v0), (f1, v1) in zip(keys, keys[1:], strict=False):
+                if f <= f1:
+                    u = (f - f0) / max(1e-6, f1 - f0)
+                    u = u * u * (3 - 2 * u)
+                    return v0 + (v1 - v0) * u
+            return keys[-1][1]
+
+        steps = 48
+        dt = tau / steps if tau > 0 else 0.0
+        consumed = sum(speed_at((j + 0.5) * dt / length) for j in range(steps)) * dt
+        return consumed * shot.get("speed", 1.0), speed_at(tau / length) * shot.get("speed", 1.0)
+
+    # Eye trace: a shot with "align" is framed so that its focal point at its
+    # first frame lands where the previous shot's focal point sat on screen
+    # at its last frame - the eye does not have to jump across the cut.
+    placements: list[tuple[list[float], list[float]]] = []
+    screen_focus = None
+    for shot in shots:
+        z0, z1 = shot.get("zoom", [1.0, 1.0])
+        c0, c1 = shot.get("pan", [shot.get("center", [0.5, 0.5])] * 2)
+        if shot.get("align") and screen_focus is not None and shot.get("focus_head"):
+            p = shot["focus_head"]
+            want = [p[i] - (screen_focus[i] - 0.5) / z0 for i in range(2)]
+            drift = [c1[i] - c0[i] for i in range(2)]
+            c0 = [min(max(want[i], 0.5 / z0), 1 - 0.5 / z0) for i in range(2)]
+            c1 = [min(max(c0[i] + drift[i], 0.5 / z1), 1 - 0.5 / z1) for i in range(2)]
+        placements.append((c0, c1))
+        tail = shot.get("focus_tail")
+        screen_focus = [(tail[i] - c1[i]) * z1 + 0.5 for i in range(2)] if tail else None
+
     def source(shot: dict, start: float, t: float) -> dict:
         """Where `shot` is at output time t (may run past its own window)."""
         z0, z1 = shot.get("zoom", [1.0, 1.0])
         length = max(1e-6, shot["until"] - start)
         k = min(max((t - start) / length, 0.0), 1.0)
         ease = k * k * (3 - 2 * k) if shot.get("ease") else k
-        src_t = shot["at"] + (t - start) * shot.get("speed", 1.0)
-        c0, c1 = shot.get("pan", [shot.get("center", [0.5, 0.5])] * 2)
+        consumed, speed = velocity_offset(shot, t - start, length)
+        src_t = shot["at"] + consumed
+        c0, c1 = placements[shots.index(shot)]
         center = [round(c0[0] + (c1[0] - c0[0]) * ease, 4), round(c0[1] + (c1[1] - c0[1]) * ease, 4)]
-        return {"file": shot["file"], "n": round(src_t * SOURCE_FPS), "punch": round(z0 + (z1 - z0) * ease, 4),
-                "center": center}
+        entry = {"file": shot["file"], "n": round(src_t * SOURCE_FPS), "punch": round(z0 + (z1 - z0) * ease, 4),
+                 "center": center}
+        # Fast stretches smear: the previous source frames blended in, the
+        # motion blur a velocity edit relies on to make speed read as speed.
+        if speed > 1.4:
+            entry["trail"] = min(3, round(speed))
+        return entry
 
     frames = []
     for i in range(total):

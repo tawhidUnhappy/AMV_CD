@@ -1,0 +1,1386 @@
+{
+ "about": "Re:Zero-only intro of Subaru's most brutal movement, on ThapinByTheSea (copyright-free, /mnt/datadisk/background_music) from 11.26 s: a build of Subaru breaking down (stare, panic, blood, rage) into the 808 drop at 22.59 s, then 20 cuts on the bass - leaps, spikes, the White Whale, blood, the possessed eye, lightning - ending on his resolve. Built on AMV flow rules (web research 2026-09-25): cuts on beats with the impact frame on the hit, velocity ramps (fast into the beat, slow after, eased), motion blur on fast frames, 3-5-frame impact freezes on the biggest hits, zoom pulses between beats, shakes on impacts, whips along each shot's real motion, and eye-trace alignment (focal point held in place across cuts).",
+ "song": "/mnt/datadisk/background_music/ThapinByTheSea.wav",
+ "song_start": 11.26,
+ "audio_fade_in": 0.3,
+ "fps": 24,
+ "width": 1920,
+ "height": 1080,
+ "seconds": 22.67,
+ "look": {
+  "contrast": 1.2,
+  "saturation": 0.92,
+  "lift": 3,
+  "tint": [
+   1.05,
+   0.95,
+   0.97
+  ],
+  "vignette": 0.5
+ },
+ "fade_in": 0.8,
+ "fade_out": 0.6,
+ "shots": [
+  {
+   "why": "Subaru's broken stare",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2336.98,
+   "until": 2.32,
+   "zoom": [
+    1.06,
+    1.16
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.0
+    ],
+    [
+     1,
+     1.0
+    ]
+   ],
+   "speed": 0.862,
+   "align": true,
+   "focus_head": [
+    0.516,
+    0.417
+   ],
+   "focus_tail": [
+    0.509,
+    0.407
+   ]
+  },
+  {
+   "why": "clutching his head",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E03] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1077.0,
+   "until": 2.99,
+   "zoom": [
+    1.06,
+    1.16
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.0
+    ],
+    [
+     1,
+     1.0
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.478,
+    0.373
+   ],
+   "focus_tail": [
+    0.493,
+    0.33
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      -1.0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "bloodied, crying",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E04] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1745.9,
+   "until": 4.34,
+   "zoom": [
+    1.06,
+    1.16
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.0
+    ],
+    [
+     1,
+     1.0
+    ]
+   ],
+   "speed": 0.578,
+   "align": true,
+   "focus_head": [
+    0.525,
+    0.387
+   ],
+   "focus_tail": [
+    0.571,
+    0.161
+   ]
+  },
+  {
+   "why": "bloodied, closer",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E04] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1735.12,
+   "until": 5.66,
+   "zoom": [
+    1.06,
+    1.16
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.0
+    ],
+    [
+     1,
+     1.0
+    ]
+   ],
+   "speed": 0.591,
+   "align": true,
+   "focus_head": [
+    0.659,
+    0.533
+   ],
+   "focus_tail": [
+    0.766,
+    0.702
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      1.0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "the eyes turn",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E07] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 612.5,
+   "until": 6.98,
+   "zoom": [
+    1.06,
+    1.16
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.0
+    ],
+    [
+     1,
+     1.0
+    ]
+   ],
+   "speed": 0.591,
+   "align": true,
+   "focus_head": [
+    0.603,
+    0.569
+   ],
+   "focus_tail": [
+    0.629,
+    0.497
+   ]
+  },
+  {
+   "why": "the eye",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2691.76,
+   "until": 7.33,
+   "zoom": [
+    1.1,
+    1.18
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.8
+    ],
+    [
+     0.4,
+     0.4
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.503,
+    0.512
+   ],
+   "focus_tail": [
+    0.505,
+    0.51
+   ],
+   "in": {
+    "punch": 1.2,
+    "frames": 4,
+    "rgb": 8,
+    "shake": {
+     "amount": 0.02,
+     "frames": 4
+    }
+   }
+  },
+  {
+   "why": "teeth gritted",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E09] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1019.5,
+   "until": 7.98,
+   "zoom": [
+    1.1,
+    1.18
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.8
+    ],
+    [
+     0.4,
+     0.4
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.72,
+    0.455
+   ],
+   "focus_tail": [
+    0.646,
+    0.47
+   ],
+   "in": {
+    "punch": 1.2,
+    "frames": 4,
+    "rgb": 8,
+    "shake": {
+     "amount": 0.02,
+     "frames": 4
+    }
+   }
+  },
+  {
+   "why": "a crazed scream",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E04] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1567.5,
+   "until": 8.33,
+   "zoom": [
+    1.1,
+    1.18
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.8
+    ],
+    [
+     0.4,
+     0.4
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.662,
+    0.551
+   ],
+   "focus_tail": [
+    0.673,
+    0.543
+   ],
+   "in": {
+    "punch": 1.2,
+    "frames": 4,
+    "rgb": 8,
+    "shake": {
+     "amount": 0.02,
+     "frames": 4
+    }
+   }
+  },
+  {
+   "why": "the bloodied eye",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2571.68,
+   "until": 8.66,
+   "zoom": [
+    1.1,
+    1.18
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.8
+    ],
+    [
+     0.4,
+     0.4
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.432,
+    0.396
+   ],
+   "focus_tail": [
+    0.435,
+    0.428
+   ],
+   "in": {
+    "punch": 1.2,
+    "frames": 4,
+    "rgb": 8,
+    "shake": {
+     "amount": 0.02,
+     "frames": 4
+    }
+   }
+  },
+  {
+   "why": "the shadow rises",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E09] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1424.62,
+   "until": 9.67,
+   "zoom": [
+    1.06,
+    1.16
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.0
+    ],
+    [
+     1,
+     1.0
+    ]
+   ],
+   "speed": 0.772,
+   "align": true,
+   "focus_head": [
+    0.464,
+    0.515
+   ],
+   "focus_tail": [
+    0.588,
+    0.551
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      1.0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "the hands reach",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2370.8,
+   "until": 10.65,
+   "zoom": [
+    1.06,
+    1.16
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.0
+    ],
+    [
+     1,
+     1.0
+    ]
+   ],
+   "speed": 0.796,
+   "align": true,
+   "focus_head": [
+    0.606,
+    0.319
+   ],
+   "focus_tail": [
+    0.625,
+    0.339
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      1.0
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "Petelgeuse",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2427.99,
+   "until": 10.98,
+   "zoom": [
+    1.1,
+    1.18
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.8
+    ],
+    [
+     0.4,
+     0.4
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.496,
+    0.451
+   ],
+   "focus_tail": [
+    0.496,
+    0.45
+   ],
+   "in": {
+    "punch": 1.2,
+    "frames": 4,
+    "rgb": 8,
+    "shake": {
+     "amount": 0.02,
+     "frames": 4
+    }
+   }
+  },
+  {
+   "why": "the possessed grin",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2268.12,
+   "until": 11.33,
+   "zoom": [
+    1.1,
+    1.18
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     1.8
+    ],
+    [
+     0.4,
+     0.4
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.484,
+    0.496
+   ],
+   "focus_tail": [
+    0.498,
+    0.398
+   ],
+   "in": {
+    "punch": 1.2,
+    "frames": 4,
+    "rgb": 8,
+    "shake": {
+     "amount": 0.02,
+     "frames": 4
+    }
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      -1.0
+     ],
+     "frames": 3
+    },
+    "whoosh": 3
+   }
+  },
+  {
+   "why": "the drop: Subaru leaps",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1354.75,
+   "until": 12.0,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     0.12
+    ],
+    [
+     0.18,
+     0.12
+    ],
+    [
+     0.35,
+     1.8
+    ],
+    [
+     1,
+     0.5
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.312,
+    0.186
+   ],
+   "focus_tail": [
+    0.29,
+    0.292
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 12,
+    "shake": {
+     "amount": 0.035,
+     "frames": 6
+    },
+    "flash": 0.25
+   }
+  },
+  {
+   "why": "black spikes erupt",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1784.62,
+   "until": 12.33,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.516,
+    0.478
+   ],
+   "focus_tail": [
+    0.501,
+    0.467
+   ]
+  },
+  {
+   "why": "Subaru screams",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E10] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 992.5,
+   "until": 13.0,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     0.12
+    ],
+    [
+     0.18,
+     0.12
+    ],
+    [
+     0.35,
+     1.8
+    ],
+    [
+     1,
+     0.5
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.526,
+    0.482
+   ],
+   "focus_tail": [
+    0.458,
+    0.565
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 12,
+    "shake": {
+     "amount": 0.035,
+     "frames": 6
+    }
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      -1.0
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "the Whale's jaws",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 166.5,
+   "until": 13.32,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.54,
+    0.445
+   ],
+   "focus_tail": [
+    0.49,
+    0.585
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      -1.0
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "the jaws close",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 177.0,
+   "until": 13.65,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     0.12
+    ],
+    [
+     0.18,
+     0.12
+    ],
+    [
+     0.35,
+     1.8
+    ],
+    [
+     1,
+     0.5
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.498,
+    0.424
+   ],
+   "focus_tail": [
+    0.485,
+    0.28
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 12,
+    "shake": {
+     "amount": 0.035,
+     "frames": 6
+    }
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      -1.0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "running for his life",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1086.38,
+   "until": 14.32,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.412,
+    0.169
+   ],
+   "focus_tail": [
+    0.438,
+    0.277
+   ]
+  },
+  {
+   "why": "the forest burns",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1806.25,
+   "until": 14.97,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.578,
+    0.469
+   ],
+   "focus_tail": [
+    0.591,
+    0.517
+   ]
+  },
+  {
+   "why": "screaming on the red floor",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E09] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 703.62,
+   "until": 15.97,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.585,
+    0.481
+   ],
+   "focus_tail": [
+    0.639,
+    0.395
+   ]
+  },
+  {
+   "why": "blood",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 617.88,
+   "until": 16.32,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.44,
+    0.876
+   ],
+   "focus_tail": [
+    0.446,
+    0.873
+   ]
+  },
+  {
+   "why": "the possessed eye",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2322.75,
+   "until": 16.64,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     0.12
+    ],
+    [
+     0.18,
+     0.12
+    ],
+    [
+     0.35,
+     1.8
+    ],
+    [
+     1,
+     0.5
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.599,
+    0.481
+   ],
+   "focus_tail": [
+    0.489,
+    0.46
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 12,
+    "shake": {
+     "amount": 0.035,
+     "frames": 6
+    }
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      1.0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "a blinding strike",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2377.12,
+   "until": 17.32,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.387,
+    0.449
+   ],
+   "focus_tail": [
+    0.495,
+    0.774
+   ]
+  },
+  {
+   "why": "lightning",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2364.0,
+   "until": 17.64,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.717,
+    0.444
+   ],
+   "focus_tail": [
+    0.593,
+    0.519
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      -1.0,
+      0
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "a burst",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1931.62,
+   "until": 17.99,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.613,
+    0.48
+   ],
+   "focus_tail": [
+    0.569,
+    0.44
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      -1.0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "Subaru turns",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E07] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2162.75,
+   "until": 18.64,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.701,
+    0.391
+   ],
+   "focus_tail": [
+    0.602,
+    0.447
+   ]
+  },
+  {
+   "why": "'I'll kill you'",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2622.5,
+   "until": 18.99,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.525,
+    0.44
+   ],
+   "focus_tail": [
+    0.526,
+    0.434
+   ]
+  },
+  {
+   "why": "teeth",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E10] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 208.25,
+   "until": 19.31,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     0.12
+    ],
+    [
+     0.18,
+     0.12
+    ],
+    [
+     0.35,
+     1.8
+    ],
+    [
+     1,
+     0.5
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.502,
+    0.471
+   ],
+   "focus_tail": [
+    0.507,
+    0.479
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 12,
+    "shake": {
+     "amount": 0.035,
+     "frames": 6
+    }
+   }
+  },
+  {
+   "why": "Subaru shouts",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E05] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 349.38,
+   "until": 19.99,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.515,
+    0.528
+   ],
+   "focus_tail": [
+    0.503,
+    0.517
+   ]
+  },
+  {
+   "why": "torn and bloodied",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2250.75,
+   "until": 20.31,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.698,
+    0.627
+   ],
+   "focus_tail": [
+    0.776,
+    0.581
+   ]
+  },
+  {
+   "why": "Subaru steadies",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1906.12,
+   "until": 21.31,
+   "zoom": [
+    1.05,
+    1.2
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     2.0
+    ],
+    [
+     0.3,
+     0.35
+    ],
+    [
+     1,
+     0.6
+    ]
+   ],
+   "speed": 1.0,
+   "align": true,
+   "focus_head": [
+    0.609,
+    0.556
+   ],
+   "focus_tail": [
+    0.593,
+    0.519
+   ],
+   "out": {}
+  },
+  {
+   "why": "resolve in golden light",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E04] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2972.12,
+   "until": 22.67,
+   "zoom": [
+    1.05,
+    1.22
+   ],
+   "ease": true,
+   "velocity": [
+    [
+     0,
+     0.12
+    ],
+    [
+     0.1,
+     0.12
+    ],
+    [
+     0.3,
+     1.2
+    ],
+    [
+     1,
+     0.35
+    ]
+   ],
+   "speed": 0.835,
+   "align": true,
+   "focus_head": [
+    0.447,
+    0.488
+   ],
+   "focus_tail": [
+    0.455,
+    0.526
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 12,
+    "shake": {
+     "amount": 0.035,
+     "frames": 6
+    }
+   }
+  }
+ ]
+}
