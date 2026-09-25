@@ -138,9 +138,24 @@ def compose_one(entry: dict, source: np.ndarray) -> np.ndarray:
         return zoom_blur(img, entry.get("strength", 0.25)).astype(np.uint8)
     if entry.get("fx") == "white_burst":
         return white_burst(img).astype(np.uint8)
-    if entry.get("punch", 1.0) != 1.0:
-        img = zoom(img, entry["punch"], tuple(entry.get("center", (0.5, 0.5))))
-    return rgb_split(np.asarray(img), int(entry.get("rgb", 0)))
+    if entry.get("punch", 1.0) != 1.0 or tuple(entry.get("center", (0.5, 0.5))) != (0.5, 0.5):
+        img = zoom(img, entry.get("punch", 1.0), tuple(entry.get("center", (0.5, 0.5))))
+    frame = np.asarray(img)
+    if entry.get("dblur"):
+        frame = directional_blur(frame, entry["dblur"])
+    return rgb_split(frame, int(entry.get("rgb", 0)))
+
+
+def directional_blur(frame: np.ndarray, vector: list[float], steps: int = 9) -> np.ndarray:
+    """Motion blur along (dx, dy) pixels - a whip pan's smear."""
+    dx, dy = vector
+    if abs(dx) < 1 and abs(dy) < 1:
+        return frame
+    acc = np.zeros(frame.shape, np.float32)
+    for i in range(steps):
+        k = i / (steps - 1) - 0.5
+        acc += np.roll(frame, (round(dy * k), round(dx * k)), axis=(0, 1))
+    return (acc / steps).astype(np.uint8)
 
 
 def compose(entry: dict, sources: dict) -> np.ndarray:

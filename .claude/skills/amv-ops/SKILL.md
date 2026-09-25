@@ -86,6 +86,17 @@ Unravel (remanga/global/bgm) from 20 s (`song_start`) - NOT royalty-free,
 the user was told; the other tracks in /mnt/datadisk/background_music are.
 Look for dark footage: `lift` before contrast, `saturation` < 1, a `tint`.
 
+**Flow intro (`amv/intro/montages/flow_intro.json`, from /mnt/datadisk/ReferanceEdit):**
+the reference edits (Voidwalker, a JJK edit) cut at a median 0.17-0.29 s with
+bursts, and flow comes from movement carried across cuts. `./amv.sh flow
+POOL.json` measures each shot's global motion at head and tail (phase
+correlation) - most anime shots read "still" (held frames, subject-only
+motion), so flow is mostly MADE: `pan` continuing the neighbour's direction,
+`out: whip {dir}` smearing/sliding both sides of a cut the same way,
+`in: shake` on impacts, `speed` < 1 for slow-mo finales. Cuts sit on the
+song's own accents (librosa onsets > ~6). Check the render for clips that
+burn to white or fade to black inside a slot (both happened) and move "at".
+
 ## Remaking an intro someone else cut
 
 `./amv.sh reference VIDEO --seconds N` -> tmp/intro/reference_map.json, then

@@ -48,6 +48,7 @@ COMMANDS: dict[str, tuple[str, bool, str]] = {
     "reference": ("amv.intro.reference", False, "which episode frame is behind every frame of a video"),
     "remake": ("amv.intro.remake", False, "render a remake of an existing intro from a spec or plan"),
     "dialogue": ("amv.intro.dialogue", False, "every show's subtitle lines, cached; --find REGEX to search them"),
+    "flow": ("amv.intro.flow", False, "which way each shot of a pool moves at its start and end (for flowing cuts)"),
     "montage": ("amv.intro.montage", False, "render an editor-style montage from a shot list (dissolves, punches)"),
     # upkeep
     "config": ("amv.core.config", False, "print the resolved config.json"),

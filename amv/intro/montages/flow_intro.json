@@ -1,0 +1,631 @@
+{
+ "about": "Channel intro in the style of the reference edits in /mnt/datadisk/ReferanceEdit (Jake Hill - VOIDWALKER and a JJK edit): Voidwalker's own audio from its first beat through the phrase after the drop (23.2 s), a build of sad and broken faces into Subaru snapping, then a chain of action whose movement carries through every cut (whips in the shared direction, pans that continue the previous shot), punches and shakes on the accents, and a slowed finale. Flow directions measured with ./amv.sh flow; shots picked by eye 2026-09-25.",
+ "song": "/mnt/datadisk/ReferanceEdit/Jake Hill - VOIDWALKER.mkv",
+ "song_start": 0.21,
+ "audio_fade_in": 0.1,
+ "fps": 24,
+ "width": 1920,
+ "height": 1080,
+ "seconds": 23.2,
+ "look": {
+  "contrast": 1.15,
+  "saturation": 1.1,
+  "lift": 2,
+  "tint": [
+   0.98,
+   1.0,
+   1.05
+  ],
+  "vignette": 0.45
+ },
+ "fade_in": 0.6,
+ "fade_out": 0.7,
+ "shots": [
+  {
+   "why": "alone in the rain",
+   "file": "/mnt/datadisk/anime/Angel_Next_Door/[SO] [01 - Angel Next Door] [1080p] [Dual].mkv",
+   "at": 88.29,
+   "until": 2.39,
+   "speed": 0.862,
+   "zoom": [
+    1.0,
+    1.12
+   ],
+   "ease": true,
+   "out": {
+    "whip": {
+     "dir": [
+      1,
+      0
+     ],
+     "frames": 4
+    }
+   }
+  },
+  {
+   "why": "a lonely screen, panning on",
+   "file": "/mnt/datadisk/anime/Hell_Mode/[SO] [01 - Hell Mode] [1080p] [Dual].mkv",
+   "at": 51.3,
+   "until": 3.2,
+   "speed": 1.0,
+   "zoom": [
+    1.15,
+    1.15
+   ],
+   "pan": [
+    [
+     0.44,
+     0.5
+    ],
+    [
+     0.56,
+     0.5
+    ]
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      1,
+      0
+     ],
+     "frames": 4
+    }
+   }
+  },
+  {
+   "why": "Subaru's broken stare",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2336.98,
+   "until": 5.59,
+   "speed": 0.845,
+   "zoom": [
+    1.1,
+    1.26
+   ],
+   "pan": [
+    [
+     0.47,
+     0.44
+    ],
+    [
+     0.5,
+     0.42
+    ]
+   ],
+   "ease": true
+  },
+  {
+   "why": "accent: the eyes open",
+   "file": "/mnt/datadisk/anime/Mairimashita_Iruma_kun/Mairimashita!_Iruma_kun_08_1080p_Dual_Audio_Eng_Subs_.mkv",
+   "at": 460.16,
+   "until": 6.22,
+   "speed": 0.778,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "in": {
+    "punch": 1.4,
+    "frames": 4,
+    "rgb": 14,
+    "shake": {
+     "amount": 0.02,
+     "frames": 5
+    }
+   }
+  },
+  {
+   "why": "Roxy calls the storm, pulling out",
+   "file": "/mnt/datadisk/anime/Mushoku_Tensei/Mushoku_Tensei_S01_Ep02_1080p_MultiAudio_@indexjunction.mkv",
+   "at": 1026.12,
+   "until": 7.62,
+   "speed": 0.857,
+   "zoom": [
+    1.25,
+    1.02
+   ],
+   "pan": [
+    [
+     0.5,
+     0.56
+    ],
+    [
+     0.5,
+     0.44
+    ]
+   ],
+   "ease": true,
+   "in": {
+    "flash": 0.15
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      -1,
+      0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "flame doors, sliding left",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E07] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 1215.0,
+   "until": 8.82,
+   "speed": 1.0,
+   "zoom": [
+    1.12,
+    1.16
+   ],
+   "pan": [
+    [
+     0.56,
+     0.5
+    ],
+    [
+     0.44,
+     0.5
+    ]
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      -1,
+      0
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "the fleet crossing left",
+   "file": "/mnt/datadisk/anime/Otome_Game_Mob/12. No Matter How Tough the World of Otome...mkv",
+   "at": 21.5,
+   "until": 9.19,
+   "speed": 1.0,
+   "zoom": [
+    1.08,
+    1.12
+   ]
+  },
+  {
+   "why": "accent: Rem's demon horn",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 563.88,
+   "until": 10.22,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.14
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 10,
+    "shake": {
+     "amount": 0.025,
+     "frames": 6
+    }
+   }
+  },
+  {
+   "why": "glowing eyes",
+   "file": "/mnt/datadisk/anime/Hell_Mode/[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+   "at": 812.25,
+   "until": 10.8,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.1
+   ],
+   "in": {
+    "punch": 1.35,
+    "frames": 3,
+    "rgb": 14
+   }
+  },
+  {
+   "why": "Petelgeuse, 'my brain trembles'",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2427.99,
+   "until": 11.42,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.1
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      1
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "Subaru's bloodied face",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2322.75,
+   "until": 12.0,
+   "speed": 1.0,
+   "zoom": [
+    1.05,
+    1.12
+   ],
+   "in": {
+    "shake": {
+     "amount": 0.02,
+     "frames": 4
+    }
+   }
+  },
+  {
+   "why": "the eye",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2691.76,
+   "until": 12.3,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.1
+   ],
+   "in": {
+    "punch": 1.4,
+    "frames": 3,
+    "rgb": 16
+   }
+  },
+  {
+   "why": "the hands rise - into the drop",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2348.75,
+   "until": 12.79,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.1
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 3,
+    "rgb": 12
+   },
+   "out": {
+    "whoosh": 4
+   }
+  },
+  {
+   "why": "the drop: Reinhard's light",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2376.88,
+   "until": 13.4,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.06
+   ],
+   "in": {
+    "flash": 0.3,
+    "shake": {
+     "amount": 0.035,
+     "frames": 8
+    }
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      1,
+      0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "the sword drawn, moving right",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2268.88,
+   "until": 14.0,
+   "speed": 1.0,
+   "zoom": [
+    1.1,
+    1.14
+   ],
+   "pan": [
+    [
+     0.46,
+     0.5
+    ],
+    [
+     0.54,
+     0.5
+    ]
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      1,
+      0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "the black knight mecha diving in",
+   "file": "/mnt/datadisk/anime/Otome_Game_Mob/12. No Matter How Tough the World of Otome...mkv",
+   "at": 229.75,
+   "until": 15.18,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.12
+   ],
+   "ease": true
+  },
+  {
+   "why": "accent: the charge",
+   "file": "/mnt/datadisk/anime/Otome_Game_Mob/04. Mind If I Go Easy on You.mkv",
+   "at": 1151.0,
+   "until": 15.95,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 12,
+    "shake": {
+     "amount": 0.03,
+     "frames": 6
+    }
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      1,
+      0
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "the party charging right",
+   "file": "/mnt/datadisk/anime/Hell_Mode/[SO] [05 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+   "at": 414.5,
+   "until": 16.6,
+   "speed": 1.0,
+   "zoom": [
+    1.1,
+    1.12
+   ],
+   "pan": [
+    [
+     0.46,
+     0.5
+    ],
+    [
+     0.52,
+     0.5
+    ]
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      1,
+      0
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "a rush in red",
+   "file": "/mnt/datadisk/anime/Hell_Mode/[SO] [09 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+   "at": 1138.5,
+   "until": 16.79,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.05
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      -1
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "a monster leaps",
+   "file": "/mnt/datadisk/anime/Hell_Mode/[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+   "at": 522.38,
+   "until": 17.2,
+   "speed": 1.0,
+   "zoom": [
+    1.05,
+    1.1
+   ],
+   "in": {
+    "shake": {
+     "amount": 0.02,
+     "frames": 4
+    }
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      1
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "a silhouette walking through fire",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2208.38,
+   "until": 17.58,
+   "speed": 1.0,
+   "zoom": [
+    1.05,
+    1.1
+   ]
+  },
+  {
+   "why": "the fiery serpent",
+   "file": "/mnt/datadisk/anime/Mairimashita_Iruma_kun/Mairimashita!_Iruma_kun_11_1080p_Dual_Audio_Eng_Subs_.mkv",
+   "at": 326.88,
+   "until": 18.39,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.15
+   ],
+   "ease": true
+  },
+  {
+   "why": "accent: the shadow hands",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2370.8,
+   "until": 19.62,
+   "speed": 0.97,
+   "zoom": [
+    1.0,
+    1.12
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 12,
+    "shake": {
+     "amount": 0.03,
+     "frames": 6
+    }
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      1
+     ],
+     "frames": 3
+    }
+   }
+  },
+  {
+   "why": "Leon's stare",
+   "file": "/mnt/datadisk/anime/Otome_Game_Mob/06. My First School Festival.mkv",
+   "at": 929.2,
+   "until": 19.99,
+   "speed": 1.0,
+   "zoom": [
+    1.0,
+    1.08
+   ],
+   "in": {
+    "punch": 1.3,
+    "frames": 3,
+    "rgb": 12
+   },
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      -1
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "an airship streaking up",
+   "file": "/mnt/datadisk/anime/Otome_Game_Mob/11. What I Can Do Now.mkv",
+   "at": 1004.0,
+   "until": 20.39,
+   "speed": 1.0,
+   "zoom": [
+    1.05,
+    1.1
+   ],
+   "out": {
+    "whip": {
+     "dir": [
+      0,
+      1
+     ],
+     "frames": 2
+    }
+   }
+  },
+  {
+   "why": "the clawed villain",
+   "file": "/mnt/datadisk/anime/Hell_Mode/[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+   "at": 665.38,
+   "until": 20.78,
+   "speed": 1.0,
+   "zoom": [
+    1.05,
+    1.1
+   ],
+   "in": {
+    "shake": {
+     "amount": 0.02,
+     "frames": 4
+    }
+   }
+  },
+  {
+   "why": "Ruijerd in the flames",
+   "file": "/mnt/datadisk/anime/Mushoku_Tensei/Mushoku_Tensei_S01_Ep09_1080p_MultiAudio_@indexjunction.mkv",
+   "at": 324.25,
+   "until": 21.59,
+   "speed": 1.0,
+   "zoom": [
+    1.12,
+    1.16
+   ],
+   "pan": [
+    [
+     0.55,
+     0.5
+    ],
+    [
+     0.45,
+     0.5
+    ]
+   ]
+  },
+  {
+   "why": "finale: lightning, slowed",
+   "file": "/mnt/datadisk/anime/Re_Zero/[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+   "at": 2363.62,
+   "until": 23.2,
+   "speed": 0.74,
+   "zoom": [
+    1.0,
+    1.14
+   ],
+   "ease": true,
+   "in": {
+    "punch": 1.3,
+    "frames": 4,
+    "rgb": 12,
+    "shake": {
+     "amount": 0.035,
+     "frames": 8
+    }
+   }
+  }
+ ]
+}

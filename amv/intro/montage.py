@@ -25,7 +25,14 @@ Spec (times are output seconds; "at" is where a shot starts in its file;
   ends; {"flash": s, "flash_color": [r, g, b]} fades in from white (or that
   colour); {"dip": n} comes up out of black over n frames; {"punch": p, "frames": n, "rgb": px}
   starts zoomed in by p and settles over n frames with a fading RGB split;
-- "out": {"whoosh": n} zoom-blurs the shot's last n frames, harder each frame.
+- "out": {"whoosh": n} zoom-blurs the shot's last n frames, harder each frame;
+  "out": {"whip": {"dir": [dx, dy], "frames": n}} whips through the cut: the
+  last n frames of this shot and the first n of the next smear and slide
+  along the same direction (the flow between two shots);
+- "in": {"shake": {"amount": 0.02, "frames": 6}} jolts the frame on impact;
+- "pan": [[x0, y0], [x1, y1]] moves the frame centre across the shot (zoom
+  in first so there is room), "ease": true eases zoom and pan in and out;
+- "speed" below 1 is slow motion (a shorter clean window can fill a longer slot).
 """
 
 from __future__ import annotations
@@ -49,9 +56,12 @@ def build(spec: dict, song: Path) -> dict:
         z0, z1 = shot.get("zoom", [1.0, 1.0])
         length = max(1e-6, shot["until"] - start)
         k = min(max((t - start) / length, 0.0), 1.0)
+        ease = k * k * (3 - 2 * k) if shot.get("ease") else k
         src_t = shot["at"] + (t - start) * shot.get("speed", 1.0)
-        return {"file": shot["file"], "n": round(src_t * SOURCE_FPS), "punch": round(z0 + (z1 - z0) * k, 4),
-                "center": shot.get("center", [0.5, 0.5])}
+        c0, c1 = shot.get("pan", [shot.get("center", [0.5, 0.5])] * 2)
+        center = [round(c0[0] + (c1[0] - c0[0]) * ease, 4), round(c0[1] + (c1[1] - c0[1]) * ease, 4)]
+        return {"file": shot["file"], "n": round(src_t * SOURCE_FPS), "punch": round(z0 + (z1 - z0) * ease, 4),
+                "center": center}
 
     frames = []
     for i in range(total):
@@ -87,6 +97,37 @@ def build(spec: dict, song: Path) -> dict:
         if half_next and shot["until"] - t <= half_next:
             after = source(nxt, shot["until"], t)
             entry["blend"] = {**after, "alpha": round(0.5 - (shot["until"] - t) / (2 * half_next), 3)}
+        # A whip across the cut: the outgoing shot slides and smears along
+        # "dir" over its last n frames, the incoming one arrives along the
+        # same direction and settles over its first n - so the movement reads
+        # as one camera move through both shots.
+        step_in = round((t - start) * fps)
+        frames_left_out = round((shot["until"] - t) * fps)
+        whip_out = shot.get("out", {}).get("whip")
+        prev_whip = shots[k - 1].get("out", {}).get("whip") if k > 0 else None
+        for whip, pos in ((whip_out, frames_left_out), (prev_whip, step_in)):
+            if not whip:
+                continue
+            n = whip.get("frames", 3)
+            if pos < n or (whip is whip_out and pos <= n):
+                amount = (1 - pos / n) if whip is prev_whip else (1 - (pos - 1) / n)
+                amount = max(0.0, min(1.0, amount))
+                dx, dy = whip["dir"]
+                width, height = spec.get("width", 1920), spec.get("height", 1080)
+                entry["dblur"] = [round(dx * amount * width * 0.12), round(dy * amount * height * 0.12)]
+                # Slide: leaving pushes the frame on along dir, arriving comes from behind it.
+                sign = 1 if whip is whip_out else -1
+                shift = 0.06 * amount * sign
+                entry["punch"] = max(entry["punch"], 1.12)
+                entry["center"] = [round(entry["center"][0] - dx * shift, 4), round(entry["center"][1] - dy * shift, 4)]
+        shake = into.get("shake")
+        if shake and step_in < shake.get("frames", 6):
+            decay = 1 - step_in / shake.get("frames", 6)
+            rng = (hash((k, step_in)) % 1000) / 1000.0, (hash((step_in, k, 7)) % 1000) / 1000.0
+            amp = shake.get("amount", 0.02) * decay
+            entry["punch"] = max(entry["punch"], 1.0 + 2.2 * shake.get("amount", 0.02))
+            entry["center"] = [round(entry["center"][0] + (rng[0] - 0.5) * 2 * amp, 4),
+                               round(entry["center"][1] + (rng[1] - 0.5) * 2 * amp, 4)]
         whoosh = shot.get("out", {}).get("whoosh", 0)
         frames_left = round((shot["until"] - t) * fps)
         if whoosh and frames_left <= whoosh:
