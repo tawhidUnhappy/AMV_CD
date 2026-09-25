@@ -5,7 +5,8 @@ zoom punches and a whoosh into the drop.
 
     ./amv.sh montage amv/intro/montages/channel_intro.json [--song PATH] [--out PATH]
 
-Spec (times are output seconds; "at" is where a shot starts in its file):
+Spec (times are output seconds; "at" is where a shot starts in its file;
+"song_start" is where in the song the intro begins):
 
     {"fps": 24, "width": 1920, "height": 1080, "seconds": 11.0,
      "look": {"contrast": 1.08, "saturation": 1.12, "vignette": 0.35},
@@ -21,7 +22,8 @@ Spec (times are output seconds; "at" is where a shot starts in its file):
 - "zoom" [from, to] is a steady push-in across the shot (about "center");
 - "in": {"dissolve": s} crosses from the previous shot over s seconds
   centred on the cut, so BOTH shots need s/2 of clean footage past their
-  ends; {"flash": s} fades in from white; {"punch": p, "frames": n, "rgb": px}
+  ends; {"flash": s, "flash_color": [r, g, b]} fades in from white (or that
+  colour); {"dip": n} comes up out of black over n frames; {"punch": p, "frames": n, "rgb": px}
   starts zoomed in by p and settles over n frames with a fading RGB split;
 - "out": {"whoosh": n} zoom-blurs the shot's last n frames, harder each frame.
 """
@@ -67,6 +69,13 @@ def build(spec: dict, song: Path) -> dict:
                 entry["rgb"] = round(into.get("rgb", 0) * ease)
         if "flash" in into and t - start < into["flash"]:
             entry["flash"] = round(1 - (t - start) / into["flash"], 3)
+            if "flash_color" in into:
+                entry["flash_color"] = into["flash_color"]
+        if "dip" in into:  # comes up out of black over n frames (a flicker)
+            n = into["dip"]
+            step = round((t - start) * fps)
+            if step < n:
+                entry["dim"] = round(1 - step / n, 3)
         # A dissolve centred on this shot's start: before the cut the previous
         # shot is on top, fading out; after it, this one, fading in.
         half = into.get("dissolve", 0.0) / 2
@@ -91,7 +100,8 @@ def build(spec: dict, song: Path) -> dict:
         frames.append(entry)
     return {"fps": fps, "width": spec.get("width", 1920), "height": spec.get("height", 1080), "seconds": seconds,
             "frames": frames, "look": spec.get("look"), "caption": None,
-            "audio": {"file": str(song), "delay": spec.get("audio_delay", 0.0), "fade_out": spec.get("fade_out", 0.0)}}
+            "audio": {"file": str(song), "start": spec.get("song_start", 0.0), "delay": spec.get("audio_delay", 0.0),
+                      "fade_out": spec.get("fade_out", 0.0), "fade_in": spec.get("audio_fade_in", 0.0)}}
 
 
 def main() -> None:

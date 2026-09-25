@@ -75,6 +75,17 @@ come from `amv.intro.plan` (librosa onsets). Short beat-length shots were
 found inside gallery windows by probing every 0.05 s offset for the most
 motion with no cut; override by eye when the striking moment is elsewhere.
 
+**Mood intros (evil/sad, `amv/intro/montages/evil_intro.json`):** the
+picture can't find a mood, the dialogue can. `./amv.sh dialogue ROOT --find
+REGEX [--series S]` searches every show's English text subtitles (cached in
+tmp/intro/dialogue/; Mushoku falls back to the OCR'd scene index). Broad words
+("why", "die") drown in hits - search specific phrases, then sample the
+matching stretch every 3 s (`ffmpeg -vf fps=1/3,...,tile`) and pick by eye.
+Re:Zero DC ep08 2140-2690 s is Petelgeuse + Subaru's breakdown. The song is
+Unravel (remanga/global/bgm) from 20 s (`song_start`) - NOT royalty-free,
+the user was told; the other tracks in /mnt/datadisk/background_music are.
+Look for dark footage: `lift` before contrast, `saturation` < 1, a `tint`.
+
 ## Remaking an intro someone else cut
 
 `./amv.sh reference VIDEO --seconds N` -> tmp/intro/reference_map.json, then

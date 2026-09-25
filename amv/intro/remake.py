@@ -155,18 +155,22 @@ def compose(entry: dict, sources: dict) -> np.ndarray:
         frame = (frame.astype(np.float32) * (1 - a) + other * a).astype(np.uint8)
     if entry.get("flash"):
         a = float(entry["flash"])
-        frame = (frame.astype(np.float32) * (1 - a) + 255.0 * a).astype(np.uint8)
+        colour = np.array(entry.get("flash_color", [255, 255, 255]), np.float32)
+        frame = (frame.astype(np.float32) * (1 - a) + colour * a).astype(np.uint8)
     if entry.get("dim"):
         frame = (frame.astype(np.float32) * (1 - float(entry["dim"]))).astype(np.uint8)
     return frame
 
 
 def look_filter(look: dict | None, width: int, height: int):
-    """The plan-wide look: contrast and saturation about mid-grey, and a
-    vignette. Returns frame -> frame (identity without a look)."""
+    """The plan-wide look: contrast and saturation about mid-grey, a "lift"
+    (added brightness, for footage that is dark to begin with), a per-channel
+    "tint" and a vignette. Returns frame -> frame (identity without a look)."""
     if not look:
         return lambda frame: frame
     contrast, saturation = float(look.get("contrast", 1.0)), float(look.get("saturation", 1.0))
+    tint = np.array(look.get("tint", [1.0, 1.0, 1.0]), np.float32)
+    lift = float(look.get("lift", 0.0))
     ys = (np.arange(height) - height / 2) / (height / 2)
     xs = (np.arange(width) - width / 2) / (width / 2)
     r = np.sqrt(xs[None, :] ** 2 * (width / height) ** 2 / 2.2 + ys[:, None] ** 2 / 1.6)
@@ -176,8 +180,8 @@ def look_filter(look: dict | None, width: int, height: int):
         f = frame.astype(np.float32)
         grey = f.mean(axis=2, keepdims=True)
         f = grey + (f - grey) * saturation
-        f = (f - 128.0) * contrast + 128.0
-        return np.clip(f * vignette, 0, 255).astype(np.uint8)
+        f = (f - 128.0) * contrast + 128.0 + lift
+        return np.clip(f * tint * vignette, 0, 255).astype(np.uint8)
 
     return apply
 
@@ -228,11 +232,14 @@ def render(plan: dict, out: Path) -> Path:
     afilter = f"adelay={delay_ms}|{delay_ms},atrim=0:{seconds},asetpts=PTS-STARTPTS"
     if fade:
         afilter += f",afade=t=out:st={seconds - fade:.3f}:d={fade}"
+    if audio.get("fade_in"):
+        afilter += f",afade=t=in:st=0:d={float(audio['fade_in']):.3f}"
     encoder = choose_h264_encoder("auto")
     out.parent.mkdir(parents=True, exist_ok=True)
     proc = subprocess.Popen(
         ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{width}x{height}",
-         "-r", str(fps), "-i", "-", "-i", audio["file"], "-filter_complex", f"[1:a]{afilter}[a]",
+         "-r", str(fps), "-i", "-", "-ss", f"{float(audio.get('start', 0.0)):.3f}", "-i", audio["file"],
+         "-filter_complex", f"[1:a]{afilter}[a]",
          "-map", "0:v", "-map", "[a]", *h264_encoder_args(encoder, "p7", 16), "-pix_fmt", "yuv420p",
          "-c:a", "aac", "-b:a", "320k", "-t", f"{seconds:.3f}", "-movflags", "+faststart", str(out)],
         stdin=subprocess.PIPE)
