@@ -1,0 +1,48 @@
+{
+ "name": "rezero_velas_negras",
+ "about": "Re:Zero dark edit: Subaru breaking down through the build, silence on Petelgeuse, the drop on his scream, then 16 cuts of blood, the Witch's hands, the White Whale and his gritted teeth, ending as he steadies himself.",
+ "series": "Re_Zero",
+ "anime": "Re:ZERO -Starting Life in Another World-",
+ "song": "/mnt/datadisk/song/Velas Negras Slowed - 2ndMoonx.mp3",
+ "drop": 18.0,
+ "build": 7.0,
+ "seconds": 22.0,
+ "mood": "dark",
+ "build_shots": [
+  "08-2336.98",
+  "03-1077.0",
+  "04-1745.9",
+  "08-2427.99"
+ ],
+ "drop_shot": "10-992.5",
+ "shots": [
+  "06-1784.62",
+  "04-1567.5",
+  "08-2571.68",
+  "09-1424.62",
+  "12-2370.8",
+  "07-612.5",
+  "11-166.5",
+  "11-177.0",
+  "06-1806.25",
+  "09-703.62",
+  "11-617.88",
+  "02-2377.12",
+  "08-2622.5",
+  "09-1019.5",
+  {
+   "id": "12-1906.12",
+   "x": 0.25,
+   "why": "Subaru steadies (keep x left: Ram enters right)"
+  }
+ ],
+ "title": "He Can't Even Die in Peace... Subaru's Worst Loop",
+ "hook": "Every death sends him back. Every loop breaks him a little more.",
+ "tags": [
+  "rezero",
+  "subaru",
+  "rezeroedit",
+  "darkanime",
+  "phonk"
+ ]
+}

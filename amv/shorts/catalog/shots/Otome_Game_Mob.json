@@ -1,0 +1,106 @@
+{
+ "04-1151": {
+  "at": 1151.0,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "the charge"
+ },
+ "04-1159.67": {
+  "at": 1159.675,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "a mecha fight"
+ },
+ "06-928.6": {
+  "at": 928.6,
+  "episode": 6,
+  "file_name": "06. My First School Festival.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:evil_intro"
+  ],
+  "verdict": "good",
+  "why": "Leon's dark-ringed stare and grin"
+ },
+ "06-929.2": {
+  "at": 929.2,
+  "episode": 6,
+  "file_name": "06. My First School Festival.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "Leon's stare"
+ },
+ "11-1004": {
+  "at": 1004.0,
+  "episode": 11,
+  "file_name": "11. What I Can Do Now.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "an airship streaking up"
+ },
+ "11-1004.12": {
+  "at": 1004.125,
+  "episode": 11,
+  "file_name": "11. What I Can Do Now.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "an airship streaking across the sky"
+ },
+ "12-21.5": {
+  "at": 21.5,
+  "episode": 12,
+  "file_name": "12. No Matter How Tough the World of Otome...mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "the fleet crossing left"
+ },
+ "12-229.75": {
+  "at": 229.75,
+  "episode": 12,
+  "file_name": "12. No Matter How Tough the World of Otome...mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "the black knight mecha diving in"
+ }
+}

@@ -1,0 +1,143 @@
+{
+ "HEAVENLY JUMPSTYLE Tiktok Version - TWXNY x Sxilwix x INNXCENCE.mp3": {
+  "drops": [
+   [
+    47.46,
+    12.8
+   ],
+   [
+    6.11,
+    12.4
+   ],
+   [
+    32.79,
+    11.7
+   ],
+   [
+    81.66,
+    10.9
+   ],
+   [
+    72.42,
+    8.2
+   ]
+  ],
+  "duration": 120.23,
+  "path": "/mnt/datadisk/song/HEAVENLY JUMPSTYLE Tiktok Version - TWXNY x Sxilwix x INNXCENCE.mp3",
+  "period": 0.5108,
+  "tempo": 117.45,
+  "windows": [
+   {
+    "accents": [
+     49.133,
+     53.824,
+     55.89,
+     58.863,
+     59.373,
+     60.279,
+     60.813,
+     61.324,
+     62.88
+    ],
+    "drop": 47.578,
+    "end": 64.578,
+    "short": "angel_heavenly",
+    "start": 40.578
+   }
+  ]
+ },
+ "MONTAGEM ALQUIMIA SLOWED - h6itam n7san7os Mc Menor Do Alvorada.mp3": {
+  "drops": [
+   [
+    25.66,
+    14.9
+   ],
+   [
+    87.03,
+    14.2
+   ],
+   [
+    60.58,
+    11.9
+   ],
+   [
+    8.8,
+    8.8
+   ],
+   [
+    51.99,
+    8.3
+   ]
+  ],
+  "duration": 113.45,
+  "path": "/mnt/datadisk/song/MONTAGEM ALQUIMIA SLOWED - h6itam n7san7os Mc Menor Do Alvorada.mp3",
+  "period": 0.5573,
+  "tempo": 107.67,
+  "windows": [
+   {
+    "accents": [
+     27.91,
+     30.093,
+     31.184,
+     32.276,
+     34.458,
+     35.55,
+     39.915,
+     41.54
+    ],
+    "drop": 25.704,
+    "end": 43.204,
+    "short": "hell_mode_alquimia",
+    "start": 18.704
+   }
+  ]
+ },
+ "Velas Negras Slowed - 2ndMoonx.mp3": {
+  "drops": [
+   [
+    75.6,
+    45.0
+   ],
+   [
+    18.04,
+    39.3
+   ],
+   [
+    57.0,
+    29.8
+   ],
+   [
+    70.66,
+    16.9
+   ],
+   [
+    4.02,
+    9.2
+   ]
+  ],
+  "duration": 104.98,
+  "path": "/mnt/datadisk/song/Velas Negras Slowed - 2ndMoonx.mp3",
+  "period": 0.3947,
+  "tempo": 152.0,
+  "windows": [
+   {
+    "accents": [
+     20.271,
+     21.06,
+     23.475,
+     24.265,
+     26.68,
+     27.074,
+     27.469,
+     29.071,
+     29.884,
+     31.463
+    ],
+    "drop": 18.042,
+    "end": 33.042,
+    "short": "rezero_velas_negras",
+    "start": 11.042
+   }
+  ]
+ }
+}

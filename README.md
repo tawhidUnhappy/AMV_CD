@@ -105,6 +105,22 @@ Each of these caught a real defect; run them after changes:
   `./amv.sh thumbs`.
 - `amv/vision/thumb_candidates.py` pulls strong frames to choose from.
 
+### YouTube Shorts
+
+Vertical 1080x1920 beat-cut edits of one show to one track, with title.txt and
+description.txt:
+
+```bash
+./amv.sh short-catalog                       # what is already known (songs, vetted shots, Shorts built)
+./amv.sh short-song "path/to/track.mp3"      # the drop, the window, the bass-hit grid
+./amv.sh short-find Re_Zero --find "kill|why" --motion 30 --tag dark   # candidate sheets, crop drawn
+./amv.sh short amv/shorts/specs/NAME.json    # render -> tmp/shorts/NAME/, copy to /mnt/datadisk/shorts/NAME/
+```
+
+The spec only lists shot ids; slots, crop, speed and effects are derived.
+`amv/shorts/catalog/` is committed: every build records the song window and each
+shot it used, so the next edit starts from vetted footage.
+
 ### Channel intro
 
 A short, lyric-free intro cut to the opening of any track:

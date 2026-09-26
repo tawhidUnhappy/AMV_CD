@@ -98,12 +98,25 @@ def fetch_frames(frames: list[dict], width: int, height: int) -> dict[tuple[str 
     return out
 
 
-def zoom(img: Image.Image, scale: float, center: tuple[float, float]) -> Image.Image:
+def fetch_size(width: int, height: int) -> tuple[int, int]:
+    """The size source frames are decoded at. The output size itself for a
+    landscape plan; for a narrower one (a 9:16 Short) the source's own 1080p
+    16:9, which zoom() then crops - scaling a 16:9 frame straight to 9:16
+    would squash it."""
+    return (width, height) if width / height >= 16 / 9 - 0.01 else (1920, 1080)
+
+
+def zoom(img: Image.Image, scale: float, center: tuple[float, float], out: tuple[int, int] | None = None) -> Image.Image:
+    """The part of img `scale` times in about `center` (fractions), resized to
+    `out` (default img's size). At scale 1 the box is the largest one of out's
+    shape that fits - all of img when the shapes agree."""
     w, h = img.size
-    cw, ch = w / scale, h / scale
+    ow, oh = out or (w, h)
+    bw, bh = (h * ow / oh, h) if w / h > ow / oh + 1e-6 else (w, w * oh / ow)
+    cw, ch = bw / scale, bh / scale
     cx = min(max(center[0] * w, cw / 2), w - cw / 2)
     cy = min(max(center[1] * h, ch / 2), h - ch / 2)
-    return img.resize((w, h), Image.LANCZOS, box=(cx - cw / 2, cy - ch / 2, cx + cw / 2, cy + ch / 2))
+    return img.resize((ow, oh), Image.LANCZOS, box=(cx - cw / 2, cy - ch / 2, cx + cw / 2, cy + ch / 2))
 
 
 def zoom_blur(img: Image.Image, strength: float, steps: int = 14) -> np.ndarray:
@@ -130,18 +143,20 @@ def rgb_split(frame: np.ndarray, px: int) -> np.ndarray:
     return out
 
 
-def compose_one(entry: dict, source: np.ndarray, trail: list[np.ndarray] | None = None) -> np.ndarray:
+def compose_one(entry: dict, source: np.ndarray, trail: list[np.ndarray] | None = None,
+                out: tuple[int, int] | None = None) -> np.ndarray:
     if trail:  # motion blur: this frame averaged with the ones before it
         source = np.mean([source.astype(np.float32), *(t.astype(np.float32) for t in trail)], axis=0).astype(np.uint8)
     img = Image.fromarray(source)
+    crop = out is not None and out != img.size  # a source decoded larger than the output (vertical)
     if entry.get("fx") == "zoom_blur":
-        if entry.get("punch", 1.0) != 1.0:
-            img = zoom(img, entry["punch"], tuple(entry.get("center", (0.5, 0.5))))
+        if entry.get("punch", 1.0) != 1.0 or crop:
+            img = zoom(img, entry.get("punch", 1.0), tuple(entry.get("center", (0.5, 0.5))), out)
         return zoom_blur(img, entry.get("strength", 0.25)).astype(np.uint8)
     if entry.get("fx") == "white_burst":
         return white_burst(img).astype(np.uint8)
-    if entry.get("punch", 1.0) != 1.0 or tuple(entry.get("center", (0.5, 0.5))) != (0.5, 0.5):
-        img = zoom(img, entry.get("punch", 1.0), tuple(entry.get("center", (0.5, 0.5))))
+    if crop or entry.get("punch", 1.0) != 1.0 or tuple(entry.get("center", (0.5, 0.5))) != (0.5, 0.5):
+        img = zoom(img, entry.get("punch", 1.0), tuple(entry.get("center", (0.5, 0.5))), out)
     frame = np.asarray(img)
     if entry.get("dblur"):
         frame = directional_blur(frame, entry["dblur"])
@@ -160,7 +175,7 @@ def directional_blur(frame: np.ndarray, vector: list[float], steps: int = 9) -> 
     return (acc / steps).astype(np.uint8)
 
 
-def compose(entry: dict, sources: dict) -> np.ndarray:
+def compose(entry: dict, sources: dict, out: tuple[int, int] | None = None) -> np.ndarray:
     """One output frame: the source with its zoom/effect, then (in order) a
     dissolve toward "blend" at "blend.alpha", a white "flash" and a black
     "dim", each 0-1."""
@@ -168,10 +183,10 @@ def compose(entry: dict, sources: dict) -> np.ndarray:
         src, n = source_key(e)
         return [sources[(src, n - k)] for k in range(1, int(e.get("trail", 0)) + 1) if (src, n - k) in sources]
 
-    frame = compose_one(entry, sources[source_key(entry)], trail_of(entry))
+    frame = compose_one(entry, sources[source_key(entry)], trail_of(entry), out)
     blend = entry.get("blend")
     if blend:
-        other = compose_one(blend, sources[source_key(blend)]).astype(np.float32)
+        other = compose_one(blend, sources[source_key(blend)], None, out).astype(np.float32)
         a = float(blend["alpha"])
         frame = (frame.astype(np.float32) * (1 - a) + other * a).astype(np.uint8)
     if entry.get("flash"):
@@ -240,8 +255,9 @@ def caption_layer(spec: dict, width: int, height: int) -> Image.Image:
 def render(plan: dict, out: Path) -> Path:
     width, height, fps = plan["width"], plan["height"], plan["fps"]
     frames = plan["frames"]
+    src_w, src_h = fetch_size(width, height)
+    out_size = None if (src_w, src_h) == (width, height) else (width, height)
     print(f"Decoding source frames for {len(frames)} output frames...", flush=True)
-    sources = fetch_frames(frames, width, height)
     look = look_filter(plan.get("look"), width, height)
     caption = plan.get("caption")
     layer = caption_layer(caption, width, height) if caption else None
@@ -264,8 +280,14 @@ def render(plan: dict, out: Path) -> Path:
          "-map", "0:v", "-map", "[a]", *h264_encoder_args(encoder, "p7", 16), "-pix_fmt", "yuv420p",
          "-c:a", "aac", "-b:a", "320k", "-t", f"{seconds:.3f}", "-movflags", "+faststart", str(out)],
         stdin=subprocess.PIPE)
+    # Sources are fetched a chunk of output frames at a time: a whole plan's
+    # worth of 1080p frames is several GB.
+    chunk = 96
+    sources: dict = {}
     for i, entry in enumerate(frames):
-        frame = look(compose(entry, sources))
+        if i % chunk == 0:
+            sources = fetch_frames(frames[i:i + chunk], src_w, src_h)
+        frame = look(compose(entry, sources, out_size))
         for grade in plan.get("grade", []):
             if i >= grade["from"]:
                 frame = apply_grade(frame, grade)

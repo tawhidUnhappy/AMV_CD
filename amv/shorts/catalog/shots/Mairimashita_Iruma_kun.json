@@ -1,0 +1,43 @@
+{
+ "08-460.16": {
+  "at": 460.16,
+  "episode": 8,
+  "file_name": "Mairimashita!_Iruma_kun_08_1080p_Dual_Audio_Eng_Subs_.mkv",
+  "moods": [
+   "dark",
+   "power"
+  ],
+  "used_in": [
+   "intro:evil_intro",
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "the eyes open"
+ },
+ "11-326.75": {
+  "at": 326.75,
+  "episode": 11,
+  "file_name": "Mairimashita!_Iruma_kun_11_1080p_Dual_Audio_Eng_Subs_.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "the fiery serpent"
+ },
+ "11-326.88": {
+  "at": 326.88,
+  "episode": 11,
+  "file_name": "Mairimashita!_Iruma_kun_11_1080p_Dual_Audio_Eng_Subs_.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "the fiery serpent"
+ }
+}

@@ -1,0 +1,61 @@
+{
+ "name": "angel_heavenly",
+ "about": "Angel Next Door soft edit: Mahiru alone on the swing in the rain, 'no one to hold my hand', the drop on her blushing wide eyes, then smiles, Amane smiling back, hands reaching and holding, ending on her smile.",
+ "series": "Angel_Next_Door",
+ "anime": "The Angel Next Door Spoils Me Rotten",
+ "song": "/mnt/datadisk/song/HEAVENLY JUMPSTYLE Tiktok Version - TWXNY x Sxilwix x INNXCENCE.mp3",
+ "drop": 47.58,
+ "build": 7.0,
+ "seconds": 24.0,
+ "mood": "soft",
+ "build_shots": [
+  {
+   "id": "07-849.5",
+   "x": 0.7
+  },
+  "07-1275.5",
+  "01-512.6"
+ ],
+ "drop_shot": "04-915.9",
+ "shots": [
+  "04-598.6",
+  "04-917.8",
+  {
+   "id": "04-363.9",
+   "x": 0.25
+  },
+  "08-407.5",
+  "08-544.8",
+  {
+   "id": "08-549.1",
+   "x": 0.6
+  },
+  {
+   "id": "04-950.8",
+   "at": 952.6,
+   "x": 0.58,
+   "why": "blushing at the night window (face turns in ~2 s into the shot)"
+  },
+  "06-529.1",
+  "11-396.2",
+  "11-400.9",
+  "09-657.6",
+  {
+   "id": "07-1092.5",
+   "x": 0.5,
+   "why": "hands clasped"
+  },
+  "07-1094.8",
+  "04-681.6",
+  "09-655.2"
+ ],
+ "title": "She Was the School's Angel... But Only He Saw Her Real Smile",
+ "hook": "Everyone calls her an angel. Only he gets to see her real smile.",
+ "tags": [
+  "angelnextdoor",
+  "mahiru",
+  "mahirushiina",
+  "romance",
+  "wholesome"
+ ]
+}

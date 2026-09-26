@@ -1,0 +1,32 @@
+{
+ "name": "hell_mode_alquimia",
+ "about": "Hell Mode power edit: the Murdergalsh looms, Allen's red eye ignites on the drop, his summons pile in, the monster falls, Allen grins.",
+ "series": "Hell_Mode",
+ "anime": "Hell Mode: The Hardcore Gamer Dominates in Another World with Garbage Balancing",
+ "song": "/mnt/datadisk/song/MONTAGEM ALQUIMIA SLOWED - h6itam n7san7os Mc Menor Do Alvorada.mp3",
+ "drop": 25.7,
+ "build": 7.0,
+ "seconds": 24.5,
+ "mood": "power",
+ "build_shots": ["12-451.0", "12-457.2", "12-491.1", "12-459.1"],
+ "drop_shot": "12-472.0",
+ "shots": [
+  "12-495.0",
+  {"id": "12-497.5", "x": 0.35},
+  "12-499.5",
+  "08-1124.9",
+  "10-730.4",
+  "12-480.6",
+  "12-522.1",
+  {"id": "11-1052.4", "x": 0.6},
+  "12-600.5",
+  "12-734.1",
+  "12-392.2",
+  "12-811.5",
+  "12-816.1",
+  "12-738.0"
+ ],
+ "title": "He Picked HELL MODE On Purpose... Now Monsters Fear Him",
+ "hook": "Everyone else plays on Normal. Allen chose Hell Mode - and it shows.",
+ "tags": ["hellmode", "hellmodeanime", "isekai", "summoner", "phonk"]
+}

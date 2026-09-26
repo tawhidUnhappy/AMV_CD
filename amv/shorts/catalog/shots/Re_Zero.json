@@ -1,0 +1,724 @@
+{
+ "02-2268.88": {
+  "at": 2268.88,
+  "episode": 2,
+  "file_name": "[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "the sword drawn, moving right"
+ },
+ "02-2363.62": {
+  "at": 2363.62,
+  "episode": 2,
+  "file_name": "[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "finale: lightning, slowed"
+ },
+ "02-2364": {
+  "at": 2364.0,
+  "episode": 2,
+  "file_name": "[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "lightning",
+  "x": 0.717
+ },
+ "02-2376.88": {
+  "at": 2376.88,
+  "episode": 2,
+  "file_name": "[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "Reinhard's light"
+ },
+ "02-2377.12": {
+  "at": 2377.12,
+  "crop_x": 0.156,
+  "episode": 2,
+  "file_name": "[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "a blinding strike",
+  "x": 0.387
+ },
+ "03-1077": {
+  "at": 1077.0,
+  "episode": 3,
+  "file_name": "[S01] [E03] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "clutching his head",
+  "x": 0.478
+ },
+ "03-1077.0": {
+  "at": 1075.75,
+  "crop_x": 0.51,
+  "episode": 3,
+  "file_name": "[S01] [E03] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "build",
+  "used_in": [
+   "rezero_velas_negras"
+  ],
+  "verdict": "good"
+ },
+ "04-1567.5": {
+  "at": 1567.5,
+  "crop_x": 0.24,
+  "episode": 4,
+  "file_name": "[S01] [E04] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "a crazed scream",
+  "x": 0.662
+ },
+ "04-1735.12": {
+  "at": 1735.12,
+  "episode": 4,
+  "file_name": "[S01] [E04] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "bloodied, closer",
+  "x": 0.659
+ },
+ "04-1745.9": {
+  "at": 1745.9,
+  "crop_x": 0.458,
+  "episode": 4,
+  "file_name": "[S01] [E04] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "build",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "bloodied, crying",
+  "x": 0.525
+ },
+ "04-2972.12": {
+  "at": 2972.12,
+  "episode": 4,
+  "file_name": "[S01] [E04] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "resolve in golden light",
+  "x": 0.447
+ },
+ "05-349.38": {
+  "at": 349.38,
+  "episode": 5,
+  "file_name": "[S01] [E05] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "Subaru shouts",
+  "x": 0.515
+ },
+ "06-1086.38": {
+  "at": 1086.38,
+  "episode": 6,
+  "file_name": "[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "running for his life",
+  "x": 0.412
+ },
+ "06-1354.75": {
+  "at": 1354.75,
+  "episode": 6,
+  "file_name": "[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "Subaru leaps",
+  "x": 0.312
+ },
+ "06-1784.62": {
+  "at": 1784.625,
+  "crop_x": 0.698,
+  "episode": 6,
+  "file_name": "[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "black spikes erupt",
+  "x": 0.516
+ },
+ "06-1806.25": {
+  "at": 1806.25,
+  "crop_x": 0.719,
+  "episode": 6,
+  "file_name": "[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "the forest burns",
+  "x": 0.578
+ },
+ "06-2208.38": {
+  "at": 2208.38,
+  "episode": 6,
+  "file_name": "[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "a silhouette walking through fire"
+ },
+ "06-563.88": {
+  "at": 563.88,
+  "episode": 6,
+  "file_name": "[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "Rem's demon horn"
+ },
+ "07-1215": {
+  "at": 1215.0,
+  "episode": 7,
+  "file_name": "[S01] [E07] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "flame doors, sliding left"
+ },
+ "07-1216.15": {
+  "at": 1216.15,
+  "episode": 7,
+  "file_name": "[S01] [E07] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "golden flame doors burning to white"
+ },
+ "07-2162.75": {
+  "at": 2162.75,
+  "episode": 7,
+  "file_name": "[S01] [E07] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "Subaru turns",
+  "x": 0.701
+ },
+ "07-612.5": {
+  "at": 612.5,
+  "crop_x": 0.844,
+  "episode": 7,
+  "file_name": "[S01] [E07] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "the eyes turn",
+  "x": 0.603
+ },
+ "08-2336.98": {
+  "at": 2336.98,
+  "crop_x": 0.792,
+  "episode": 8,
+  "file_name": "[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark",
+   "power"
+  ],
+  "role": "build",
+  "used_in": [
+   "intro:evil_intro",
+   "intro:flow_intro",
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "Subaru's broken stare",
+  "x": 0.516
+ },
+ "08-2427.99": {
+  "at": 2428.5,
+  "crop_x": 0.708,
+  "episode": 8,
+  "file_name": "[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark",
+   "power"
+  ],
+  "role": "build",
+  "used_in": [
+   "intro:evil_intro",
+   "intro:flow_intro",
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "Petelgeuse",
+  "x": 0.496
+ },
+ "08-2502.61": {
+  "at": 2503.375,
+  "crop_x": 0.156,
+  "episode": 8,
+  "file_name": "[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:evil_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "vertical": false,
+  "vertical_reason": "near-black face, unreadable in a 9:16 crop",
+  "why": "Petelgeuse's grin"
+ },
+ "08-2571.68": {
+  "at": 2571.68,
+  "crop_x": 0.469,
+  "episode": 8,
+  "file_name": "[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:evil_intro",
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "the bloodied eye",
+  "x": 0.432
+ },
+ "08-2622.5": {
+  "at": 2622.75,
+  "crop_x": 0.698,
+  "episode": 8,
+  "file_name": "[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "'I'll kill you'",
+  "x": 0.525
+ },
+ "08-2691.76": {
+  "at": 2691.76,
+  "crop_x": 0.688,
+  "episode": 8,
+  "file_name": "[S01] [E08] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark",
+   "power"
+  ],
+  "role": "drop",
+  "used_in": [
+   "intro:evil_intro",
+   "intro:flow_intro",
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "vertical": false,
+  "vertical_reason": "extreme close-up: texture, not a face, in a 9:16 crop",
+  "why": "the eye",
+  "x": 0.503
+ },
+ "09-1019.5": {
+  "at": 1019.5,
+  "crop_x": 0.427,
+  "episode": 9,
+  "file_name": "[S01] [E09] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "teeth gritted",
+  "x": 0.72
+ },
+ "09-1424.62": {
+  "at": 1424.375,
+  "crop_x": 0.677,
+  "episode": 9,
+  "file_name": "[S01] [E09] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "the shadow rises",
+  "x": 0.464
+ },
+ "09-703.62": {
+  "at": 702.625,
+  "crop_x": 0.812,
+  "episode": 9,
+  "file_name": "[S01] [E09] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "screaming on the red floor",
+  "x": 0.585
+ },
+ "10-208.25": {
+  "at": 208.25,
+  "episode": 10,
+  "file_name": "[S01] [E10] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "teeth",
+  "x": 0.502
+ },
+ "10-992.5": {
+  "at": 992.5,
+  "crop_x": 0.51,
+  "episode": 10,
+  "file_name": "[S01] [E10] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drop",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "Subaru screams",
+  "x": 0.526
+ },
+ "11-166.5": {
+  "at": 166.5,
+  "crop_x": 0.844,
+  "episode": 11,
+  "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "the Whale's jaws",
+  "x": 0.54
+ },
+ "11-177": {
+  "at": 177.0,
+  "episode": 11,
+  "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "the jaws close",
+  "x": 0.498
+ },
+ "11-177.0": {
+  "at": 177.0,
+  "crop_x": 0.812,
+  "episode": 11,
+  "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "rezero_velas_negras"
+  ],
+  "verdict": "good"
+ },
+ "11-1931.62": {
+  "at": 1931.62,
+  "episode": 11,
+  "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "a burst",
+  "x": 0.613
+ },
+ "11-2250.75": {
+  "at": 2250.75,
+  "episode": 11,
+  "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:subaru_intro"
+  ],
+  "verdict": "good",
+  "why": "torn and bloodied",
+  "x": 0.698
+ },
+ "11-2323.12": {
+  "at": 2323.125,
+  "episode": 11,
+  "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "dawn over the plains",
+  "x": 0.5
+ },
+ "11-617.88": {
+  "at": 617.88,
+  "crop_x": 0.292,
+  "episode": 11,
+  "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "blood",
+  "x": 0.44
+ },
+ "12-1906.12": {
+  "at": 1906.12,
+  "crop_x": 0.344,
+  "episode": 12,
+  "file_name": "[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "end",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "Subaru steadies (keep x left: Ram enters right)",
+  "x": 0.25
+ },
+ "12-2268.12": {
+  "at": 2268.125,
+  "crop_x": 0.385,
+  "episode": 12,
+  "file_name": "[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "vertical": false,
+  "vertical_reason": "extreme close-up: texture, not a face, in a 9:16 crop",
+  "why": "the possessed grin",
+  "x": 0.484
+ },
+ "12-2322.75": {
+  "at": 2322.25,
+  "crop_x": 0.5,
+  "episode": 12,
+  "file_name": "[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark",
+   "power"
+  ],
+  "role": "end",
+  "used_in": [
+   "intro:flow_intro",
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "vertical": false,
+  "vertical_reason": "extreme close-up: texture, not a face, in a 9:16 crop",
+  "why": "the possessed eye",
+  "x": 0.599
+ },
+ "12-2348.75": {
+  "at": 2348.75,
+  "episode": 12,
+  "file_name": "[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "the hands rise - into the drop"
+ },
+ "12-2370.8": {
+  "at": 2371.625,
+  "crop_x": 0.625,
+  "episode": 12,
+  "file_name": "[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "dark",
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:flow_intro",
+   "intro:subaru_intro",
+   "rezero_velas_negras"
+  ],
+  "verdict": "good",
+  "why": "the hands reach",
+  "x": 0.606
+ },
+ "12-2371.65": {
+  "at": 2371.65,
+  "episode": 12,
+  "file_name": "[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "the shadow hands, into the dark"
+ }
+}

@@ -1,0 +1,303 @@
+{
+ "01-512.6": {
+  "at": 512.75,
+  "crop_x": 0.562,
+  "episode": 1,
+  "file_name": "[SO] [01 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "build",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "01-88.29": {
+  "at": 88.29,
+  "episode": 1,
+  "file_name": "[SO] [01 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "dark",
+   "power"
+  ],
+  "used_in": [
+   "intro:evil_intro",
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "alone in the rain"
+ },
+ "02-41.88": {
+  "at": 41.875,
+  "episode": 2,
+  "file_name": "[SO] [02 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "a sunset walk, pushing into the drop"
+ },
+ "04-363.9": {
+  "at": 365.875,
+  "crop_x": 0.5,
+  "episode": 4,
+  "file_name": "[SO] [04 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good",
+  "x": 0.25
+ },
+ "04-598.6": {
+  "at": 598.625,
+  "crop_x": 0.542,
+  "episode": 4,
+  "file_name": "[SO] [04 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "04-681.6": {
+  "at": 683.375,
+  "crop_x": 0.5,
+  "episode": 4,
+  "file_name": "[SO] [04 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "04-915.9": {
+  "at": 915.875,
+  "crop_x": 0.771,
+  "episode": 4,
+  "file_name": "[SO] [04 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drop",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "04-917.8": {
+  "at": 918.125,
+  "crop_x": 0.76,
+  "episode": 4,
+  "file_name": "[SO] [04 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "04-950.8": {
+  "at": 952.6,
+  "crop_x": 0.188,
+  "episode": 4,
+  "file_name": "[SO] [04 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good",
+  "why": "blushing at the night window (face turns in ~2 s into the shot)",
+  "x": 0.58
+ },
+ "06-529.1": {
+  "at": 530.375,
+  "crop_x": 0.219,
+  "episode": 6,
+  "file_name": "[SO] [06 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "07-1092.5": {
+  "at": 1093.0,
+  "crop_x": 0.844,
+  "episode": 7,
+  "file_name": "[SO] [07 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good",
+  "why": "hands clasped",
+  "x": 0.5
+ },
+ "07-1094.8": {
+  "at": 1094.75,
+  "crop_x": 0.229,
+  "episode": 7,
+  "file_name": "[SO] [07 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "07-1275.5": {
+  "at": 1275.5,
+  "crop_x": 0.542,
+  "episode": 7,
+  "file_name": "[SO] [07 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "build",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "07-849.5": {
+  "at": 851.5,
+  "crop_x": 0.167,
+  "episode": 7,
+  "file_name": "[SO] [07 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "build",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good",
+  "x": 0.7
+ },
+ "08-407.5": {
+  "at": 407.625,
+  "crop_x": 0.76,
+  "episode": 8,
+  "file_name": "[SO] [08 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "08-544.8": {
+  "at": 544.75,
+  "crop_x": 0.406,
+  "episode": 8,
+  "file_name": "[SO] [08 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "08-549.1": {
+  "at": 550.375,
+  "crop_x": 0.562,
+  "episode": 8,
+  "file_name": "[SO] [08 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good",
+  "x": 0.6
+ },
+ "09-655.2": {
+  "at": 655.25,
+  "crop_x": 0.583,
+  "episode": 9,
+  "file_name": "[SO] [09 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "end",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "09-657.6": {
+  "at": 657.625,
+  "crop_x": 0.344,
+  "episode": 9,
+  "file_name": "[SO] [09 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "11-396.2": {
+  "at": 396.75,
+  "crop_x": 0.25,
+  "episode": 11,
+  "file_name": "[SO] [11 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ },
+ "11-400.9": {
+  "at": 401.5,
+  "crop_x": 0.615,
+  "episode": 11,
+  "file_name": "[SO] [11 - Angel Next Door] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "angel_heavenly"
+  ],
+  "verdict": "good"
+ }
+}

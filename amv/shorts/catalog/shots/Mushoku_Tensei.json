@@ -1,0 +1,68 @@
+{
+ "02-1026.12": {
+  "at": 1026.12,
+  "episode": 2,
+  "file_name": "Mushoku_Tensei_S01_Ep02_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "Roxy calls the storm, pulling out"
+ },
+ "04-166.9": {
+  "at": 166.9,
+  "episode": 4,
+  "file_name": "Mushoku_Tensei_S01_Ep04_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:evil_intro"
+  ],
+  "verdict": "good",
+  "why": "despair, face buried in hands",
+  "x": 0.5
+ },
+ "09-263.35": {
+  "at": 263.35,
+  "episode": 9,
+  "file_name": "Mushoku_Tensei_S01_Ep09_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "the fire flares"
+ },
+ "09-324.25": {
+  "at": 324.25,
+  "episode": 9,
+  "file_name": "Mushoku_Tensei_S01_Ep09_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "Ruijerd in the flames"
+ },
+ "14-1255.42": {
+  "at": 1255.425,
+  "episode": 14,
+  "file_name": "Mushoku_Tensei_S01_Ep14_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "a blue butterfly past a sunlit tree"
+ }
+}

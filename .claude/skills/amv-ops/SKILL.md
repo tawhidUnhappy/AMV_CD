@@ -34,6 +34,7 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 `amv/subs/` extract_subs (+ pgs/pgs_ocr for bitmap tracks) -> tmp/subs/scene_index.json.
 `amv/render/` timeline (slots), select_clips/ (candidates, scoring, themes = BLACKLIST, cli: score_all/pick/order_breaks), grade, pipeline (render), lyric_overlay/.
 `amv/vision/` **decode (decode_tiny: the one way to read footage small)**, contact_sheet (grab_all/tile), strip, compare, skin, checks.
+`amv/shorts/` song (drop/window), find (candidate shots + crop), build (spec -> Short), catalog (committed knowledge + tmp cache).
 `amv/intro/` plan+select+render (`intro`: new intro from a song), reference (`reference`: which episode frame is behind each frame of a video), remake (`remake`: plan/spec renderer), `remakes/*.json` (committed specs).
 
 ## Checking your work - use these, don't hand-roll them
@@ -111,6 +112,42 @@ burn to white or fade to black inside a slot (both happened) and move "at".
 Traps met: 0.8 s scan windows slowed to fill 1.3 s slots expose fades to black
 inside the source - print per-frame luma of the window before committing it;
 night scenes at luma < 0.1 read as gaps, replace rather than lift.
+
+## YouTube Shorts (vertical, one show, one track) - `amv/shorts/`
+
+**Start here: `./amv.sh short-catalog`** - what earlier sessions already know
+(songs + drops, vetted/rejected shots per show with why/mood/crop, Shorts built).
+`short-catalog SHOW --mood dark [--sheet]` lists/draws the good shots to reuse.
+
+```bash
+./amv.sh short-song SONG                         # drops (bass rise), window, hit grid, accents
+./amv.sh short-find SHOW --find REGEX [--motion N] [--episodes 11-12] --tag T
+#   -> tmp/shorts/pool/SHOW-T-NN.jpg: start/mid/end per shot, 9:16 crop drawn; LOOK at them
+./amv.sh short amv/shorts/specs/NAME.json        # plan+render 1080x1920, review.jpg, title/description
+#   -> tmp/shorts/NAME/ and delivered to /mnt/datadisk/shorts/NAME/ (short.mp4, title.txt, description.txt)
+```
+
+A spec lists shot ids ("EP-SECONDS") for build / drop / after-drop; slots,
+sub-windows, speed, crop, whips, punches on accents, look per mood are derived
+(build.py docstring). Per-shot facts go in the spec (`x`, `at`, `why`) and are
+recorded in the catalog on every build. Always read `tmp/shorts/NAME/review.jpg`
+(a frame every 0.5 s) before delivering. Delivered 2026-09-26: hell_mode_alquimia,
+rezero_velas_negras, angel_heavenly.
+
+Traps (all fixed in code; keep the rules):
+- A centroid focus lands BETWEEN two eyes/characters (a nose, sky) - fatal in a
+  9:16 crop. `find.crop_x` takes the crop-wide band with most edges+colour.
+- `crop_x` misreads near-black frames; a vetted `x` (spec override, or an intro's
+  measured `focus_head`) in the catalog wins over it.
+- Dark scenes: the 8 fps index misses cuts, one "shot" can be 40-60 s, and the
+  busiest stretch of it is another scene. The id's time is the moment - start
+  there; search only the first ~2 s. Catalog keys are moments, not index shots.
+- Extreme close-ups (eye macros, teeth) that work in 16:9 are texture at 9:16 -
+  `short-catalog SHOW --not-vertical ID --reason ...`; short-find then skips them.
+- A shot slowed to fill the end slot runs into the next real shot (Subaru ->
+  Ram): pin `x` to keep the subject, or pick a longer shot.
+- Song credits come from the file name "Title - Artist"; no " - " means an
+  explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
 
 ## Remaking an intro someone else cut
 

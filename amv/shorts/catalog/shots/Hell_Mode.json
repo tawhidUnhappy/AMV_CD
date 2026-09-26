@@ -1,0 +1,389 @@
+{
+ "01-51.3": {
+  "at": 51.3,
+  "episode": 1,
+  "file_name": "[SO] [01 - Hell Mode] [1080p] [Dual].mkv",
+  "moods": [
+   "dark",
+   "power"
+  ],
+  "used_in": [
+   "intro:evil_intro",
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "a lonely screen, panning on"
+ },
+ "01-564.34": {
+  "at": 564.34,
+  "episode": 1,
+  "file_name": "[SO] [01 - Hell Mode] [1080p] [Dual].mkv",
+  "moods": [
+   "dark"
+  ],
+  "used_in": [
+   "intro:evil_intro"
+  ],
+  "verdict": "good",
+  "why": "a demon's burning eyes"
+ },
+ "05-414.5": {
+  "at": 414.5,
+  "episode": 5,
+  "file_name": "[SO] [05 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "the party charging right"
+ },
+ "05-438.7": {
+  "at": 438.7,
+  "episode": 5,
+  "file_name": "[SO] [05 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "a boar charging the camera"
+ },
+ "07-1269.05": {
+  "at": 1269.05,
+  "episode": 7,
+  "file_name": "[SO] [07 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:channel_intro"
+  ],
+  "verdict": "good",
+  "why": "a hawk swooping in"
+ },
+ "08-1124.9": {
+  "at": 1124.875,
+  "crop_x": 0.49,
+  "episode": 8,
+  "file_name": "[SO] [08 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "09-1138.5": {
+  "at": 1138.5,
+  "episode": 9,
+  "file_name": "[SO] [09 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "a rush in red"
+ },
+ "10-730.4": {
+  "at": 732.0,
+  "crop_x": 0.167,
+  "episode": 10,
+  "file_name": "[SO] [10 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "11-1052.4": {
+  "at": 1052.5,
+  "crop_x": 0.427,
+  "episode": 11,
+  "file_name": "[SO] [11 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good",
+  "x": 0.6
+ },
+ "12-392.2": {
+  "at": 394.125,
+  "crop_x": 0.51,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-451.0": {
+  "at": 451.375,
+  "crop_x": 0.5,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "build",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-457.2": {
+  "at": 457.25,
+  "crop_x": 0.531,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "build",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-459.1": {
+  "at": 460.75,
+  "crop_x": 0.5,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "build",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-472.0": {
+  "at": 473.5,
+  "crop_x": 0.656,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drop",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-480.6": {
+  "at": 482.0,
+  "crop_x": 0.49,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-491.1": {
+  "at": 492.375,
+  "crop_x": 0.302,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "build",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-495.0": {
+  "at": 495.0,
+  "crop_x": 0.552,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-497.5": {
+  "at": 498.125,
+  "crop_x": 0.677,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good",
+  "x": 0.35
+ },
+ "12-499.5": {
+  "at": 501.5,
+  "crop_x": 0.208,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-522.1": {
+  "at": 522.375,
+  "crop_x": 0.646,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-522.38": {
+  "at": 522.38,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "a monster leaps"
+ },
+ "12-600.5": {
+  "at": 602.25,
+  "crop_x": 0.177,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-665.38": {
+  "at": 665.38,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "the clawed villain"
+ },
+ "12-734.1": {
+  "at": 734.125,
+  "crop_x": 0.583,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-738.0": {
+  "at": 738.0,
+  "crop_x": 0.469,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "end",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-811.5": {
+  "at": 812.25,
+  "crop_x": 0.76,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ },
+ "12-812.25": {
+  "at": 812.25,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "used_in": [
+   "intro:flow_intro"
+  ],
+  "verdict": "good",
+  "why": "glowing eyes"
+ },
+ "12-816.1": {
+  "at": 816.375,
+  "crop_x": 0.396,
+  "episode": 12,
+  "file_name": "[SO] [12 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_alquimia"
+  ],
+  "verdict": "good"
+ }
+}
