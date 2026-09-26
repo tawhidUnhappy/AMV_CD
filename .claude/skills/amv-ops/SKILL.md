@@ -152,6 +152,12 @@ Traps (all fixed in code; keep the rules):
   `short-catalog SHOW --not-vertical ID --reason ...`; short-find then skips them.
 - A shot slowed to fill the end slot runs into the next real shot (Subaru ->
   Ram): pin `x` to keep the subject, or pick a longer shot.
+- User ranking 2026-09-26: rezero > hell_mode > angel ("it doesn't follow").
+  Angel's 3 biggest hits fell mid-shot: the 2-beat cut grid is counted from the
+  drop, and a weak drop (12.8 dB rise vs 39 for Velas) put it a beat out of phase.
+  Rule: check the strongest accents land ON cuts (compare montage.json cuts with
+  `short-song` accents); pick the grid phase that hits them. And match footage
+  energy to the SONG, not the show - talking heads under a jumpstyle track drag.
 - Song credits come from the file name "Title - Artist"; no " - " means an
   explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
 

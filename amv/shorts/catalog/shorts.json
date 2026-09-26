@@ -27,6 +27,8 @@
   ],
   "song": "HEAVENLY JUMPSTYLE Tiktok Version - TWXNY x Sxilwix x INNXCENCE.mp3",
   "spec": "amv/shorts/specs/angel_heavenly.json",
+  "user_feedback": "bad - 'it doesn't follow': the 3 biggest hits (52.0/56.15/60.3 s) fell mid-shot (2-beat grid counted from a weak 12.8 dB drop, one beat out of phase); static dialogue shots + soft effects under an energetic jumpstyle track",
+  "user_rank": 3,
   "window": [
    40.578,
    64.578
@@ -60,6 +62,8 @@
   ],
   "song": "MONTAGEM ALQUIMIA SLOWED - h6itam n7san7os Mc Menor Do Alvorada.mp3",
   "spec": "amv/shorts/specs/hell_mode_alquimia.json",
+  "user_feedback": "good: action on the hits",
+  "user_rank": 2,
   "window": [
    18.704,
    43.204
@@ -94,6 +98,8 @@
   ],
   "song": "Velas Negras Slowed - 2ndMoonx.mp3",
   "spec": "amv/shorts/specs/rezero_velas_negras.json",
+  "user_feedback": "best: dark story arc, cuts on the strongest 808s",
+  "user_rank": 1,
   "window": [
    11.042,
    33.042
