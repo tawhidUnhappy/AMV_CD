@@ -127,6 +127,12 @@ night scenes at luma < 0.1 read as gaps, replace rather than lift.
 #   -> tmp/shorts/NAME/ and delivered to /mnt/datadisk/shorts/NAME/ (short.mp4, title.txt, description.txt)
 ```
 
+Layout (user's choice, 2026-09-26): the WHOLE 16:9 picture centred on a
+blurred, dimmed copy of itself (`build.LAYOUT`, renderer `remake.blur_fill`),
+not a full-screen 9:16 crop. Spec `"frame": "crop"` gives the old crop;
+`"layout": {"frame_aspect": 1.333}` a bigger, narrower centre picture. The crop
+traps below only matter for "crop" or zoomed-in punches.
+
 A spec lists shot ids ("EP-SECONDS") for build / drop / after-drop; slots,
 sub-windows, speed, crop, whips, punches on accents, look per mood are derived
 (build.py docstring). Per-shot facts go in the spec (`x`, `at`, `why`) and are

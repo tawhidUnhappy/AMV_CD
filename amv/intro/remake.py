@@ -12,6 +12,7 @@ Plan:
                 {"ep": 1, "n": 19539, "punch": 3.0, "rgb": 14, "center": [0.35, 0.45]}],
      "grade": [{"from": 284, "gain": [0.76, 0.74, 0.31], "offset": [17, 8.5, 5.5]}],
      "caption": {"text": "...", "from": 295, "fade": 3, "y": 0.89, "size": 58, "spacing": 5},
+     "layout": {"frame_aspect": 1.778, "blur": 6, "dim": 0.55},   # optional: picture centred on a blurred fill
      "audio": {"file": "...", "delay": 0.242, "fade_out": 0.25}}
 
 `n` is the episode's frame number (0 = its first frame at 24000/1001). A
@@ -252,11 +253,39 @@ def caption_layer(spec: dict, width: int, height: int) -> Image.Image:
     return Image.alpha_composite(shadow, layer)
 
 
+def frame_size(width: int, layout: dict) -> tuple[int, int]:
+    """The picture's size inside a "blur" layout: the full output width at
+    the layout's frame_aspect (16:9 shows the whole source frame)."""
+    w = round(width * layout.get("width_fraction", 1.0) / 2) * 2
+    return w, round(w / layout.get("frame_aspect", 16 / 9) / 2) * 2
+
+
+def blur_fill(picture: np.ndarray, width: int, height: int, layout: dict) -> np.ndarray:
+    """A "blur" layout frame: the picture centred, and behind it the same
+    picture scaled to cover the whole output, blurred and dimmed - the usual
+    way a landscape clip fills a 9:16 Short. The background is built at 1/8
+    size and scaled up, which is both fast and a smoother blur."""
+    ph, pw = picture.shape[:2]
+    img = Image.fromarray(picture)
+    sw, sh = max(8, width // 8), max(8, height // 8)
+    scale = max(sw / pw, sh / ph)
+    small = img.resize((max(sw, round(pw * scale)), max(sh, round(ph * scale))), Image.BILINEAR)
+    left, top = (small.width - sw) // 2, (small.height - sh) // 2
+    small = small.crop((left, top, left + sw, top + sh)).filter(ImageFilter.GaussianBlur(layout.get("blur", 6)))
+    back = np.asarray(small.resize((width, height), Image.BICUBIC), np.float32) * layout.get("dim", 0.55)
+    frame = back.astype(np.uint8)
+    y, x = (height - ph) // 2 + round(layout.get("offset_y", 0.0) * height), (width - pw) // 2
+    frame[y:y + ph, x:x + pw] = picture
+    return frame
+
+
 def render(plan: dict, out: Path) -> Path:
     width, height, fps = plan["width"], plan["height"], plan["fps"]
     frames = plan["frames"]
-    src_w, src_h = fetch_size(width, height)
-    out_size = None if (src_w, src_h) == (width, height) else (width, height)
+    layout = plan.get("layout")
+    pic_w, pic_h = frame_size(width, layout) if layout else (width, height)
+    src_w, src_h = fetch_size(pic_w, pic_h) if layout else fetch_size(width, height)
+    out_size = None if (src_w, src_h) == (pic_w, pic_h) else (pic_w, pic_h)
     print(f"Decoding source frames for {len(frames)} output frames...", flush=True)
     look = look_filter(plan.get("look"), width, height)
     caption = plan.get("caption")
@@ -287,7 +316,10 @@ def render(plan: dict, out: Path) -> Path:
     for i, entry in enumerate(frames):
         if i % chunk == 0:
             sources = fetch_frames(frames[i:i + chunk], src_w, src_h)
-        frame = look(compose(entry, sources, out_size))
+        frame = compose(entry, sources, out_size)
+        if layout:
+            frame = blur_fill(frame, width, height, layout)
+        frame = look(frame)
         for grade in plan.get("grade", []):
             if i >= grade["from"]:
                 frame = apply_grade(frame, grade)

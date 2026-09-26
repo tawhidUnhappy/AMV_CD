@@ -56,6 +56,11 @@ from amv.shorts import catalog, find
 from amv.shorts.song import analyse, find_drops, window
 
 WIDTH, HEIGHT, FPS = 1080, 1920, 24
+# The picture sits centred on a blurred, dimmed copy of itself: the whole
+# width of the source frame is kept (a 9:16 crop throws 2/3 of it away).
+# "frame": "crop" in a spec gives the old full-screen 9:16 crop; "layout":
+# {"frame_aspect": 1.333} a bigger, narrower centre picture.
+LAYOUT = {"frame_aspect": 16 / 9, "blur": 6, "dim": 0.55}
 MIN_CUT = 0.75
 MIN_SPEED = 0.45
 DELIVER = Path("/mnt/datadisk/shorts")
@@ -239,6 +244,8 @@ def plan(spec: dict) -> tuple[dict, list[dict], object]:
     montage = {"about": spec.get("about", spec["name"]), "fps": FPS, "width": WIDTH, "height": HEIGHT,
                "seconds": w.seconds, "song": spec["song"], "song_start": w.start, "audio_fade_in": 0.05,
                "look": LOOKS[mood], "fade_in": 0.2, "fade_out": 0.6, "shots": shots}
+    if spec.get("frame", "blur") == "blur":
+        montage["layout"] = {**LAYOUT, **spec.get("layout", {})}
     return montage, items, w
 
 

@@ -169,6 +169,8 @@ def build(spec: dict, song: Path) -> dict:
                 amount = max(0.0, min(1.0, amount))
                 dx, dy = whip["dir"]
                 width, height = spec.get("width", 1920), spec.get("height", 1080)
+                if spec.get("layout"):  # the whip smears the picture, not the whole blurred frame
+                    height = round(width / spec["layout"].get("frame_aspect", 16 / 9))
                 entry["dblur"] = [round(dx * amount * width * 0.12), round(dy * amount * height * 0.12)]
                 # Slide: leaving pushes the frame on along dir, arriving comes from behind it.
                 sign = 1 if whip is whip_out else -1
@@ -195,7 +197,7 @@ def build(spec: dict, song: Path) -> dict:
             entry["dim"] = round(1 - tail / spec["fade_out"], 3)
         frames.append(entry)
     return {"fps": fps, "width": spec.get("width", 1920), "height": spec.get("height", 1080), "seconds": seconds,
-            "frames": frames, "look": spec.get("look"), "caption": None,
+            "frames": frames, "look": spec.get("look"), "caption": None, "layout": spec.get("layout"),
             "audio": {"file": str(song), "start": spec.get("song_start", 0.0), "delay": spec.get("audio_delay", 0.0),
                       "fade_out": spec.get("fade_out", 0.0), "fade_in": spec.get("audio_fade_in", 0.0)}}
 
