@@ -46,6 +46,55 @@
    }
   ]
  },
+ "Illusionary Daytime x 室内系 TrackMaker Extended Edit Version Slowe.mp3": {
+  "drops": [
+   [
+    119.81,
+    9.6
+   ],
+   [
+    77.11,
+    9.5
+   ],
+   [
+    98.48,
+    9.5
+   ],
+   [
+    13.14,
+    8.7
+   ],
+   [
+    34.46,
+    8.4
+   ]
+  ],
+  "duration": 161.36,
+  "path": "/mnt/datadisk/song/Illusionary Daytime x 室内系 TrackMaker Extended Edit Version Slowe.mp3",
+  "period": 0.6734,
+  "tempo": 89.1,
+  "windows": [
+   {
+    "accents": [
+     119.838,
+     121.162,
+     121.835,
+     127.826,
+     129.869,
+     130.519,
+     132.516,
+     135.187,
+     139.854,
+     140.504,
+     141.177
+    ],
+    "drop": 119.838,
+    "end": 147.328,
+    "short": "smoking_two_faces",
+    "start": 102.838
+   }
+  ]
+ },
  "MONTAGEM ALQUIMIA SLOWED - h6itam n7san7os Mc Menor Do Alvorada.mp3": {
   "drops": [
    [
@@ -89,6 +138,54 @@
     "end": 43.204,
     "short": "hell_mode_alquimia",
     "start": 18.704
+   }
+  ]
+ },
+ "MONTAGEM ELDER SUPER SLOWED.mp3": {
+  "drops": [
+   [
+    31.56,
+    29.6
+   ],
+   [
+    86.66,
+    21.4
+   ],
+   [
+    68.87,
+    17.4
+   ],
+   [
+    10.47,
+    13.2
+   ],
+   [
+    59.98,
+    5.7
+   ]
+  ],
+  "duration": 111.69,
+  "path": "/mnt/datadisk/song/MONTAGEM ELDER SUPER SLOWED.mp3",
+  "period": 0.5573,
+  "tempo": 107.67,
+  "windows": [
+   {
+    "accents": [
+     36.688,
+     37.245,
+     37.802,
+     38.359,
+     42.237,
+     42.794,
+     43.352,
+     43.909,
+     45.023,
+     45.581
+    ],
+    "drop": 31.695,
+    "end": 52.985,
+    "short": "rezero_from_zero",
+    "start": 12.275
    }
   ]
  },
@@ -137,6 +234,55 @@
     "end": 33.042,
     "short": "rezero_velas_negras",
     "start": 11.042
+   }
+  ]
+ },
+ "ᴏɴᴇ-ꜱɪᴅᴇᴅ ʟᴏᴠᴇ - ᴊᴀ.mp3": {
+  "drops": [
+   [
+    181.97,
+    47.6
+   ],
+   [
+    126.9,
+    41.9
+   ],
+   [
+    57.61,
+    40.8
+   ],
+   [
+    92.69,
+    34.3
+   ],
+   [
+    17.53,
+    32.9
+   ]
+  ],
+  "duration": 217.73,
+  "path": "/mnt/datadisk/song/ᴏɴᴇ-ꜱɪᴅᴇᴅ ʟᴏᴠᴇ - ᴊᴀ.mp3",
+  "period": 0.5341,
+  "tempo": 112.35,
+  "windows": [
+   {
+    "accents": [
+     182.021,
+     184.181,
+     185.249,
+     186.34,
+     189.962,
+     191.054,
+     191.588,
+     194.653,
+     195.744,
+     196.836,
+     197.37
+    ],
+    "drop": 182.021,
+    "end": 205.411,
+    "short": "taisho_otome_bride",
+    "start": 157.251
    }
   ]
  }

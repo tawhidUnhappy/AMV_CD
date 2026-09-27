@@ -29,9 +29,10 @@ INDEX_FPS = 8
 INDEX_W, INDEX_H = 48, 27
 VIDEO_SUFFIXES = {".mkv", ".mp4", ".avi", ".webm", ".m4v"}
 # Tried in order; the first that matches names the episode. Covers
-# "..._S01_Ep20_...", "[S01] [E12] ...", "[SO] [06 - Title]", "08. Title",
-# "Title_13_1080p".
+# "[S01 E06] Title", "..._S01_Ep20_...", "[S01] [E12] ...", "[SO] [06 - Title]",
+# "08. Title", "Title_13_1080p", "[SA] Title - 01 - 1080p".
 EPISODE_PATTERNS = (
+    r"\bS\d{1,2}\s*E(\d{1,3})(?!\d)",
     r"[Ee]p(?:isode)?[ _.-]?(\d{1,3})(?!\d)",
     r"\[E(\d{1,3})\]",
     r"\[(\d{1,3}) - ",

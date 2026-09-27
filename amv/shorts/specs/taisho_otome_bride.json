@@ -1,0 +1,104 @@
+{
+ "name": "taisho_otome_bride",
+ "about": "Taisho Otome story Short: Tamahiko grew up unloved and his father throws him out as useless; Yuzu arrives as the bride his father bought, and says she wants to love him - the drop opens their year together (Tokyo, the escalator, her tears, his blush, the bicycle under the stars), and he ends on wanting to make her happy.",
+ "series": "Taisho_Otome",
+ "anime": "Taisho Otome Fairy Tale",
+ "song": "/mnt/datadisk/song/ᴏɴᴇ-ꜱɪᴅᴇᴅ ʟᴏᴠᴇ - ᴊᴀ.mp3",
+ "drop": 181.97,
+ "seconds": "auto",
+ "mood": "soft",
+ "story": [
+  {
+   "ep": 1,
+   "from": 15.45,
+   "to": 22.66,
+   "why": "Tamahiko: born to means, grew up without a drop of love"
+  },
+  {
+   "ep": 1,
+   "from": 41.68,
+   "to": 46.15,
+   "why": "father: a good-for-nothing has no place here, get out of my sight"
+  },
+  {
+   "ep": 1,
+   "from": 153.52,
+   "to": 158.25,
+   "exact": true,
+   "why": "Yuzu: my name's Yuzuki, I'm here to be your bride"
+  },
+  {
+   "ep": 1,
+   "from": 1213.3,
+   "to": 1221.2,
+   "exact": true,
+   "why": "Yuzu: I want to be with you... and I want to love them"
+  }
+ ],
+ "drop_shot": "10-214.1",
+ "shots": [
+  "02-655.2",
+  "02-660.8",
+  "02-690.9",
+  "02-976.8",
+  "02-781.1",
+  "06-806.6",
+  "06-994.2",
+  "06-1126.2",
+  "07-526.6",
+  "10-964.8",
+  "10-1156.5",
+  "12-1210.0"
+ ],
+ "outro": [
+  {
+   "ep": 4,
+   "from": 1248.3,
+   "to": 1257.5,
+   "exact": true,
+   "why": "Tamahiko: my heart was caught... I want to make Yuzu happy"
+  }
+ ],
+ "hook_text": "His father threw him *away*...",
+ "title": "Disowned By His Father, He Got A BRIDE He Never Asked For - Taisho Otome",
+ "hook": "Thrown out by his own family, Tamahiko expected to die alone. Then Yuzu knocked on the door.",
+ "tags": [
+  "taishootome",
+  "taishootomefairytale",
+  "yuzu",
+  "tamahiko",
+  "romanceanime",
+  "animestory"
+ ],
+ "thumbnail": {
+  "ep": 10,
+  "t": 1160.0,
+  "x": 0.5,
+  "labels": [
+   {
+    "text": "DISOWNED",
+    "at": [
+     0.3,
+     0.2
+    ],
+    "to": [
+     0.45,
+     0.42
+    ],
+    "size": 140
+   },
+   {
+    "text": "HIS\nBRIDE",
+    "at": [
+     0.7,
+     0.84
+    ],
+    "to": [
+     0.66,
+     0.56
+    ],
+    "size": 140
+   }
+  ]
+ }
+}

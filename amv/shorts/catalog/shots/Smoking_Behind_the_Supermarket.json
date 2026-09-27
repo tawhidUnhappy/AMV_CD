@@ -1,0 +1,254 @@
+{
+ "01-1106.1": {
+  "at": 1108.125,
+  "crop_x": 0.5,
+  "episode": 1,
+  "file_name": "[SO] [01 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "01-1108.3": {
+  "at": 1108.3,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 1114.56,
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good",
+  "why": "Tayama: don't just stand there, come smoke next to me"
+ },
+ "01-1110.1": {
+  "at": 1110.1,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 1113.35,
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good",
+  "why": "Tayama: don't just stand there, sit and have a smoke"
+ },
+ "01-1113.6": {
+  "at": 1113.625,
+  "crop_x": 0.292,
+  "episode": 1,
+  "file_name": "[SO] [01 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "01-330.4": {
+  "at": 330.375,
+  "crop_x": 0.729,
+  "episode": 1,
+  "file_name": "[SO] [01 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drop",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "01-383.78": {
+  "at": 383.78,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 389.57,
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good",
+  "why": "Sasaki: Yamada from register two, my ray of light at the end of a long work day"
+ },
+ "01-389.8": {
+  "at": 391.75,
+  "crop_x": 0.552,
+  "episode": 1,
+  "file_name": "[SO] [01 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "01-521.34": {
+  "at": 521.34,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 529.3,
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good",
+  "why": "Sasaki: since when did us smokers lose all our rights? / Tayama: hey, pops, over here"
+ },
+ "01-817.9": {
+  "at": 818.0,
+  "crop_x": 0.333,
+  "episode": 1,
+  "file_name": "[SO] [01 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "01-989.1": {
+  "at": 989.125,
+  "crop_x": 0.333,
+  "episode": 1,
+  "file_name": "[SO] [01 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "02-202.8": {
+  "at": 203.125,
+  "crop_x": 0.458,
+  "episode": 2,
+  "file_name": "[SO] [02 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "02-464.6": {
+  "at": 465.75,
+  "crop_x": 0.594,
+  "episode": 2,
+  "file_name": "[SO] [02 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "02-468.36": {
+  "at": 468.36,
+  "episode": 2,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 478.04,
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good",
+  "why": "Sasaki to Tayama: I wish I could keep going with a smile the way Yamada does"
+ },
+ "02-521.1": {
+  "at": 521.75,
+  "crop_x": 0.677,
+  "episode": 2,
+  "file_name": "[SO] [02 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "02-659.8": {
+  "at": 659.75,
+  "crop_x": 0.365,
+  "episode": 2,
+  "file_name": "[SO] [02 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "03-431.5": {
+  "at": 431.5,
+  "crop_x": 0.812,
+  "episode": 3,
+  "file_name": "[SO] [03 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "04-848.6": {
+  "at": 848.75,
+  "crop_x": 0.448,
+  "episode": 4,
+  "file_name": "[SO] [04 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "12-210.1": {
+  "at": 210.125,
+  "crop_x": 0.5,
+  "episode": 12,
+  "file_name": "[SO] [12 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_two_faces"
+  ],
+  "verdict": "good"
+ }
+}

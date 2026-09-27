@@ -133,7 +133,7 @@ def record_short(spec: dict, spec_path: Path, items: list[dict], w) -> None:
                                     "accents": w.accents}]
         _write(CATALOG / "songs.json", songs)
         built = _read(CATALOG / "shorts.json")
-        built[spec["name"]] = {"spec": str(spec_path), "series": spec["series"], "song": name, "mood": mood,
+        built[spec["name"]] = {**built.get(spec["name"], {}), "spec": str(spec_path), "series": spec["series"], "song": name, "mood": mood,
                                "window": [w.start, w.end], "drop": w.drop, "shots": [it["id"] for it in items],
                                "built": dt.date.today().isoformat()}
         _write(CATALOG / "shorts.json", built)

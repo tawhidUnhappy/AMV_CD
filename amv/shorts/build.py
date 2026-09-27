@@ -14,6 +14,17 @@ Spec (amv/shorts/specs/*.json; ids come from ./amv.sh short-find sheets):
      "shots": ["12-495.0", {"id": "12-497.5", "x": 0.35}, ...],   # after it, one per cut
      "title": "...", "hook": "...", "tags": ["hellmode", ...]}
 
+Story Shorts (English dub + captions) add scenes played as they are:
+
+     "story": [{"ep": 3, "from": 612.4, "to": 618.9, "why": "..."}, ...],   # before the build/drop
+     "outro": [{"ep": 12, "from": 1500.2, "to": 1503.0}],                  # after the montage
+     "hook_text": "She was *sold* to him",     # top line for the whole Short, *yellow*
+     "seconds": "auto",                        # story + a cut per N hits for each shot + outro
+     "thumbnail": {"ep": 3, "t": 615.0, "lines": ["SHE WAS SOLD", "TO HIM"]}
+
+The song plays quietly under the story and comes up to full on the drop;
+see amv.shorts.story.
+
 A shot entry is an id, or {"id", "why" (kept in the catalog), "x"/"y" (crop
 centre, 0-1), "at" (source start), "speed", "zoom": [a, b]}. The last shot
 holds to the end. Every build records the song window and each shot used
@@ -42,7 +53,6 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import shutil
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -94,27 +104,39 @@ def mean_speed(keys: list[list[float]] | None, steps: int = 200) -> float:
     return sum(at((j + 0.5) / steps) for j in range(steps)) / steps
 
 
-def slots(spec: dict, w) -> list[tuple[float, float]]:
-    """(start, end) in output seconds for build shots, the drop shot, the rest."""
+def slots(spec: dict, w, story_len: float = 0.0, outro_len: float = 0.0) -> list[tuple[float, float]]:
+    """(start, end) in output seconds for build shots, the drop shot, the rest
+    - after `story_len` s of story, before `outro_len` s of outro.
+
+    The cut grid is every N-th hit from the drop, and of the N phases the one
+    whose cuts land on the most accents wins: counted from the drop alone,
+    Heavenly's three biggest hits (52.0/56.15/60.3 s) all fell mid-shot and the
+    Short "didn't follow" the song."""
     builds = spec.get("build_shots", [])
     drop_at = w.drop - w.start
     cuts: list[float] = []
-    beats = [b - w.start for b in w.build_beats]
+    beats = [b - w.start for b in w.build_beats if b - w.start > story_len + 0.3]
     for k in range(1, len(builds)):
-        target = drop_at * k / len(builds)
+        target = story_len + (drop_at - story_len) * k / len(builds)
         cuts.append(min(beats, key=lambda b: abs(b - target)) if beats else target)
     if builds:
         cuts.append(drop_at)
     every = max(1, math.ceil(MIN_CUT / w.period - 1e-6))
-    hits = [h - w.start for h in w.hits]
-    # the drop shot + each drive shot starts on every `every`-th hit
+    drive_end = w.seconds - outro_len
+    hits = [h - w.start for h in w.hits if h - w.start < drive_end - MIN_CUT]
+    accents = {round(a - w.start, 2) for a in w.accents}
     count = 1 + len(spec.get("shots", []))
-    starts = hits[::every][:count]
+
+    def starts_for(phase: int) -> list[float]:
+        return [hits[0], *hits[phase + every::every]] if hits else []
+
+    phase = max(range(every), key=lambda p: (sum(round(h, 2) in accents for h in starts_for(p)[1:count]), -p))
+    starts = starts_for(phase)[:count]
     if len(starts) < count:
         raise SystemExit(f"{count} shots after the drop need {count * every} hits; the window has {len(hits)} - "
                          f"drop {count - len(starts)} shot(s) or lengthen 'seconds'")
     cuts += starts[1:]
-    edges = [0.0, *cuts, w.seconds]
+    edges = [story_len, *cuts, drive_end]
     return [(round(a, 4), round(b, 4)) for a, b in zip(edges, edges[1:], strict=False)]
 
 
@@ -148,15 +170,48 @@ def _measure(file: str, start: float, need: float) -> dict:
     return {"focus": [find.crop_x(file, start, start + need), float(np.median(ys))], "tail": m["tail"]}
 
 
+def dub_segments(spec: dict, segs: list[dict]) -> list[dict]:
+    """Story segments with their in/out points moved so no dubbed word is cut,
+    and the dub's own words attached (amv.shorts.dub)."""
+    from amv.shorts import dub, story
+    from amv.shorts.find import load_show
+
+    if not segs:
+        return []
+    eps = {x.number: x for x in load_show(spec["series"])}
+    jobs = [(str(eps[g["ep"]].file), story.english_stream(str(eps[g["ep"]].file)),
+             max(0.0, g["from"] - dub.PAD), g["to"] + dub.PAD) for g in segs]
+    words = dub.transcribe(jobs)
+    out = []
+    for g, job in zip(segs, jobs, strict=True):
+        w = words[dub._key(*job)]
+        start, end, kept = (g["from"], g["to"], [x for x in w if g["from"] <= (x[0] + x[1]) / 2 <= g["to"]]) \
+            if g.get("exact") else dub.refine(w, g["from"], g["to"])
+        out.append({**g, "from": start, "to": end, "words": kept})
+    return out
+
+
 def plan(spec: dict) -> tuple[dict, list[dict], object]:
-    w = window(Path(spec["song"]), spec.get("seconds", 24.0), spec.get("build", 7.0), spec.get("drop"))
+    story_segs = dub_segments(spec, spec.get("story", []))
+    outro_segs = dub_segments(spec, spec.get("outro", []))
+    story_len = sum(g["to"] - g["from"] for g in story_segs)
+    outro_len = sum(g["to"] - g["from"] for g in outro_segs)
+    build_len = spec.get("build", 7.0 if not story_segs else 3.0) if spec.get("build_shots") else 0.0
+    seconds = spec.get("seconds", 24.0)
+    if seconds == "auto":  # just long enough: story + a cut per N hits for every shot + outro
+        probe = window(Path(spec["song"]), 60.0, story_len + build_len, spec.get("drop"))
+        every = max(1, math.ceil(MIN_CUT / probe.period - 1e-6))
+        drive = (1 + len(spec.get("shots", []))) * every * probe.period + (0.6 if not outro_segs else 0.0)
+        seconds = round(story_len + build_len + drive + outro_len + 0.3, 2)
+    w = window(Path(spec["song"]), seconds, story_len + build_len, spec.get("drop"))
     mood = spec.get("mood", "power")
     drop_punch, accent_punch, shake, rgb = FORCE[mood]
     entries = [*({"role": "build", **_entry(s)} for s in spec.get("build_shots", [])),
                {"role": "drop", **_entry(spec["drop_shot"])},
                *({"role": "drive", **_entry(s)} for s in spec.get("shots", []))]
-    entries[-1]["role"] = "end" if entries[-1]["role"] == "drive" else entries[-1]["role"]
-    edges = slots(spec, w)
+    if not outro_segs:
+        entries[-1]["role"] = "end" if entries[-1]["role"] == "drive" else entries[-1]["role"]
+    edges = slots(spec, w, story_len, outro_len)
     accents = {round(a - w.start, 2) for a in w.accents}
 
     def prepare(item: tuple[int, dict]) -> dict:
@@ -241,12 +296,77 @@ def plan(spec: dict) -> tuple[dict, list[dict], object]:
                 del into["dissolve"]
                 into["dip"] = 3
         shots.append(shot)
+    story_shots, t = [], 0.0
+    for g in story_segs:
+        t += g["to"] - g["from"]
+        story_shots.append(_scene(spec, g, t))
+    outro_shots, t = [], w.seconds - outro_len
+    for g in outro_segs:
+        t += g["to"] - g["from"]
+        outro_shots.append(_scene(spec, g, t))
+    if outro_shots:
+        outro_shots[0]["in"] = {"flash": 0.2}
     montage = {"about": spec.get("about", spec["name"]), "fps": FPS, "width": WIDTH, "height": HEIGHT,
                "seconds": w.seconds, "song": spec["song"], "song_start": w.start, "audio_fade_in": 0.05,
-               "look": LOOKS[mood], "fade_in": 0.2, "fade_out": 0.6, "shots": shots}
+               "look": LOOKS[mood], "fade_in": 0.2, "fade_out": 0.6,
+               "shots": [*story_shots, *shots, *outro_shots]}
     if spec.get("frame", "blur") == "blur":
         montage["layout"] = {**LAYOUT, **spec.get("layout", {})}
+    montage["story"] = story_audio(spec, story_segs, outro_segs, w, story_len, outro_len)
+    montage["story"]["segments"] = [{k: v for k, v in g.items() if k != "words"} for g in [*story_segs, *outro_segs]]
+    montage["story"]["transcript"] = [" ".join(x[2] for x in g["words"]) for g in [*story_segs, *outro_segs]]
     return montage, items, w
+
+
+def _scene(spec: dict, g: dict, until: float) -> dict:
+    """A story scene: the episode as it plays, with a slow push-in."""
+    from amv.shorts.find import load_show
+
+    e = next(x for x in load_show(spec["series"]) if x.number == g["ep"])
+    return {"why": g.get("why", "story"), "file": str(e.file), "at": g["from"], "until": round(until, 4),
+            "zoom": g.get("zoom", [1.0, 1.05]), "ease": True, "center": [g.get("x", 0.5), 0.5], "speed": 1.0}
+
+
+# Music under dialogue, and how fast it comes back up for the drop.
+UNDER_DIALOGUE = 0.16
+DIALOGUE_GAIN = 1.35
+
+
+def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, story_len: float,
+                outro_len: float) -> dict:
+    """The English dialogue clips, the music envelope and the captions for a
+    story Short - empty for a pure montage."""
+    from amv.shorts import dub, story
+    from amv.shorts.find import load_show
+
+    if not story_segs and not outro_segs:
+        return {}
+    eps = {x.number: x for x in load_show(spec["series"])}
+    clips, captions = [], []
+    drop_at = w.drop - w.start
+    drive_end = w.seconds - outro_len
+    for segs, t in ((story_segs, 0.0), (outro_segs, drive_end)):
+        for g in segs:
+            file = str(eps[g["ep"]].file)
+            dur = g["to"] - g["from"]
+            clips.append({"file": file, "stream": story.english_stream(file), "src": g["from"], "at": round(t, 3),
+                          "dur": round(dur, 3), "gain": g.get("gain", DIALOGUE_GAIN)})
+            if g.get("words"):  # what the dub says (subtitle tracks are a different script)
+                captions += dub.captions(g["words"], g["from"], t)
+            else:
+                for ln in story.lines(spec["series"], g["ep"], g["from"], g["to"]):
+                    captions.append({"start": t + ln["start"] - g["from"], "end": t + ln["end"] - g["from"],
+                                     "text": ln["text"]})
+            t += dur
+    gain = [[0.0, UNDER_DIALOGUE]]
+    if story_segs:
+        gain += [[max(0.0, story_len - 0.2), UNDER_DIALOGUE]]
+        if drop_at - story_len > 0.6:  # a build between the story and the drop: swell into it
+            gain += [[story_len + 0.4, 0.6], [drop_at - 0.05, 0.75]]
+    gain += [[drop_at, 1.0]]
+    if outro_segs:
+        gain += [[drive_end - 0.3, 1.0], [drive_end + 0.2, UNDER_DIALOGUE]]
+    return {"clips": clips, "captions": captions, "music_gain": gain}
 
 
 def _entry(s) -> dict:
@@ -268,8 +388,10 @@ def write_text(spec: dict, out_dir: Path) -> None:
     tags = spec.get("tags", [])
     hashtags = " ".join(f"#{t}" for t in ["shorts", "anime", "amv", "animeedit", *tags])
     head = spec["title"]
-    if "#shorts" not in head.lower() and len(head) + 8 <= 100:
+    if "#shorts" not in head.lower():
         head += " #shorts"
+    if len(head) > 100:  # YouTube's limit; " #shorts" silently fell off a 101-char title
+        raise SystemExit(f"title is {len(head)} chars with #shorts (YouTube max 100): {head}")
     (out_dir / "title.txt").write_text(head + "\n", encoding="utf-8")
     body = [spec.get("hook", ""), "",
             f"Anime: {spec['anime']}",
@@ -284,7 +406,11 @@ def write_text(spec: dict, out_dir: Path) -> None:
 
 
 def review_sheet(video: Path, out: Path, every: float = 0.5) -> None:
-    """Every `every` s of the render, small, in rows of 12 - crop and flow at a glance."""
+    """The whole render in 60 tiles (every 0.5 s, or wider for a Short over
+    30 s - a fixed step cut a 47 s story Short off at 30 s), rows of 12."""
+    from amv.core.ffmpeg_tools import probe_duration
+
+    every = max(every, round(probe_duration(video) / 60 + 0.005, 2))
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-vf",
                     f"fps={1 / every},scale=180:320,drawtext=text='%{{pts\\:hms}}':x=4:y=4:fontsize=16:"
                     "fontcolor=yellow:box=1:boxcolor=black@0.6,tile=12x5:padding=4",
@@ -295,18 +421,27 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("spec", type=Path)
     parser.add_argument("--plan-only", action="store_true", help="print the plan, render nothing")
-    parser.add_argument("--deliver", type=Path, default=DELIVER, help="copy video + texts to DIR/NAME/")
+    parser.add_argument("--deliver", type=Path, default=DELIVER,
+                        help="copy video, texts, thumbnail to DIR/SNNN_NAME/ (see amv.shorts.deliver)")
     args = parser.parse_args()
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     montage, items, w = plan(spec)
     print(f"{spec['name']}: song {w.start:.2f}-{w.end:.2f}s (drop {w.drop:.2f}, beat {w.period:.3f}s), "
           f"{len(items)} shots")
-    for it, s in zip(items, montage["shots"], strict=True):
+    segs = montage.get("story", {}).get("segments", [])
+    for g, said in zip(segs, montage.get("story", {}).get("transcript", []), strict=True):
+        print(f"  story ep{g['ep']:02d} {g['from']:8.2f}-{g['to']:8.2f} ({g['to'] - g['from']:.2f}s)  dub: {said}")
+    drive_shots = montage["shots"][len(spec.get("story", [])):len(montage["shots"]) - len(spec.get("outro", []))]
+    for it, s in zip(items, drive_shots, strict=True):
         a, b = it["slot"]
         print(f"  {a:6.2f}-{b:6.2f} {it['role']:5s} {it['id']:10s} at {it['at']:8.2f} x{it['need']:.2f}s "
               f"speed {it['speed']:.2f} crop {s['center']} {'ACCENT' if it['accent'] else ''} "
               f"{json.dumps(s.get('in', {}))} {json.dumps(s.get('out', {}))}")
     catalog.record_short(spec, args.spec, items, w)
+    for g in segs:
+        catalog.update_shot(spec["series"], catalog.moment_id(g["ep"], g["from"]), episode=g["ep"], at=g["from"],
+                            until=g["to"], why=g.get("why"), role="story", verdict="good",
+                            moods=[spec.get("mood", "power")], used_in=[spec["name"]])
     a = analyse(Path(spec["song"]))
     catalog.record_song(Path(spec["song"]), find_drops(Path(spec["song"])), a["tempo"], a["duration"])
     out_dir = find.SHORTS / spec["name"]
@@ -315,17 +450,31 @@ def main() -> None:
     write_text(spec, out_dir)
     if args.plan_only:
         return
+    story_plan = montage.pop("story", {})
     frames = montage_plan(montage, Path(spec["song"]))
+    if story_plan:
+        frames["audio"]["clips"] = story_plan["clips"]
+        frames["audio"]["music_gain"] = story_plan["music_gain"]
+    if story_plan.get("captions") or spec.get("hook_text"):
+        from amv.intro.remake import frame_size
+        from amv.shorts import story
+
+        pic_h = frame_size(WIDTH, montage["layout"])[1] if montage.get("layout") else HEIGHT // 3
+        top = (HEIGHT - pic_h) // 2
+        frames["subtitles"] = str(story.write_ass(out_dir / "text" / "captions.ass", story_plan.get("captions", []),
+                                                  spec.get("hook_text"), w.seconds, WIDTH, HEIGHT, top,
+                                                  top + pic_h))
     video = render(frames, out_dir / "short.mp4")
     review_sheet(video, out_dir / "review.jpg")
     print(f"Wrote {out_dir / 'review.jpg'}")
-    if args.deliver:
-        dest = args.deliver / spec["name"]
-        dest.mkdir(parents=True, exist_ok=True)
-        for f in ("short.mp4", "title.txt", "description.txt"):
-            shutil.copy2(out_dir / f, dest / f)
-        print(f"Delivered to {dest}")
+    if spec.get("thumbnail"):
+        from amv.shorts.thumb import thumbnail
 
+        print(f"Wrote {thumbnail(spec, out_dir / 'thumbnail.jpg')}")
+    if args.deliver:
+        from amv.shorts.deliver import deliver
+
+        print(f"Delivered to {deliver(spec['name'], str(args.spec), out_dir, args.deliver)}")
 
 if __name__ == "__main__":
     main()

@@ -13,7 +13,11 @@ Plan:
      "grade": [{"from": 284, "gain": [0.76, 0.74, 0.31], "offset": [17, 8.5, 5.5]}],
      "caption": {"text": "...", "from": 295, "fade": 3, "y": 0.89, "size": 58, "spacing": 5},
      "layout": {"frame_aspect": 1.778, "blur": 6, "dim": 0.55},   # optional: picture centred on a blurred fill
-     "audio": {"file": "...", "delay": 0.242, "fade_out": 0.25}}
+     "audio": {"file": "...", "delay": 0.242, "fade_out": 0.25,
+               # optional: the music's volume envelope, and episode audio laid on it
+               "music_gain": [[0, 0.2], [9.5, 0.2], [10.0, 1.0]],
+               "clips": [{"file": "...mkv", "stream": 1, "src": 612.4, "at": 0.0, "dur": 6.5}]},
+     "subtitles": "path/to/captions.ass"}       # optional: burned in (its folder is the fontsdir)
 
 `n` is the episode's frame number (0 = its first frame at 24000/1001). A
 frame is fetched by seeking half a frame before it, which lands on exactly
@@ -44,7 +48,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from amv.core import config, paths
-from amv.core.ffmpeg_tools import choose_h264_encoder, h264_encoder_args, probe_duration
+from amv.core.ffmpeg_tools import choose_h264_encoder, h264_encoder_args, probe_duration, subtitles_filter
 
 SOURCE_FPS = 24000 / 1001
 
@@ -279,6 +283,17 @@ def blur_fill(picture: np.ndarray, width: int, height: int, layout: dict) -> np.
     return frame
 
 
+def gain_expr(points: list[list[float]]) -> str:
+    """A volume-filter expression through [[t, gain], ...], linear between -
+    the music's envelope (low under dialogue, full from the drop)."""
+    points = sorted(points)
+    expr = f"{points[-1][1]}"
+    for (t0, g0), (t1, g1) in reversed(list(zip(points, points[1:], strict=False))):
+        seg = f"{g0}+({g1}-{g0})*(t-{t0})/{max(1e-3, t1 - t0)}"
+        expr = f"if(lt(t,{t1}),{seg},{expr})"
+    return f"if(lt(t,{points[0][0]}),{points[0][1]},{expr})"  # the caller single-quotes it
+
+
 def render(plan: dict, out: Path) -> Path:
     width, height, fps = plan["width"], plan["height"], plan["fps"]
     frames = plan["frames"]
@@ -302,10 +317,30 @@ def render(plan: dict, out: Path) -> Path:
         afilter += f",afade=t=in:st=0:d={float(audio['fade_in']):.3f}"
     encoder = choose_h264_encoder("auto")
     out.parent.mkdir(parents=True, exist_ok=True)
+    inputs, graph = ["-ss", f"{float(audio.get('start', 0.0)):.3f}", "-i", audio["file"]], f"[1:a]{afilter}"
+    if audio.get("music_gain"):
+        graph += f",volume='{gain_expr(audio['music_gain'])}':eval=frame"
+    clips = audio.get("clips", [])
+    if clips:  # dialogue from the episodes, laid on the music at their output times
+        labels = ["[m]"]
+        graph += "[m]"
+        for k, clip in enumerate(clips):
+            idx = 2 + k
+            inputs += ["-ss", f"{clip['src']:.3f}", "-t", f"{clip['dur'] + 0.2:.3f}", "-i", clip["file"]]
+            ms = round(clip["at"] * 1000)
+            graph += (f";[{idx}:a:{clip['stream']}]atrim=0:{clip['dur']:.3f},asetpts=PTS-STARTPTS,"
+                      f"aformat=sample_rates=48000:channel_layouts=stereo,volume={clip.get('gain', 1.0)},"
+                      f"afade=t=in:d=0.04,afade=t=out:st={max(0.0, clip['dur'] - 0.08):.3f}:d=0.08,"
+                      f"adelay={ms}|{ms}[c{k}]")
+            labels.append(f"[c{k}]")
+        graph += (f";{''.join(labels)}amix=inputs={len(labels)}:normalize=0:duration=first,"
+                  f"alimiter=limit=0.95,atrim=0:{seconds}")
+    graph += "[a]"
+    video_filter = ["-vf", subtitles_filter(Path(plan["subtitles"]), Path(plan["subtitles"]).parent)] \
+        if plan.get("subtitles") else []
     proc = subprocess.Popen(
         ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{width}x{height}",
-         "-r", str(fps), "-i", "-", "-ss", f"{float(audio.get('start', 0.0)):.3f}", "-i", audio["file"],
-         "-filter_complex", f"[1:a]{afilter}[a]",
+         "-r", str(fps), "-i", "-", *inputs, "-filter_complex", graph, *video_filter,
          "-map", "0:v", "-map", "[a]", *h264_encoder_args(encoder, "p7", 16), "-pix_fmt", "yuv420p",
          "-c:a", "aac", "-b:a", "320k", "-t", f"{seconds:.3f}", "-movflags", "+faststart", str(out)],
         stdin=subprocess.PIPE)

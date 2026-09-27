@@ -3,6 +3,7 @@
   "built": "2026-09-26",
   "drop": 47.578,
   "mood": "soft",
+  "number": 3,
   "series": "Angel_Next_Door",
   "shots": [
    "07-849.5",
@@ -38,6 +39,7 @@
   "built": "2026-09-26",
   "drop": 25.704,
   "mood": "power",
+  "number": 1,
   "series": "Hell_Mode",
   "shots": [
    "12-451.0",
@@ -69,10 +71,39 @@
    43.204
   ]
  },
+ "rezero_from_zero": {
+  "built": "2026-09-27",
+  "drop": 31.695,
+  "mood": "dark",
+  "number": 4,
+  "series": "Re_Zero",
+  "shots": [
+   "04-2972.12",
+   "06-1354.75",
+   "02-2377.12",
+   "11-166.5",
+   "11-177.0",
+   "06-1806.25",
+   "11-1930.2",
+   "02-2361.8",
+   "07-2162.75",
+   "11-2250.75",
+   "06-2204.4",
+   "12-2370.8",
+   "12-1906.12"
+  ],
+  "song": "MONTAGEM ELDER SUPER SLOWED.mp3",
+  "spec": "amv/shorts/specs/rezero_from_zero.json",
+  "window": [
+   12.275,
+   52.985
+  ]
+ },
  "rezero_velas_negras": {
   "built": "2026-09-26",
   "drop": 18.042,
   "mood": "dark",
+  "number": 2,
   "series": "Re_Zero",
   "shots": [
    "08-2336.98",
@@ -103,6 +134,62 @@
   "window": [
    11.042,
    33.042
+  ]
+ },
+ "smoking_two_faces": {
+  "built": "2026-09-27",
+  "drop": 119.838,
+  "mood": "soft",
+  "number": 6,
+  "series": "Smoking_Behind_the_Supermarket",
+  "shots": [
+   "01-330.4",
+   "01-389.8",
+   "03-431.5",
+   "01-817.9",
+   "01-1106.1",
+   "01-1113.6",
+   "02-464.6",
+   "02-521.1",
+   "02-659.8",
+   "02-202.8",
+   "01-989.1",
+   "04-848.6",
+   "12-210.1"
+  ],
+  "song": "Illusionary Daytime x 室内系 TrackMaker Extended Edit Version Slowe.mp3",
+  "spec": "amv/shorts/specs/smoking_two_faces.json",
+  "window": [
+   102.838,
+   147.328
+  ]
+ },
+ "taisho_otome_bride": {
+  "built": "2026-09-27",
+  "drop": 182.021,
+  "mood": "soft",
+  "number": 5,
+  "series": "Taisho_Otome",
+  "shots": [
+   "10-214.1",
+   "02-655.2",
+   "02-660.8",
+   "02-690.9",
+   "02-976.8",
+   "02-781.1",
+   "06-806.6",
+   "06-994.2",
+   "06-1126.2",
+   "07-526.6",
+   "10-964.8",
+   "10-1156.5",
+   "12-1210.0"
+  ],
+  "song": "ᴏɴᴇ-ꜱɪᴅᴇᴅ ʟᴏᴠᴇ - ᴊᴀ.mp3",
+  "spec": "amv/shorts/specs/taisho_otome_bride.json",
+  "window": [
+   157.251,
+   205.411
   ]
  }
 }
