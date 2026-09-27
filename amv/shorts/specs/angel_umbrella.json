@@ -1,0 +1,121 @@
+{
+ "name": "angel_umbrella",
+ "about": "Angel Next Door story Short: Amane finds a girl sitting alone in the rain and gives her his umbrella without a second thought - she is the school's 'angel', Mahiru. The drop opens what that umbrella started (her smiles, their meals, holding hands) and ends on him telling her he likes her natural smile.",
+ "series": "Angel_Next_Door",
+ "anime": "The Angel Next Door Spoils Me Rotten",
+ "song": "/mnt/datadisk/song/ᴏɴᴇ-ꜱɪᴅᴇᴅ ʟᴏᴠᴇ - ᴊᴀ.mp3",
+ "drop": 126.9,
+ "seconds": "auto",
+ "mood": "soft",
+ "story": [
+  {
+   "ep": 1,
+   "from": 88.6,
+   "to": 92.4,
+   "exact": true,
+   "why": "if you sit out in the rain like this, people are gonna worry about you"
+  },
+  {
+   "ep": 1,
+   "from": 101.5,
+   "to": 105.34,
+   "why": "you'll catch a cold - take this, I don't need it"
+  },
+  {
+   "ep": 1,
+   "from": 116.39,
+   "to": 120.27,
+   "why": "Thank you... very much."
+  },
+  {
+   "ep": 1,
+   "from": 184.9,
+   "to": 188.24,
+   "exact": true,
+   "why": "an angel - that's what they call Mahiru Shiina"
+  }
+ ],
+ "drop_shot": "04-915.9",
+ "shots": [
+  "04-598.6",
+  "04-917.8",
+  {
+   "id": "04-363.9",
+   "x": 0.25
+  },
+  "08-407.5",
+  "08-544.8",
+  {
+   "id": "08-549.1",
+   "x": 0.6
+  },
+  "06-529.1",
+  "11-396.2",
+  "11-400.9",
+  "09-657.6",
+  {
+   "id": "07-1092.5",
+   "x": 0.5
+  },
+  "07-1094.8",
+  "09-655.2"
+ ],
+ "outro": [
+  {
+   "ep": 4,
+   "from": 910.22,
+   "to": 915.6,
+   "why": "you're so cute, it's a shame you can't always smile like that"
+  }
+ ],
+ "hook_text": "He gave a stranger his *umbrella*...",
+ "title": "He Gave His Umbrella To A Stranger, She Turned Out To Be The School ANGEL",
+ "hook": "One rainy night Amane handed his umbrella to a girl sitting alone on a swing. She was Mahiru Shiina, the angel of his school - and his next-door neighbour.",
+ "tags": [
+  "angelnextdoor",
+  "mahiru",
+  "amane",
+  "romanceanime",
+  "wholesome",
+  "animestory"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 1,
+    "t": 92.0,
+    "x": 0.5,
+    "y": 0.5
+   },
+   {
+    "ep": 4,
+    "t": 599.5,
+    "x": 0.5,
+    "y": 0.45
+   }
+  ],
+  "labels": [
+   {
+    "text": "A STRANGER?",
+    "at": [
+     0.5,
+     0.06
+    ],
+    "size": 130
+   },
+   {
+    "text": "THE SCHOOL ANGEL",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 130,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}

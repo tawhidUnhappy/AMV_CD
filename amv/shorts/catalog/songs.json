@@ -1,4 +1,53 @@
 {
+ "FUNK POWER ULTRA SLOWED.mp3": {
+  "drops": [
+   [
+    5.99,
+    18.0
+   ],
+   [
+    61.28,
+    14.7
+   ],
+   [
+    10.82,
+    13.2
+   ],
+   [
+    56.45,
+    13.1
+   ],
+   [
+    18.6,
+    5.8
+   ]
+  ],
+  "duration": 105.58,
+  "path": "/mnt/datadisk/song/FUNK POWER ULTRA SLOWED.mp3",
+  "period": 0.6269,
+  "tempo": 95.7,
+  "windows": [
+   {
+    "accents": [
+     62.16,
+     64.691,
+     65.318,
+     67.222,
+     69.73,
+     72.26,
+     73.514,
+     75.395,
+     77.299,
+     77.926,
+     84.869
+    ],
+    "drop": 61.533,
+    "end": 87.833,
+    "short": "hell_mode_bring_it",
+    "start": 43.953
+   }
+  ]
+ },
  "HEAVENLY JUMPSTYLE Tiktok Version - TWXNY x Sxilwix x INNXCENCE.mp3": {
   "drops": [
    [
@@ -43,6 +92,24 @@
     "end": 64.578,
     "short": "angel_heavenly",
     "start": 40.578
+   },
+   {
+    "accents": [
+     49.133,
+     53.824,
+     55.89,
+     58.863,
+     59.373,
+     60.279,
+     60.813,
+     61.324,
+     62.88,
+     64.412
+    ],
+    "drop": 47.578,
+    "end": 66.618,
+    "short": "iruma_sold_to_demon",
+    "start": 23.158
    }
   ]
  },
@@ -138,6 +205,25 @@
     "end": 43.204,
     "short": "hell_mode_alquimia",
     "start": 18.704
+   },
+   {
+    "accents": [
+     62.276,
+     62.81,
+     63.367,
+     64.459,
+     65.55,
+     66.641,
+     67.175,
+     67.733,
+     71.541,
+     74.815,
+     75.906
+    ],
+    "drop": 60.349,
+    "end": 83.399,
+    "short": "mushoku_do_over",
+    "start": 37.679
    }
   ]
  },
@@ -186,6 +272,55 @@
     "end": 52.985,
     "short": "rezero_from_zero",
     "start": 12.275
+   }
+  ]
+ },
+ "NO BATIDÃO Slowed.mp3": {
+  "drops": [
+   [
+    54.27,
+    28.1
+   ],
+   [
+    18.74,
+    20.8
+   ],
+   [
+    80.46,
+    18.5
+   ],
+   [
+    44.95,
+    17.3
+   ],
+   [
+    9.96,
+    14.2
+   ]
+  ],
+  "duration": 107.93,
+  "path": "/mnt/datadisk/song/NO BATIDÃO Slowed.mp3",
+  "period": 0.5573,
+  "tempo": 107.67,
+  "windows": [
+   {
+    "accents": [
+     61.068,
+     61.649,
+     65.503,
+     66.084,
+     66.641,
+     69.962,
+     70.519,
+     71.076,
+     74.397,
+     75.233,
+     75.79
+    ],
+    "drop": 54.149,
+    "end": 76.949,
+    "short": "otome_mob_duel",
+    "start": 36.899
    }
   ]
  },
@@ -283,6 +418,25 @@
     "end": 205.411,
     "short": "taisho_otome_bride",
     "start": 157.251
+   },
+   {
+    "accents": [
+     126.665,
+     129.242,
+     130.31,
+     130.868,
+     131.402,
+     135.024,
+     136.115,
+     136.649,
+     140.806,
+     141.897,
+     146.588
+    ],
+    "drop": 126.665,
+    "end": 148.085,
+    "short": "angel_umbrella",
+    "start": 110.035
    }
   ]
  }

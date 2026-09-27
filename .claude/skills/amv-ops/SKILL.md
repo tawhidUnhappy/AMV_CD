@@ -133,6 +133,26 @@ not a full-screen 9:16 crop. Spec `"frame": "crop"` gives the old crop;
 `"layout": {"frame_aspect": 1.333}` a bigger, narrower centre picture. The crop
 traps below only matter for "crop" or zoomed-in punches.
 
+**Story Shorts (the user's preferred kind since 2026-09-27; S004-S011):** scenes
+played as-is with the ENGLISH dub + burned captions, then the beat-cut montage
+from the drop, then an outro line. Spec keys `story`, `outro`, `hook_text`,
+`thumbnail`, `"seconds": "auto"` (build.py docstring). Workflow per Short:
+1. `./amv.sh dialogue ROOT --series S --find REGEX` -> the lines that tell the
+   story (episode 1 usually holds the premise); print the stretch around them
+   to get from/to.
+2. `short-find SHOW --episodes a-b --find ... --motion N` -> montage shot ids;
+   read the sheets; FOCUSED regexes (Smoking's "smok" matched 705 shots).
+3. `short SPEC` - read the printed `dub:` line per scene. The dub is a
+   different script from the subtitles (whisper large-v3 transcribes it,
+   cached): when a scene starts/ends mid-sentence, read the words in
+   tmp/shorts/cache/dub.json and pin the scene with `"exact": true`.
+4. `short-thumb SPEC --candidates EP:T:X,...` -> bare frames with a 0.1 grid;
+   choose, then write labels (`at`/`to` read off the grid) or `panels` (a
+   two-frame comparison: SAME GIRL?!, HELL MODE / WEAKEST CLASS) and render.
+Delivery: `/mnt/datadisk/shorts/SNNN_name/` with every file prefixed by the
+number (never reused; kept in catalog/shorts.json), INDEX.md, by_anime/.
+`./amv.sh short-index` rebuilds them. Titles <= 100 chars incl. " #shorts".
+
 A spec lists shot ids ("EP-SECONDS") for build / drop / after-drop; slots,
 sub-windows, speed, crop, whips, punches on accents, look per mood are derived
 (build.py docstring). Per-shot facts go in the spec (`x`, `at`, `why`) and are
@@ -158,6 +178,17 @@ Traps (all fixed in code; keep the rules):
   Rule: check the strongest accents land ON cuts (compare montage.json cuts with
   `short-song` accents); pick the grid phase that hits them. And match footage
   energy to the SONG, not the show - talking heads under a jumpstyle track drag.
+- Episode audio as inputs dragged the mkv CHAPTERS into the mp4 as a text
+  track (S004-S011 before the fix): render maps `-map_chapters -1`. Check new
+  renders with ffprobe: only video + audio.
+- Whisper on a finished Short "heard" a story line twice over the music right
+  after the story (context hallucination). Verify a suspect line by
+  transcribing that stretch alone, and the song alone at the same time.
+- Mushoku's subtitles are OCR'd bitmaps (typos, no punctuation): search them
+  loosely, trust the dub transcript for captions.
+- `[S01 E06] Title` episode names were read as episode 1 (the "S01") -
+  library.EPISODE_PATTERNS now tries `S\d+ E(\d+)` first. New show folders go
+  in /mnt/datadisk/anime/<Show_Name>/ (one per show).
 - Song credits come from the file name "Title - Artist"; no " - " means an
   explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
 

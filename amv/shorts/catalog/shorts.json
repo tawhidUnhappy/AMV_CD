@@ -35,6 +35,35 @@
    64.578
   ]
  },
+ "angel_umbrella": {
+  "built": "2026-09-27",
+  "drop": 126.665,
+  "mood": "soft",
+  "number": 11,
+  "series": "Angel_Next_Door",
+  "shots": [
+   "04-915.9",
+   "04-598.6",
+   "04-917.8",
+   "04-363.9",
+   "08-407.5",
+   "08-544.8",
+   "08-549.1",
+   "06-529.1",
+   "11-396.2",
+   "11-400.9",
+   "09-657.6",
+   "07-1092.5",
+   "07-1094.8",
+   "09-655.2"
+  ],
+  "song": "ᴏɴᴇ-ꜱɪᴅᴇᴅ ʟᴏᴠᴇ - ᴊᴀ.mp3",
+  "spec": "amv/shorts/specs/angel_umbrella.json",
+  "window": [
+   110.035,
+   148.085
+  ]
+ },
  "hell_mode_alquimia": {
   "built": "2026-09-26",
   "drop": 25.704,
@@ -69,6 +98,121 @@
   "window": [
    18.704,
    43.204
+  ]
+ },
+ "hell_mode_bring_it": {
+  "built": "2026-09-27",
+  "drop": 61.533,
+  "mood": "power",
+  "number": 7,
+  "series": "Hell_Mode",
+  "shots": [
+   "12-472.0",
+   "12-495.0",
+   "12-497.5",
+   "12-499.5",
+   "08-1124.9",
+   "10-730.4",
+   "12-480.6",
+   "12-522.1",
+   "11-1052.4",
+   "12-392.2",
+   "12-734.1",
+   "12-816.1",
+   "12-738.0"
+  ],
+  "song": "FUNK POWER ULTRA SLOWED.mp3",
+  "spec": "amv/shorts/specs/hell_mode_bring_it.json",
+  "window": [
+   43.953,
+   87.833
+  ]
+ },
+ "iruma_sold_to_demon": {
+  "built": "2026-09-27",
+  "drop": 47.578,
+  "mood": "power",
+  "number": 10,
+  "series": "Mairimashita_Iruma_kun",
+  "shots": [
+   "02-292.8",
+   "02-301.2",
+   "02-511.6",
+   "02-796.5",
+   "04-513.6",
+   "04-518.4",
+   "05-269.0",
+   "05-584.5",
+   "05-700.2",
+   "05-953.0",
+   "11-382.4",
+   "11-681.9",
+   "05-1265.9",
+   "11-759.4"
+  ],
+  "song": "HEAVENLY JUMPSTYLE Tiktok Version - TWXNY x Sxilwix x INNXCENCE.mp3",
+  "spec": "amv/shorts/specs/iruma_sold_to_demon.json",
+  "window": [
+   23.158,
+   66.618
+  ]
+ },
+ "mushoku_do_over": {
+  "built": "2026-09-27",
+  "drop": 60.349,
+  "mood": "power",
+  "number": 8,
+  "series": "Mushoku_Tensei",
+  "shots": [
+   "01-1130.6",
+   "01-1004.9",
+   "01-1128.6",
+   "02-1026.12",
+   "01-1116.6",
+   "01-1239.9",
+   "04-426.5",
+   "04-653.9",
+   "04-808.6",
+   "09-263.35",
+   "09-324.25",
+   "11-343.4",
+   "09-1259.1",
+   "11-1167.8"
+  ],
+  "song": "MONTAGEM ALQUIMIA SLOWED - h6itam n7san7os Mc Menor Do Alvorada.mp3",
+  "spec": "amv/shorts/specs/mushoku_do_over.json",
+  "window": [
+   37.679,
+   83.399
+  ]
+ },
+ "otome_mob_duel": {
+  "built": "2026-09-27",
+  "drop": 54.149,
+  "mood": "power",
+  "number": 9,
+  "series": "Otome_Game_Mob",
+  "shots": [
+   "04-150.1",
+   "04-363.2",
+   "04-366.4",
+   "04-388.1",
+   "04-516.1",
+   "04-566.0",
+   "04-568.2",
+   "04-574.9",
+   "04-599.1",
+   "04-782.9",
+   "04-805.9",
+   "04-1151.0",
+   "04-1158.4",
+   "04-231.1"
+  ],
+  "song": "NO BATIDÃO Slowed.mp3",
+  "spec": "amv/shorts/specs/otome_mob_duel.json",
+  "window": [
+   36.899,
+   76.949
   ]
  },
  "rezero_from_zero": {

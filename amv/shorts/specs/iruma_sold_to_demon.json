@@ -1,0 +1,101 @@
+{
+ "name": "iruma_sold_to_demon",
+ "about": "Iruma-kun story Short: his parents sell his soul to a demon - who only wants a grandson; Iruma can't say no, gets enrolled at a demon school where humans are food, and must never be found out. The drop throws him into Babyls (summoning rituals, the Gorgon snake, dragons, the whole class calling him amazing) and ends with him marvelling he became a demon's grandson.",
+ "series": "Mairimashita_Iruma_kun",
+ "anime": "Welcome to Demon School! Iruma-kun",
+ "song": "/mnt/datadisk/song/HEAVENLY JUMPSTYLE Tiktok Version - TWXNY x Sxilwix x INNXCENCE.mp3",
+ "drop": 47.46,
+ "seconds": "auto",
+ "mood": "power",
+ "story": [
+  {
+   "ep": 1,
+   "from": 253.41,
+   "to": 259.36,
+   "why": "Sullivan: your parents sold your soul to me"
+  },
+  {
+   "ep": 1,
+   "from": 262.11,
+   "to": 264.85,
+   "why": "My parents sold my soul to a demon?"
+  },
+  {
+   "ep": 1,
+   "from": 287.12,
+   "to": 289.88,
+   "why": "Won't you be my grandson?"
+  },
+  {
+   "ep": 1,
+   "from": 437.92,
+   "to": 445.74,
+   "why": "you won't be eaten as long as they don't find out you're human"
+  }
+ ],
+ "drop_shot": "02-292.8",
+ "shots": [
+  "02-301.2",
+  "02-511.6",
+  "02-796.5",
+  "04-513.6",
+  "04-518.4",
+  "05-269.0",
+  "05-584.5",
+  "05-700.2",
+  "05-953.0",
+  "11-382.4",
+  "11-681.9",
+  "05-1265.9",
+  "11-759.4"
+ ],
+ "outro": [
+  {
+   "ep": 1,
+   "from": 1441.37,
+   "to": 1445.29,
+   "why": "I never dreamed I'd become a demon's grandson and go to demon school"
+  }
+ ],
+ "hook_text": "His parents *sold* him to a demon...",
+ "title": "His Parents SOLD Him To A Demon, But The Demon Just Wants A Grandson",
+ "hook": "Iruma's parents sold his soul to a demon. The demon adopted him, spoiled him rotten, and enrolled him at a school where humans get eaten.",
+ "tags": [
+  "irumakun",
+  "welcometodemonschool",
+  "iruma",
+  "mairimashitairumakun",
+  "animestory"
+ ],
+ "thumbnail": {
+  "ep": 1,
+  "t": 288.5,
+  "x": 0.5,
+  "labels": [
+   {
+    "text": "DEMON",
+    "at": [
+     0.25,
+     0.1
+    ],
+    "to": [
+     0.18,
+     0.335
+    ],
+    "size": 150
+   },
+   {
+    "text": "SOLD\nHUMAN",
+    "at": [
+     0.72,
+     0.85
+    ],
+    "to": [
+     0.74,
+     0.42
+    ],
+    "size": 150
+   }
+  ]
+ }
+}

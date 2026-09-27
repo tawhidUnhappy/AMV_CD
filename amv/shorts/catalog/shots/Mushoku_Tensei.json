@@ -1,13 +1,198 @@
 {
+ "01-1004.9": {
+  "at": 1004.875,
+  "crop_x": 0.542,
+  "episode": 1,
+  "file_name": "Mushoku_Tensei_S01_Ep01_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "01-1116.6": {
+  "at": 1116.625,
+  "crop_x": 0.719,
+  "episode": 1,
+  "file_name": "Mushoku_Tensei_S01_Ep01_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "01-1128.6": {
+  "at": 1128.875,
+  "crop_x": 0.469,
+  "episode": 1,
+  "file_name": "Mushoku_Tensei_S01_Ep01_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "01-1130.6": {
+  "at": 1131.25,
+  "crop_x": 0.688,
+  "episode": 1,
+  "file_name": "Mushoku_Tensei_S01_Ep01_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drop",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "01-1239.9": {
+  "at": 1240.5,
+  "crop_x": 0.677,
+  "episode": 1,
+  "file_name": "Mushoku_Tensei_S01_Ep01_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "01-1297.94": {
+  "at": 1297.94,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 1316.66,
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good",
+  "why": "if I live and try as hard as everyone else... maybe even I"
+ },
+ "01-1303.85": {
+  "at": 1303.85,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 1311.98,
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good",
+  "why": "my last life ended full of regret... if I get up when I fall, I'll be okay"
+ },
+ "01-1312.83": {
+  "at": 1312.83,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 1326.05,
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good",
+  "why": "even a jobless, reclusive bum like me can get a do-over at life"
+ },
+ "01-1312.95": {
+  "at": 1312.95,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 1320.1,
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good",
+  "why": "even a jobless, reclusive bum like me won't waste a second chance"
+ },
+ "01-161.19": {
+  "at": 161.19,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 167.01,
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good",
+  "why": "it looks like I got reincarnated"
+ },
+ "01-161.2": {
+  "at": 161.2,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 164.25,
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good",
+  "why": "I get it, I've been reincarnated"
+ },
+ "01-43.32": {
+  "at": 43.32,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 48.48,
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good",
+  "why": "I've been a recluse for 20 years"
+ },
+ "01-74.26": {
+  "at": 74.26,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 80.59,
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good",
+  "why": "my life was basically over anyway"
+ },
  "02-1026.12": {
-  "at": 1026.12,
+  "at": 1026.125,
+  "crop_x": 0.458,
   "episode": 2,
   "file_name": "Mushoku_Tensei_S01_Ep02_1080p_MultiAudio_@indexjunction.mkv",
   "moods": [
    "power"
   ],
+  "role": "drive",
   "used_in": [
-   "intro:flow_intro"
+   "intro:flow_intro",
+   "mushoku_do_over"
   ],
   "verdict": "good",
   "why": "Roxy calls the storm, pulling out"
@@ -26,31 +211,121 @@
   "why": "despair, face buried in hands",
   "x": 0.5
  },
- "09-263.35": {
-  "at": 263.35,
+ "04-426.5": {
+  "at": 426.5,
+  "crop_x": 0.49,
+  "episode": 4,
+  "file_name": "Mushoku_Tensei_S01_Ep04_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "04-653.9": {
+  "at": 654.375,
+  "crop_x": 0.312,
+  "episode": 4,
+  "file_name": "Mushoku_Tensei_S01_Ep04_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "04-808.6": {
+  "at": 808.625,
+  "crop_x": 0.604,
+  "episode": 4,
+  "file_name": "Mushoku_Tensei_S01_Ep04_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "09-1259.1": {
+  "at": 1260.375,
+  "crop_x": 0.417,
   "episode": 9,
   "file_name": "Mushoku_Tensei_S01_Ep09_1080p_MultiAudio_@indexjunction.mkv",
   "moods": [
    "power"
   ],
+  "role": "drive",
   "used_in": [
-   "intro:channel_intro"
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "09-263.35": {
+  "at": 263.35,
+  "crop_x": 0.51,
+  "episode": 9,
+  "file_name": "Mushoku_Tensei_S01_Ep09_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "intro:channel_intro",
+   "mushoku_do_over"
   ],
   "verdict": "good",
   "why": "the fire flares"
  },
  "09-324.25": {
-  "at": 324.25,
+  "at": 324.125,
+  "crop_x": 0.5,
   "episode": 9,
   "file_name": "Mushoku_Tensei_S01_Ep09_1080p_MultiAudio_@indexjunction.mkv",
   "moods": [
    "power"
   ],
+  "role": "drive",
   "used_in": [
-   "intro:flow_intro"
+   "intro:flow_intro",
+   "mushoku_do_over"
   ],
   "verdict": "good",
   "why": "Ruijerd in the flames"
+ },
+ "11-1167.8": {
+  "at": 1168.375,
+  "crop_x": 0.521,
+  "episode": 11,
+  "file_name": "Mushoku_Tensei_S01_Ep11_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
+ },
+ "11-343.4": {
+  "at": 343.375,
+  "crop_x": 0.188,
+  "episode": 11,
+  "file_name": "Mushoku_Tensei_S01_Ep11_1080p_MultiAudio_@indexjunction.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "mushoku_do_over"
+  ],
+  "verdict": "good"
  },
  "14-1255.42": {
   "at": 1255.425,

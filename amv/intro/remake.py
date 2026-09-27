@@ -341,7 +341,10 @@ def render(plan: dict, out: Path) -> Path:
     proc = subprocess.Popen(
         ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{width}x{height}",
          "-r", str(fps), "-i", "-", *inputs, "-filter_complex", graph, *video_filter,
-         "-map", "0:v", "-map", "[a]", *h264_encoder_args(encoder, "p7", 16), "-pix_fmt", "yuv420p",
+         # -map_chapters/-map_metadata -1: episode inputs (dialogue clips) would
+         # otherwise carry their chapters in as a text track.
+         "-map", "0:v", "-map", "[a]", "-map_chapters", "-1", "-map_metadata", "-1",
+         *h264_encoder_args(encoder, "p7", 16), "-pix_fmt", "yuv420p",
          "-c:a", "aac", "-b:a", "320k", "-t", f"{seconds:.3f}", "-movflags", "+faststart", str(out)],
         stdin=subprocess.PIPE)
     # Sources are fetched a chunk of output frames at a time: a whole plan's

@@ -1,0 +1,120 @@
+{
+ "name": "mushoku_do_over",
+ "about": "Mushoku Tensei story Short: a recluse dies after 20 wasted years and wakes up reborn; he decides that if he tries as hard as everyone else and gets back up when he falls, maybe even he can do it - the drop opens his new life (Roxy, the storm spell, sword training, Sylphie, fire, the demon continent) and ends on him vowing to get serious about living.",
+ "series": "Mushoku_Tensei",
+ "anime": "Mushoku Tensei: Jobless Reincarnation",
+ "song": "/mnt/datadisk/song/MONTAGEM ALQUIMIA SLOWED - h6itam n7san7os Mc Menor Do Alvorada.mp3",
+ "drop": 60.58,
+ "seconds": "auto",
+ "mood": "power",
+ "story": [
+  {
+   "ep": 1,
+   "from": 43.68,
+   "to": 48.48,
+   "why": "I've been a recluse for 20 years"
+  },
+  {
+   "ep": 1,
+   "from": 76.88,
+   "to": 80.59,
+   "why": "my life was basically over anyway"
+  },
+  {
+   "ep": 1,
+   "from": 161.2,
+   "to": 164.25,
+   "exact": true,
+   "why": "I get it, I've been reincarnated"
+  },
+  {
+   "ep": 1,
+   "from": 1303.85,
+   "to": 1311.98,
+   "exact": true,
+   "why": "my last life ended full of regret... if I get up when I fall, I'll be okay"
+  }
+ ],
+ "drop_shot": "01-1130.6",
+ "shots": [
+  "01-1004.9",
+  "01-1128.6",
+  "02-1026.12",
+  "01-1116.6",
+  "01-1239.9",
+  "04-426.5",
+  "04-653.9",
+  "04-808.6",
+  "09-263.35",
+  "09-324.25",
+  "11-343.4",
+  "09-1259.1",
+  "11-1167.8"
+ ],
+ "outro": [
+  {
+   "ep": 1,
+   "from": 1312.95,
+   "to": 1320.1,
+   "exact": true,
+   "why": "even a jobless, reclusive bum like me won't waste a second chance"
+  }
+ ],
+ "hook_text": "He wasted his *whole life*...",
+ "title": "He Wasted 20 Years As A Recluse, Then Got A SECOND CHANCE At Life",
+ "hook": "34 years old, jobless, never left his room. Then a truck, and a do-over in a world of magic.",
+ "tags": [
+  "mushokutensei",
+  "joblessreincarnation",
+  "rudeus",
+  "isekai",
+  "animestory"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 1,
+    "t": 1131.5,
+    "x": 0.85,
+    "y": 0.45
+   },
+   {
+    "ep": 2,
+    "t": 1027.0,
+    "x": 0.5,
+    "y": 0.45
+   }
+  ],
+  "labels": [
+   {
+    "text": "20 YEARS\nWASTED",
+    "at": [
+     0.27,
+     0.13
+    ],
+    "size": 120
+   },
+   {
+    "text": "SECOND CHANCE",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 165,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   },
+   {
+    "text": "MAGIC",
+    "at": [
+     0.8,
+     0.92
+    ],
+    "size": 140
+   }
+  ]
+ }
+}

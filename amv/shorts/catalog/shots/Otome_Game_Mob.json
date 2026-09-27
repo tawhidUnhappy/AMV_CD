@@ -1,4 +1,74 @@
 {
+ "01-201.93": {
+  "at": 201.93,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 208.25,
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good",
+  "why": "I hate this world!"
+ },
+ "01-505.1": {
+  "at": 505.1,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 508.63,
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good",
+  "why": "I'm a background character - a mob"
+ },
+ "01-54.04": {
+  "at": 54.04,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 63.58,
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good",
+  "why": "the world of this otome game is far too convenient for women"
+ },
+ "01-56.3": {
+  "at": 56.3,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 60.7,
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good",
+  "why": "this otome game really favors the women"
+ },
+ "03-1045.77": {
+  "at": 1045.77,
+  "episode": 3,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 1048.77,
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good",
+  "why": "Let's duel, Prince."
+ },
  "04-1151": {
   "at": 1151.0,
   "episode": 4,
@@ -12,6 +82,34 @@
   "verdict": "good",
   "why": "the charge"
  },
+ "04-1151.0": {
+  "at": 1151.0,
+  "crop_x": 0.323,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-1158.4": {
+  "at": 1159.5,
+  "crop_x": 0.5,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
  "04-1159.67": {
   "at": 1159.675,
   "episode": 4,
@@ -24,6 +122,202 @@
   ],
   "verdict": "good",
   "why": "a mecha fight"
+ },
+ "04-1263.13": {
+  "at": 1263.13,
+  "episode": 4,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 1270.45,
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good",
+  "why": "they'll get stronger someday, but right now, I'm better"
+ },
+ "04-1263.2": {
+  "at": 1263.2,
+  "episode": 4,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 1270.1,
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good",
+  "why": "for now, they can't compete with me"
+ },
+ "04-150.1": {
+  "at": 150.125,
+  "crop_x": 0.5,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drop",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-231.1": {
+  "at": 231.375,
+  "crop_x": 0.469,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-363.2": {
+  "at": 363.25,
+  "crop_x": 0.615,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-366.4": {
+  "at": 366.5,
+  "crop_x": 0.406,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-388.1": {
+  "at": 388.125,
+  "crop_x": 0.531,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-516.1": {
+  "at": 517.0,
+  "crop_x": 0.417,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-566.0": {
+  "at": 566.625,
+  "crop_x": 0.469,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-568.2": {
+  "at": 568.25,
+  "crop_x": 0.354,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-574.9": {
+  "at": 576.125,
+  "crop_x": 0.406,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-599.1": {
+  "at": 599.375,
+  "crop_x": 0.469,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-782.9": {
+  "at": 783.375,
+  "crop_x": 0.396,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
+ },
+ "04-805.9": {
+  "at": 805.875,
+  "crop_x": 0.521,
+  "episode": 4,
+  "file_name": "04. Mind If I Go Easy on You.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "otome_mob_duel"
+  ],
+  "verdict": "good"
  },
  "06-928.6": {
   "at": 928.6,

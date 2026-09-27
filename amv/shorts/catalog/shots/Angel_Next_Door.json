@@ -1,4 +1,60 @@
 {
+ "01-101.14": {
+  "at": 101.14,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 105.55,
+  "used_in": [
+   "angel_umbrella"
+  ],
+  "verdict": "good",
+  "why": "you'll catch a cold - take this, I don't need it"
+ },
+ "01-115.19": {
+  "at": 115.19,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 120.27,
+  "used_in": [
+   "angel_umbrella"
+  ],
+  "verdict": "good",
+  "why": "Thank you... very much."
+ },
+ "01-183.12": {
+  "at": 183.12,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 188.24,
+  "used_in": [
+   "angel_umbrella"
+  ],
+  "verdict": "good",
+  "why": "an angel - that's what they call Mahiru Shiina"
+ },
+ "01-184.9": {
+  "at": 184.9,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 188.24,
+  "used_in": [
+   "angel_umbrella"
+  ],
+  "verdict": "good",
+  "why": "an angel - that's what they call Mahiru Shiina"
+ },
  "01-512.6": {
   "at": 512.75,
   "crop_x": 0.562,
@@ -12,6 +68,20 @@
    "angel_heavenly"
   ],
   "verdict": "good"
+ },
+ "01-86.38": {
+  "at": 86.38,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 94.22,
+  "used_in": [
+   "angel_umbrella"
+  ],
+  "verdict": "good",
+  "why": "if you sit out in the rain like this, people are gonna worry"
  },
  "01-88.29": {
   "at": 88.29,
@@ -27,6 +97,20 @@
   ],
   "verdict": "good",
   "why": "alone in the rain"
+ },
+ "01-88.6": {
+  "at": 88.6,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 92.4,
+  "used_in": [
+   "angel_umbrella"
+  ],
+  "verdict": "good",
+  "why": "if you sit out in the rain like this, people are gonna worry about you"
  },
  "02-41.88": {
   "at": 41.875,
@@ -51,7 +135,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good",
   "x": 0.25
@@ -66,7 +151,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
@@ -84,9 +170,23 @@
   ],
   "verdict": "good"
  },
+ "04-909.58": {
+  "at": 909.58,
+  "episode": 4,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 915.75,
+  "used_in": [
+   "angel_umbrella"
+  ],
+  "verdict": "good",
+  "why": "you're so cute, it's a shame you can't always smile like that"
+ },
  "04-915.9": {
   "at": 915.875,
-  "crop_x": 0.771,
+  "crop_x": 0.792,
   "episode": 4,
   "file_name": "[SO] [04 - Angel Next Door] [1080p] [Dual].mkv",
   "moods": [
@@ -94,7 +194,8 @@
   ],
   "role": "drop",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
@@ -108,7 +209,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
@@ -138,12 +240,13 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
  "07-1092.5": {
-  "at": 1093.0,
+  "at": 1092.875,
   "crop_x": 0.844,
   "episode": 7,
   "file_name": "[SO] [07 - Angel Next Door] [1080p] [Dual].mkv",
@@ -152,7 +255,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good",
   "why": "hands clasped",
@@ -168,7 +272,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
@@ -211,7 +316,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
@@ -225,12 +331,13 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
  "08-549.1": {
-  "at": 550.375,
+  "at": 550.25,
   "crop_x": 0.562,
   "episode": 8,
   "file_name": "[SO] [08 - Angel Next Door] [1080p] [Dual].mkv",
@@ -239,7 +346,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good",
   "x": 0.6
@@ -252,15 +360,16 @@
   "moods": [
    "soft"
   ],
-  "role": "end",
+  "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
  "09-657.6": {
   "at": 657.625,
-  "crop_x": 0.344,
+  "crop_x": 0.302,
   "episode": 9,
   "file_name": "[SO] [09 - Angel Next Door] [1080p] [Dual].mkv",
   "moods": [
@@ -268,7 +377,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
@@ -282,7 +392,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  },
@@ -296,7 +407,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "angel_heavenly"
+   "angel_heavenly",
+   "angel_umbrella"
   ],
   "verdict": "good"
  }
