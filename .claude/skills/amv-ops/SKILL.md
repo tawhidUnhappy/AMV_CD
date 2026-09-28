@@ -152,6 +152,9 @@ from the drop, then an outro line. Spec keys `story`, `outro`, `hook_text`,
 Delivery: `/mnt/datadisk/shorts/SNNN_name/` with every file prefixed by the
 number (never reused; kept in catalog/shorts.json), INDEX.md, by_anime/.
 `./amv.sh short-index` rebuilds them. Titles <= 100 chars incl. " #shorts".
+No music-only Shorts (user, 2026-09-28): every Short needs the anime's own
+English audio (`story`/`outro`). S001-S003 were montage-only and were deleted,
+specs included; their numbers stay retired.
 The thumbnail is INSIDE each delivered video (user, 2026-09-28: no separate
 upload): frames 0-2 are the thumbnail, plus MP4 cover art (`amv/shorts/cover.py`;
 deliver does it; `./amv.sh short-cover [NAME]` redoes it from the untouched

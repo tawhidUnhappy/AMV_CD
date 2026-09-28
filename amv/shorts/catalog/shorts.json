@@ -1,6 +1,7 @@
 {
  "angel_heavenly": {
   "built": "2026-09-26",
+  "deleted": "2026-09-28: music only, no episode audio - user asked to delete",
   "drop": 47.578,
   "mood": "soft",
   "number": 3,
@@ -66,6 +67,7 @@
  },
  "hell_mode_alquimia": {
   "built": "2026-09-26",
+  "deleted": "2026-09-28: music only, no episode audio - user asked to delete",
   "drop": 25.704,
   "mood": "power",
   "number": 1,
@@ -245,6 +247,7 @@
  },
  "rezero_velas_negras": {
   "built": "2026-09-26",
+  "deleted": "2026-09-28: music only, no episode audio - user asked to delete",
   "drop": 18.042,
   "mood": "dark",
   "number": 2,
