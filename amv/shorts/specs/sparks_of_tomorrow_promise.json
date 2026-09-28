@@ -1,0 +1,106 @@
+{
+ "name": "sparks_of_tomorrow_promise",
+ "about": "Sparks of Tomorrow story Short: a Meiji Era where the fathers of electricity all died and steam rules; Kihachi's brother lights a forbidden bulb - this is electric power, you and I will create the Age of Electricity - then goes to war and never comes back. The drop runs Kihachi picking up the promise himself.",
+ "series": "Sparks_of_Tomorrow",
+ "anime": "Sparks of Tomorrow",
+ "song": "/mnt/datadisk/song/Awesome violin beat visualisation.mp3",
+ "song_fx": "nightcore",
+ "drop": 44.8,
+ "seconds": "auto",
+ "mood": "power",
+ "video_fx": [
+  "grain"
+ ],
+ "story": [
+  {
+   "ep": 1,
+   "from": 33.8,
+   "to": 39.9,
+   "why": "thus evolved a different technology, making the Meiji Era the era of steam"
+  },
+  {
+   "ep": 1,
+   "from": 224.6,
+   "to": 238.1,
+   "why": "this is the 20th century! This is electric power! You and I can create the Age of Electricity!"
+  },
+  {
+   "ep": 1,
+   "from": 385.1,
+   "to": 395.8,
+   "why": "he took the Catalog off to war and never came back. You broke that promise, big brother."
+  }
+ ],
+ "drop_shot": "03-65.0",
+ "shots": [
+  "03-59.9",
+  "09-1391.0",
+  "09-1411.1",
+  "10-260.1",
+  "10-266.4",
+  "10-300.0",
+  "10-305.0",
+  "10-318.0",
+  "10-325.9",
+  "12-722.9",
+  "12-1178.9",
+  "12-1184.0",
+  "12-1280.2"
+ ],
+ "hook_text": "In a world *without* electricity...",
+ "title": "In A World Where Electricity Was Never Invented, One Boy Keeps His Brother's Promise",
+ "hook": "The fathers of electricity all died young, and the Meiji Era ran on steam. Kihachi's brother showed him a single light bulb - then went to war and never came back.",
+ "tags": [
+  "sparksoftomorrow",
+  "steampunk",
+  "meiji",
+  "animestory"
+ ],
+ "outro": [
+  {
+   "ep": 10,
+   "from": 305.0,
+   "to": 307.4,
+   "why": "I'll do everything I can to create the Age of Electricity!"
+  }
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 9,
+    "t": 1420.0,
+    "x": 0.8,
+    "y": 0.45
+   },
+   {
+    "ep": 10,
+    "t": 326.5,
+    "x": 0.5,
+    "y": 0.45
+   }
+  ],
+  "labels": [
+   {
+    "text": "NO ELECTRICITY",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 125
+   },
+   {
+    "text": "HE'LL INVENT IT",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 150,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}

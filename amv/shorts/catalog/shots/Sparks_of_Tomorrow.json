@@ -1,0 +1,254 @@
+{
+ "01-224.2": {
+  "at": 224.2,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 238.1,
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good",
+  "why": "this is the 20th century! This is electric power! You and I can create the Age of Electricity!"
+ },
+ "01-33.3": {
+  "at": 33.3,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 39.9,
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good",
+  "why": "thus evolved a different technology, making the Meiji Era the era of steam"
+ },
+ "01-385.04": {
+  "at": 385.04,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 395.8,
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good",
+  "why": "he took the Catalog off to war and never came back. You broke that promise, big brother."
+ },
+ "03-59.9": {
+  "at": 59.875,
+  "crop_x": 0.635,
+  "episode": 3,
+  "file_name": "Sparks_of_Tomorrow - E03.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "03-65.0": {
+  "at": 66.625,
+  "crop_x": 0.604,
+  "episode": 3,
+  "file_name": "Sparks_of_Tomorrow - E03.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drop",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "09-1391.0": {
+  "at": 1391.0,
+  "crop_x": 0.25,
+  "episode": 9,
+  "file_name": "Sparks_of_Tomorrow - E09.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "09-1411.1": {
+  "at": 1411.25,
+  "crop_x": 0.781,
+  "episode": 9,
+  "file_name": "Sparks_of_Tomorrow - E09.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "10-260.1": {
+  "at": 260.125,
+  "crop_x": 0.417,
+  "episode": 10,
+  "file_name": "Sparks_of_Tomorrow - E10.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "10-266.4": {
+  "at": 266.375,
+  "crop_x": 0.5,
+  "episode": 10,
+  "file_name": "Sparks_of_Tomorrow - E10.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "10-300.0": {
+  "at": 300.5,
+  "crop_x": 0.448,
+  "episode": 10,
+  "file_name": "Sparks_of_Tomorrow - E10.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "10-304.72": {
+  "at": 304.72,
+  "episode": 10,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 307.69,
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good",
+  "why": "I'll do everything I can to create the Age of Electricity!"
+ },
+ "10-305.0": {
+  "at": 305.875,
+  "crop_x": 0.427,
+  "episode": 10,
+  "file_name": "Sparks_of_Tomorrow - E10.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "10-318.0": {
+  "at": 320.0,
+  "crop_x": 0.354,
+  "episode": 10,
+  "file_name": "Sparks_of_Tomorrow - E10.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "10-325.9": {
+  "at": 326.5,
+  "crop_x": 0.469,
+  "episode": 10,
+  "file_name": "Sparks_of_Tomorrow - E10.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "12-1178.9": {
+  "at": 1179.0,
+  "crop_x": 0.177,
+  "episode": 12,
+  "file_name": "Sparks_of_Tomorrow - E12.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "12-1184.0": {
+  "at": 1185.0,
+  "crop_x": 0.458,
+  "episode": 12,
+  "file_name": "Sparks_of_Tomorrow - E12.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "12-1280.2": {
+  "at": 1281.125,
+  "crop_x": 0.625,
+  "episode": 12,
+  "file_name": "Sparks_of_Tomorrow - E12.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ },
+ "12-722.9": {
+  "at": 724.625,
+  "crop_x": 0.719,
+  "episode": 12,
+  "file_name": "Sparks_of_Tomorrow - E12.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "sparks_of_tomorrow_promise"
+  ],
+  "verdict": "good"
+ }
+}

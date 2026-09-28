@@ -1,0 +1,120 @@
+{
+ "name": "skeleton_knight_arc",
+ "about": "Skeleton Knight story Short: a gamer wakes up as his own max-level game character, Arc - holy armor, holy sword, super strong - then remembers he picked the skeleton avatar and towns will exterminate him as a monster. The drop runs Arc's fights (to Coffin Dance); ends on 'It's me, Arc. That was kind of repulsive, so I went with a sneak attack.'",
+ "series": "Skeleton_Knight_S1",
+ "anime": "Skeleton Knight in Another World",
+ "song": "/mnt/datadisk/song/Coffin Dance Official Music Video HD.mp3",
+ "drop": 47.7,
+ "seconds": "auto",
+ "mood": "power",
+ "video_fx": {
+  "outline": {
+   "color": [
+    110,
+    190,
+    255
+   ]
+  }
+ },
+ "story": [
+  {
+   "ep": 1,
+   "from": 224.6,
+   "to": 230.2,
+   "why": "no doubt about it! This is my character from that game: Arc!"
+  },
+  {
+   "ep": 1,
+   "from": 317.2,
+   "to": 322.6,
+   "why": "if that's the case... I'm super strong!"
+  },
+  {
+   "ep": 1,
+   "from": 428.0,
+   "to": 431.75,
+   "exact": true,
+   "why": "oh crap, kind of forgot I picked the skeleton avatar"
+  },
+  {
+   "ep": 1,
+   "from": 438.1,
+   "to": 442.3,
+   "exact": true,
+   "why": "people would freak, they'd think I was a monster and just wipe me out"
+  }
+ ],
+ "drop_shot": "01-985.2",
+ "shots": [
+  "01-761.1",
+  "01-898.9",
+  "01-937.0",
+  "01-940.4",
+  "06-961.8",
+  "07-130.2",
+  "07-447.4",
+  "07-506.5",
+  "07-547.4",
+  "07-567.2",
+  "11-915.6",
+  "11-1173.5",
+  "11-1131.8",
+  "01-1097.5"
+ ],
+ "outro": [
+  {
+   "ep": 1,
+   "from": 55.3,
+   "to": 60.9,
+   "why": "Hi there. It's me, Arc. That was kind of repulsive, so I went with a sneak attack."
+  }
+ ],
+ "hook_text": "He picked the *skeleton* avatar...",
+ "title": "Gamer Wakes Up As His Max-Level Character... But He's A SKELETON",
+ "hook": "He fell asleep playing and woke up as his own game character: legendary armor, a holy sword, every skill. And the skeleton body he picked as a joke.",
+ "tags": [
+  "skeletonknight",
+  "skeletonknightinanotherworld",
+  "isekai",
+  "animestory"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 1,
+    "t": 510.0,
+    "x": 0.5,
+    "y": 0.4
+   },
+   {
+    "ep": 1,
+    "t": 990.0,
+    "x": 0.55,
+    "y": 0.5
+   }
+  ],
+  "labels": [
+   {
+    "text": "LEGENDARY KNIGHT",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 120
+   },
+   {
+    "text": "IS A SKELETON",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 150,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}

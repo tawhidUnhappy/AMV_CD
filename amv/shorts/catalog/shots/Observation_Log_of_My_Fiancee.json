@@ -1,0 +1,268 @@
+{
+ "01-175.72": {
+  "at": 175.72,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 187.45,
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good",
+  "why": "today I'm meeting my fiancee... I'm not sure I understand what she's talking about"
+ },
+ "01-301.86": {
+  "at": 301.86,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 308.6,
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good",
+  "why": "though I'm doomed to fall, I'll do so beautifully! A first-rate flower of evil!"
+ },
+ "01-439.76": {
+  "at": 439.76,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 449.61,
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good",
+  "why": "I rarely feel accomplishment. The world has lost its color. But this is different."
+ },
+ "01-55.1": {
+  "at": 55.1,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 61.0,
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good",
+  "why": "I am the Villainess, Prince Cecil. It is my duty to tear you and the heroine apart!"
+ },
+ "01-585.1": {
+  "at": 585.125,
+  "crop_x": 0.552,
+  "episode": 1,
+  "file_name": "Observation_Log_of_My_Fiancee - E01.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "01-633.0": {
+  "at": 633.0,
+  "crop_x": 0.375,
+  "episode": 1,
+  "file_name": "Observation_Log_of_My_Fiancee - E01.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "01-64.88": {
+  "at": 64.88,
+  "episode": 1,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 68.8,
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good",
+  "why": "at last, something I don't understand"
+ },
+ "01-661.1": {
+  "at": 661.75,
+  "crop_x": 0.385,
+  "episode": 1,
+  "file_name": "Observation_Log_of_My_Fiancee - E01.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "01-681.6": {
+  "at": 681.75,
+  "crop_x": 0.844,
+  "episode": 1,
+  "file_name": "Observation_Log_of_My_Fiancee - E01.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "01-703.0": {
+  "at": 703.0,
+  "crop_x": 0.177,
+  "episode": 1,
+  "file_name": "Observation_Log_of_My_Fiancee - E01.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "01-812.5": {
+  "at": 812.75,
+  "crop_x": 0.5,
+  "episode": 1,
+  "file_name": "Observation_Log_of_My_Fiancee - E01.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "01-814.4": {
+  "at": 814.375,
+  "crop_x": 0.531,
+  "episode": 1,
+  "file_name": "Observation_Log_of_My_Fiancee - E01.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "01-893.6": {
+  "at": 893.875,
+  "crop_x": 0.688,
+  "episode": 1,
+  "file_name": "Observation_Log_of_My_Fiancee - E01.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drop",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "05-1271.5": {
+  "at": 1271.5,
+  "crop_x": 0.708,
+  "episode": 5,
+  "file_name": "Observation_Log_of_My_Fiancee - E05.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "06-238.4": {
+  "at": 240.375,
+  "crop_x": 0.427,
+  "episode": 6,
+  "file_name": "Observation_Log_of_My_Fiancee - E06.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "06-293.0": {
+  "at": 295.0,
+  "crop_x": 0.188,
+  "episode": 6,
+  "file_name": "Observation_Log_of_My_Fiancee - E06.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "06-367.9": {
+  "at": 368.5,
+  "crop_x": 0.708,
+  "episode": 6,
+  "file_name": "Observation_Log_of_My_Fiancee - E06.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "06-371.9": {
+  "at": 371.875,
+  "crop_x": 0.427,
+  "episode": 6,
+  "file_name": "Observation_Log_of_My_Fiancee - E06.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ },
+ "06-423.2": {
+  "at": 425.25,
+  "crop_x": 0.615,
+  "episode": 6,
+  "file_name": "Observation_Log_of_My_Fiancee - E06.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "observation_log_villainess"
+  ],
+  "verdict": "good"
+ }
+}

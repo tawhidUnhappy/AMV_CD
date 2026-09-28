@@ -1,0 +1,310 @@
+{
+ "01-1097.5": {
+  "at": 1097.5,
+  "crop_x": 0.76,
+  "episode": 1,
+  "file_name": "Skeleton_Knight_S1 - E01.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "01-224.6": {
+  "at": 224.6,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 230.33,
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good",
+  "why": "no doubt about it! This is my character from that game: Arc!"
+ },
+ "01-317.16": {
+  "at": 317.16,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 322.6,
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good",
+  "why": "if that's the case... I'm super strong!"
+ },
+ "01-427.96": {
+  "at": 427.96,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 433.98,
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good",
+  "why": "crap. I did pick the skeleton avatar..."
+ },
+ "01-428": {
+  "at": 428.0,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 431.75,
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good",
+  "why": "oh crap, kind of forgot I picked the skeleton avatar"
+ },
+ "01-436.38": {
+  "at": 436.38,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 444.68,
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good",
+  "why": "they'll try and exterminate me as a monster!"
+ },
+ "01-438.1": {
+  "at": 438.1,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 442.3,
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good",
+  "why": "people would freak, they'd think I was a monster and just wipe me out"
+ },
+ "01-55.04": {
+  "at": 55.04,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 61.37,
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good",
+  "why": "Hi there. It's me, Arc. That was kind of repulsive, so I went with a sneak attack."
+ },
+ "01-761.1": {
+  "at": 763.125,
+  "crop_x": 0.323,
+  "episode": 1,
+  "file_name": "Skeleton_Knight_S1 - E01.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "01-898.9": {
+  "at": 898.875,
+  "crop_x": 0.812,
+  "episode": 1,
+  "file_name": "Skeleton_Knight_S1 - E01.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "01-937.0": {
+  "at": 937.0,
+  "crop_x": 0.281,
+  "episode": 1,
+  "file_name": "Skeleton_Knight_S1 - E01.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "01-940.4": {
+  "at": 940.75,
+  "crop_x": 0.688,
+  "episode": 1,
+  "file_name": "Skeleton_Knight_S1 - E01.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "01-985.2": {
+  "at": 986.75,
+  "crop_x": 0.823,
+  "episode": 1,
+  "file_name": "Skeleton_Knight_S1 - E01.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drop",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "06-961.8": {
+  "at": 961.75,
+  "crop_x": 0.479,
+  "episode": 6,
+  "file_name": "Skeleton_Knight_S1 - E06.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "07-130.2": {
+  "at": 130.375,
+  "crop_x": 0.5,
+  "episode": 7,
+  "file_name": "Skeleton_Knight_S1 - E07.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "07-447.4": {
+  "at": 447.625,
+  "crop_x": 0.844,
+  "episode": 7,
+  "file_name": "Skeleton_Knight_S1 - E07.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "07-506.5": {
+  "at": 506.5,
+  "crop_x": 0.417,
+  "episode": 7,
+  "file_name": "Skeleton_Knight_S1 - E07.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "07-547.4": {
+  "at": 547.375,
+  "crop_x": 0.448,
+  "episode": 7,
+  "file_name": "Skeleton_Knight_S1 - E07.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "07-567.2": {
+  "at": 567.25,
+  "crop_x": 0.344,
+  "episode": 7,
+  "file_name": "Skeleton_Knight_S1 - E07.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "11-1131.8": {
+  "at": 1131.75,
+  "crop_x": 0.448,
+  "episode": 11,
+  "file_name": "Skeleton_Knight_S1 - E11.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "11-1173.5": {
+  "at": 1173.5,
+  "crop_x": 0.781,
+  "episode": 11,
+  "file_name": "Skeleton_Knight_S1 - E11.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ },
+ "11-915.6": {
+  "at": 915.625,
+  "crop_x": 0.719,
+  "episode": 11,
+  "file_name": "Skeleton_Knight_S1 - E11.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_knight_arc"
+  ],
+  "verdict": "good"
+ }
+}

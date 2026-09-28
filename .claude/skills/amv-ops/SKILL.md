@@ -152,6 +152,19 @@ from the drop, then an outro line. Spec keys `story`, `outro`, `hook_text`,
 Delivery: `/mnt/datadisk/shorts/SNNN_name/` with every file prefixed by the
 number (never reused; kept in catalog/shorts.json), INDEX.md, by_anime/.
 `./amv.sh short-index` rebuilds them. Titles <= 100 chars incl. " #shorts".
+Optional effects (user, 2026-09-28; amv/shorts/fx.py, all optional):
+`"song_fx": "slowed_reverb"|"slowed"|"nightcore"|"sped_up"` renders the song once
+to tmp/shorts/cache/fx/ and THAT file is analysed (drops/beats move with the
+speed: find drops on the processed song, not the original); dialogue untouched;
+the description says "(Slowed + Reverb edit)". `"video_fx": ["outline", "glow",
+"grain"]` (or {"outline": {"color": [r,g,b], "strength", "width"}}) is applied on
+the montage only (story scenes plain) unless `"video_fx_scope": "all"`; ~0.1 s
+per frame with all three. The first outline was invisible: blurring a thin
+edge mask dilutes it - it is boosted after the blur, and the image border is
+masked out (it read as an edge).
+Language: a scene uses the English dub when the episode has one; with none
+(Rich_Girl_Caretaker is Japanese-only) it keeps the original voices and the
+English SUBTITLES are the captions and the clock (scene widened to whole lines).
 No music-only Shorts (user, 2026-09-28): every Short needs the anime's own
 English audio (`story`/`outro`). S001-S003 were montage-only and were deleted,
 specs included; their numbers stay retired.

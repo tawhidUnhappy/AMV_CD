@@ -188,6 +188,35 @@
    83.399
   ]
  },
+ "observation_log_villainess": {
+  "built": "2026-09-28",
+  "drop": 92.996,
+  "mood": "soft",
+  "number": 15,
+  "series": "Observation_Log_of_My_Fiancee",
+  "shots": [
+   "01-893.6",
+   "01-585.1",
+   "01-633.0",
+   "01-661.1",
+   "01-681.6",
+   "01-703.0",
+   "01-812.5",
+   "01-814.4",
+   "06-238.4",
+   "06-293.0",
+   "06-367.9",
+   "06-371.9",
+   "06-423.2",
+   "05-1271.5"
+  ],
+  "song": "CKay - Love Nwantiti Lyrics.slowed_reverb.0.85.eafe4e4a6eb3a045.wav",
+  "spec": "amv/shorts/specs/observation_log_villainess.json",
+  "window": [
+   64.706,
+   120.696
+  ]
+ },
  "otome_mob_duel": {
   "built": "2026-09-27",
   "drop": 54.149,
@@ -283,6 +312,65 @@
    33.042
   ]
  },
+ "rich_girl_caretaker": {
+  "built": "2026-09-28",
+  "drop": 78.646,
+  "mood": "power",
+  "number": 12,
+  "series": "Rich_Girl_Caretaker",
+  "shots": [
+   "01-37.6",
+   "01-321.8",
+   "01-414.5",
+   "01-896.9",
+   "02-482.5",
+   "02-514.4",
+   "02-894.6",
+   "03-824.9",
+   "04-688.1",
+   "04-695.8",
+   "05-1245.0",
+   "11-824.0",
+   "12-1314.2",
+   "12-1334.5"
+  ],
+  "song": "Bling-Bang-Bang-Born Official Music Vide.sped_up.1.15.f3263cfb3e2ad49b.wav",
+  "spec": "amv/shorts/specs/rich_girl_caretaker.json",
+  "window": [
+   55.196,
+   107.376
+  ]
+ },
+ "skeleton_knight_arc": {
+  "built": "2026-09-28",
+  "drop": 47.74,
+  "mood": "power",
+  "number": 13,
+  "series": "Skeleton_Knight_S1",
+  "shots": [
+   "01-985.2",
+   "01-761.1",
+   "01-898.9",
+   "01-937.0",
+   "01-940.4",
+   "06-961.8",
+   "07-130.2",
+   "07-447.4",
+   "07-506.5",
+   "07-547.4",
+   "07-567.2",
+   "11-915.6",
+   "11-1173.5",
+   "11-1131.8",
+   "01-1097.5"
+  ],
+  "song": "Coffin Dance Official Music Video HD.mp3",
+  "spec": "amv/shorts/specs/skeleton_knight_arc.json",
+  "window": [
+   28.62,
+   69.0
+  ]
+ },
  "smoking_two_faces": {
   "built": "2026-09-27",
   "drop": 119.838,
@@ -311,6 +399,35 @@
    147.328
   ]
  },
+ "sparks_of_tomorrow_promise": {
+  "built": "2026-09-28",
+  "drop": 44.884,
+  "mood": "power",
+  "number": 14,
+  "series": "Sparks_of_Tomorrow",
+  "shots": [
+   "03-65.0",
+   "03-59.9",
+   "09-1391.0",
+   "09-1411.1",
+   "10-260.1",
+   "10-266.4",
+   "10-300.0",
+   "10-305.0",
+   "10-318.0",
+   "10-325.9",
+   "12-722.9",
+   "12-1178.9",
+   "12-1184.0",
+   "12-1280.2"
+  ],
+  "song": "Awesome violin beat visualisation.nightcore.1.25.b8749a23fff432a4.wav",
+  "spec": "amv/shorts/specs/sparks_of_tomorrow_promise.json",
+  "window": [
+   13.624,
+   59.204
+  ]
+ },
  "taisho_otome_bride": {
   "built": "2026-09-27",
   "drop": 182.021,
@@ -337,6 +454,36 @@
   "window": [
    157.251,
    205.411
+  ]
+ },
+ "to_your_eternity_orb": {
+  "built": "2026-09-28",
+  "drop": 65.341,
+  "mood": "dark",
+  "number": 16,
+  "series": "To_Your_Eternity",
+  "shots": [
+   "02-1025.5",
+   "02-1236.9",
+   "02-1243.4",
+   "02-1273.6",
+   "02-1376.4",
+   "03-512.9",
+   "03-543.6",
+   "03-560.4",
+   "08-551.9",
+   "11-1263.1",
+   "11-1078.0",
+   "12-178.4",
+   "12-181.4",
+   "12-231.2",
+   "12-238.5"
+  ],
+  "song": "Falling - Emotional Piano Rap Instrument.slowed_reverb.0.85.d060daa8a1bdbb1b.wav",
+  "spec": "amv/shorts/specs/to_your_eternity_orb.json",
+  "window": [
+   32.101,
+   85.671
   ]
  }
 }

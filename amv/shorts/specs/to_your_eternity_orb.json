@@ -1,0 +1,117 @@
+{
+ "name": "to_your_eternity_orb",
+ "about": "To Your Eternity story Short: in the beginning it was an orb, cast upon the Earth to observe it; it becomes a rock, then the wolf Joaan, then walks beside a boy left alone in the snow. His last words - remember me - and it takes his form. The drop runs Fushi's journey; ends on it becoming human.",
+ "series": "To_Your_Eternity",
+ "anime": "To Your Eternity",
+ "song": "/mnt/datadisk/song/Falling - Emotional Piano Rap Instrumental Beat.mp3",
+ "song_fx": "slowed_reverb",
+ "drop": 65.4,
+ "seconds": "auto",
+ "mood": "dark",
+ "video_fx": [
+  "glow",
+  "grain"
+ ],
+ "story": [
+  {
+   "ep": 1,
+   "from": 6.4,
+   "to": 10.3,
+   "why": "in the beginning, it was an orb",
+   "exact": true
+  },
+  {
+   "ep": 1,
+   "from": 20.6,
+   "to": 27.0,
+   "why": "I decided to cast the orb upon the Earth and observe it",
+   "exact": true
+  },
+  {
+   "ep": 1,
+   "from": 95.1,
+   "to": 107.7,
+   "why": "it took on the form of the wolf, and gained consciousness"
+  },
+  {
+   "ep": 1,
+   "from": 1210.4,
+   "to": 1217.3,
+   "why": "the boy: I want you to do something for me. Remember me."
+  }
+ ],
+ "drop_shot": "02-1025.5",
+ "shots": [
+  "02-1236.9",
+  "02-1243.4",
+  "02-1273.6",
+  "02-1376.4",
+  "03-512.9",
+  "03-543.6",
+  "03-560.4",
+  "08-551.9",
+  "11-1263.1",
+  "11-1078.0",
+  "12-178.4",
+  "12-181.4",
+  "12-231.2",
+  "12-238.5"
+ ],
+ "outro": [
+  {
+   "ep": 1,
+   "from": 1348.5,
+   "to": 1353.5,
+   "why": "it took on the form of a human"
+  }
+ ],
+ "hook_text": "It was just an *orb*...",
+ "title": "An Immortal Orb Takes The Form Of Everyone It Loses - To Your Eternity",
+ "hook": "It began as an orb cast upon the Earth. A rock, a wolf, then a boy who died alone in the snow - and it carries every form with it.",
+ "tags": [
+  "toyoureternity",
+  "fushi",
+  "fumetsunoanatae",
+  "sadanime",
+  "animestory"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 2,
+    "t": 1026.5,
+    "x": 0.4,
+    "y": 0.45
+   },
+   {
+    "ep": 8,
+    "t": 553.0,
+    "x": 0.35,
+    "y": 0.4
+   }
+  ],
+  "labels": [
+   {
+    "text": "IT CAN'T DIE",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 140
+   },
+   {
+    "text": "BUT THEY CAN",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 150,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}

@@ -1,4 +1,199 @@
 {
+ "Awesome violin beat visualisation.nightcore.1.25.b8749a23fff432a4.wav": {
+  "drops": [
+   [
+    6.04,
+    16.4
+   ],
+   [
+    44.84,
+    15.9
+   ],
+   [
+    70.47,
+    8.4
+   ],
+   [
+    10.05,
+    8.3
+   ],
+   [
+    81.64,
+    7.5
+   ]
+  ],
+  "duration": 124.87,
+  "path": "/mnt/datadisk/AMV_CD/tmp/shorts/cache/fx/Awesome violin beat visualisation.nightcore.1.25.b8749a23fff432a4.wav",
+  "period": 0.3947,
+  "tempo": 152.0,
+  "windows": [
+   {
+    "accents": [
+     44.884,
+     46.486,
+     48.089,
+     49.691,
+     50.689,
+     52.291,
+     53.894,
+     55.496,
+     57.098
+    ],
+    "drop": 44.884,
+    "end": 59.204,
+    "short": "sparks_of_tomorrow_promise",
+    "start": 13.624
+   }
+  ]
+ },
+ "Bling-Bang-Bang-Born Official Music Vide.sped_up.1.15.f3263cfb3e2ad49b.wav": {
+  "drops": [
+   [
+    78.6,
+    66.2
+   ],
+   [
+    13.05,
+    24.3
+   ],
+   [
+    121.14,
+    23.7
+   ],
+   [
+    54.68,
+    23.0
+   ],
+   [
+    107.67,
+    15.8
+   ]
+  ],
+  "duration": 144.79,
+  "path": "/mnt/datadisk/AMV_CD/tmp/shorts/cache/fx/Bling-Bang-Bang-Born Official Music Vide.sped_up.1.15.f3263cfb3e2ad49b.wav",
+  "period": 0.6734,
+  "tempo": 89.1,
+  "windows": [
+   {
+    "accents": [
+     78.646,
+     79.319,
+     87.284,
+     87.957,
+     91.278,
+     92.601,
+     93.275,
+     97.919,
+     103.909,
+     105.883,
+     106.556
+    ],
+    "drop": 78.646,
+    "end": 107.376,
+    "short": "rich_girl_caretaker",
+    "start": 55.196
+   }
+  ]
+ },
+ "CKay - Love Nwantiti Lyrics.slowed_reverb.0.85.eafe4e4a6eb3a045.wav": {
+  "drops": [
+   [
+    12.7,
+    20.4
+   ],
+   [
+    23.22,
+    15.1
+   ],
+   [
+    6.18,
+    15.1
+   ],
+   [
+    92.97,
+    14.3
+   ],
+   [
+    217.76,
+    13.0
+   ]
+  ],
+  "duration": 239.92,
+  "path": "/mnt/datadisk/AMV_CD/tmp/shorts/cache/fx/CKay - Love Nwantiti Lyrics.slowed_reverb.0.85.eafe4e4a6eb3a045.wav",
+  "period": 0.6269,
+  "tempo": 95.7,
+  "windows": [
+   {
+    "accents": [
+     92.996,
+     95.48,
+     97.965,
+     100.45,
+     101.262,
+     102.516,
+     103.747,
+     108.693,
+     110.341,
+     112.826,
+     115.31,
+     116.123
+    ],
+    "drop": 92.996,
+    "end": 120.696,
+    "short": "observation_log_villainess",
+    "start": 64.706
+   }
+  ]
+ },
+ "Coffin Dance Official Music Video HD.mp3": {
+  "drops": [
+   [
+    139.16,
+    22.0
+   ],
+   [
+    47.72,
+    19.3
+   ],
+   [
+    62.86,
+    7.5
+   ],
+   [
+    31.76,
+    7.2
+   ],
+   [
+    123.9,
+    7.0
+   ]
+  ],
+  "duration": 154.81,
+  "path": "/mnt/datadisk/song/Coffin Dance Official Music Video HD.mp3",
+  "period": 0.4876,
+  "tempo": 123.05,
+  "windows": [
+   {
+    "accents": [
+     47.74,
+     49.18,
+     52.988,
+     53.359,
+     54.892,
+     55.263,
+     56.796,
+     57.168,
+     58.7,
+     66.316,
+     68.22
+    ],
+    "drop": 47.74,
+    "end": 69.0,
+    "short": "skeleton_knight_arc",
+    "start": 28.62
+   }
+  ]
+ },
  "FUNK POWER ULTRA SLOWED.mp3": {
   "drops": [
    [
@@ -45,6 +240,55 @@
     "end": 87.833,
     "short": "hell_mode_bring_it",
     "start": 43.953
+   }
+  ]
+ },
+ "Falling - Emotional Piano Rap Instrument.slowed_reverb.0.85.d060daa8a1bdbb1b.wav": {
+  "drops": [
+   [
+    346.56,
+    119.3
+   ],
+   [
+    4.02,
+    113.0
+   ],
+   [
+    65.36,
+    22.4
+   ],
+   [
+    34.6,
+    20.5
+   ],
+   [
+    23.96,
+    12.2
+   ]
+  ],
+  "duration": 365.61,
+  "path": "/mnt/datadisk/AMV_CD/tmp/shorts/cache/fx/Falling - Emotional Piano Rap Instrument.slowed_reverb.0.85.d060daa8a1bdbb1b.wav",
+  "period": 0.4876,
+  "tempo": 123.05,
+  "windows": [
+   {
+    "accents": [
+     65.341,
+     70.171,
+     71.123,
+     76.881,
+     78.855,
+     79.273,
+     79.761,
+     80.248,
+     80.713,
+     81.688,
+     85.287
+    ],
+    "drop": 65.341,
+    "end": 85.671,
+    "short": "to_your_eternity_orb",
+    "start": 32.101
    }
   ]
  },

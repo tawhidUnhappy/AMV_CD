@@ -1,0 +1,296 @@
+{
+ "01-1207.78": {
+  "at": 1207.78,
+  "episode": 1,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 1217.59,
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good",
+  "why": "the boy: I want you to do something for me. Remember me."
+ },
+ "01-1348.1": {
+  "at": 1348.1,
+  "episode": 1,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 1353.5,
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good",
+  "why": "it took on the form of a human"
+ },
+ "01-18.48": {
+  "at": 18.48,
+  "episode": 1,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 27.03,
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good",
+  "why": "I decided to cast the orb upon the Earth and observe it"
+ },
+ "01-20.6": {
+  "at": 20.6,
+  "episode": 1,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 27.0,
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good",
+  "why": "I decided to cast the orb upon the Earth and observe it"
+ },
+ "01-6.4": {
+  "at": 6.4,
+  "episode": 1,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 10.3,
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good",
+  "why": "in the beginning, it was an orb"
+ },
+ "01-94.88": {
+  "at": 94.88,
+  "episode": 1,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 108.01,
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good",
+  "why": "it took on the form of the wolf, and gained consciousness"
+ },
+ "02-1025.5": {
+  "at": 1027.25,
+  "crop_x": 0.469,
+  "episode": 2,
+  "file_name": "To_Your_Eternity - E02.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drop",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "02-1236.9": {
+  "at": 1237.625,
+  "crop_x": 0.167,
+  "episode": 2,
+  "file_name": "To_Your_Eternity - E02.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "02-1243.4": {
+  "at": 1244.875,
+  "crop_x": 0.844,
+  "episode": 2,
+  "file_name": "To_Your_Eternity - E02.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "02-1273.6": {
+  "at": 1273.75,
+  "crop_x": 0.198,
+  "episode": 2,
+  "file_name": "To_Your_Eternity - E02.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "02-1376.4": {
+  "at": 1376.375,
+  "crop_x": 0.49,
+  "episode": 2,
+  "file_name": "To_Your_Eternity - E02.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "03-512.9": {
+  "at": 512.875,
+  "crop_x": 0.625,
+  "episode": 3,
+  "file_name": "To_Your_Eternity - E03.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "03-543.6": {
+  "at": 545.625,
+  "crop_x": 0.479,
+  "episode": 3,
+  "file_name": "To_Your_Eternity - E03.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "03-560.4": {
+  "at": 560.375,
+  "crop_x": 0.552,
+  "episode": 3,
+  "file_name": "To_Your_Eternity - E03.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "08-551.9": {
+  "at": 551.875,
+  "crop_x": 0.375,
+  "episode": 8,
+  "file_name": "To_Your_Eternity - E08.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "11-1078.0": {
+  "at": 1078.0,
+  "crop_x": 0.5,
+  "episode": 11,
+  "file_name": "To_Your_Eternity - E11.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "11-1263.1": {
+  "at": 1263.125,
+  "crop_x": 0.406,
+  "episode": 11,
+  "file_name": "To_Your_Eternity - E11.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "12-178.4": {
+  "at": 178.375,
+  "crop_x": 0.708,
+  "episode": 12,
+  "file_name": "To_Your_Eternity - E12.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "12-181.4": {
+  "at": 181.375,
+  "crop_x": 0.75,
+  "episode": 12,
+  "file_name": "To_Your_Eternity - E12.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "12-231.2": {
+  "at": 231.75,
+  "crop_x": 0.844,
+  "episode": 12,
+  "file_name": "To_Your_Eternity - E12.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ },
+ "12-238.5": {
+  "at": 239.25,
+  "crop_x": 0.281,
+  "episode": 12,
+  "file_name": "To_Your_Eternity - E12.mkv",
+  "moods": [
+   "dark"
+  ],
+  "role": "drive",
+  "used_in": [
+   "to_your_eternity_orb"
+  ],
+  "verdict": "good"
+ }
+}
