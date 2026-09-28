@@ -26,6 +26,9 @@
   "12-816.1",
   "12-738.0"
  ],
+ "thumbnail": {"panels": [{"ep": 12, "t": 739.0, "x": 0.5, "y": 0.45}, {"ep": 12, "t": 473.0, "x": 0.6}],
+  "labels": [{"text": "HE CHOSE\nHELL MODE", "at": [0.5, 0.1], "size": 140},
+             {"text": "MONSTERS FEAR HIM", "at": [0.5, 0.5], "size": 140, "color": [255, 255, 255]}]},
  "title": "He Picked HELL MODE On Purpose... Now Monsters Fear Him",
  "hook": "Everyone else plays on Normal. Allen chose Hell Mode - and it shows.",
  "tags": ["hellmode", "hellmodeanime", "isekai", "summoner", "phonk"]

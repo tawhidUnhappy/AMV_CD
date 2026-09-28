@@ -49,6 +49,8 @@
   "04-681.6",
   "09-655.2"
  ],
+ "thumbnail": {"ep": 4, "t": 599.5, "x": 0.5,
+  "labels": [{"text": "ONLY HE SEES\nTHIS SMILE", "at": [0.5, 0.08], "size": 130}]},
  "title": "She Was the School's Angel... But Only He Saw Her Real Smile",
  "hook": "Everyone calls her an angel. Only he gets to see her real smile.",
  "tags": [

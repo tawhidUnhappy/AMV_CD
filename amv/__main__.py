@@ -55,6 +55,7 @@ COMMANDS: dict[str, tuple[str, bool, str]] = {
     "short-find": ("amv.shorts.find", False, "candidate shots of a show (dialogue + motion) and sheets with the 9:16 crop"),
     "short": ("amv.shorts.build", False, "a vertical Short from a spec: plan, crop, effects, render, title/description"),
     "short-thumb": ("amv.shorts.thumb", False, "a Short's thumbnail (labels + arrows), or --candidates frames to pick from"),
+    "short-cover": ("amv.shorts.cover", False, "put each delivered Short's thumbnail in its first frames + cover art"),
     "short-index": ("amv.shorts.deliver", False, "/mnt/datadisk/shorts: numbered folders, INDEX.md, by_anime/"),
     "short-catalog": ("amv.shorts.catalog", False, "what earlier sessions learned: songs, vetted/rejected shots, Shorts built"),
     # upkeep

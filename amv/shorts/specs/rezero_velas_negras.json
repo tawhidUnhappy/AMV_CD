@@ -36,6 +36,9 @@
    "why": "Subaru steadies (keep x left: Ram enters right)"
   }
  ],
+ "thumbnail": {"panels": [{"ep": 8, "t": 2337.5, "x": 0.516, "y": 0.42}, {"ep": 10, "t": 993.0, "x": 0.52, "y": 0.5}],
+  "labels": [{"text": "DIES", "at": [0.2, 0.07], "size": 150},
+             {"text": "AGAIN AND AGAIN", "at": [0.5, 0.5], "size": 150, "color": [255, 255, 255]}]},
  "title": "He Can't Even Die in Peace... Subaru's Worst Loop",
  "hook": "Every death sends him back. Every loop breaks him a little more.",
  "tags": [
