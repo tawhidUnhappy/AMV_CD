@@ -1,0 +1,112 @@
+{
+ "name": "skeleton_low_profile",
+ "series": "Skeleton_Knight_S2",
+ "anime": "Skeleton Knight in Another World Season 2",
+ "song": "/mnt/datadisk/song/INSANE A Hazbin Hotel Song - Black Gryph0n Baasik.mp3",
+ "drop": 47.4,
+ "mood": "power",
+ "video_fx": {
+  "outline": {
+   "color": [
+    255,
+    210,
+    90
+   ]
+  }
+ },
+ "about": "Skeleton Knight S2 story Short: Arc planned a quiet, low-profile life of adventure - it is not working out.",
+ "story": [
+  {
+   "ep": 1,
+   "from": 37.0,
+   "to": 39.4,
+   "why": "Hello again. It's me, Arc."
+  },
+  {
+   "ep": 1,
+   "from": 42.8,
+   "to": 54.3,
+   "why": "I had intended to live a low-profile life... it's not working out"
+  },
+  {
+   "ep": 1,
+   "from": 127.0,
+   "to": 130.4,
+   "why": "How is this your idea of avoiding attention?!"
+  }
+ ],
+ "outro": [
+  {
+   "ep": 1,
+   "from": 120.2,
+   "to": 124.7,
+   "why": "and that, my friends, was all too easy!"
+  }
+ ],
+ "hook_text": "He wanted a *quiet* life...",
+ "title": "The Skeleton Knight Wanted A Quiet Life... It's Not Working Out",
+ "hook": "Arc just wants to keep his head down - literally, so nobody sees the skeleton under the helmet. Every fight makes him more famous.",
+ "tags": [
+  "skeletonknight",
+  "skeletonknightinanotherworld",
+  "isekai",
+  "animestory"
+ ],
+ "seconds": "auto",
+ "drop_shot": "09-876.9",
+ "shots": [
+  "03-1228.1",
+  "03-1229.2",
+  "04-430.1",
+  "04-737.8",
+  "04-1292.6",
+  "04-167.9",
+  "09-691.9",
+  "09-1181.6",
+  "09-1188.6",
+  "10-30.4",
+  "04-1304.1",
+  "05-404.8",
+  "09-1210.9",
+  "10-619.9"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 9,
+    "t": 692.5,
+    "x": 0.5,
+    "y": 0.45
+   },
+   {
+    "ep": 9,
+    "t": 877.5,
+    "x": 0.3,
+    "y": 0.5
+   }
+  ],
+  "labels": [
+   {
+    "text": "A QUIET LIFE?",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 135
+   },
+   {
+    "text": "NOT WORKING OUT",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 140,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}

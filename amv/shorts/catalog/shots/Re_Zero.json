@@ -13,8 +13,8 @@
   "why": "the sword drawn, moving right"
  },
  "02-2361.8": {
-  "at": 2363.625,
-  "crop_x": 0.615,
+  "at": 2363.25,
+  "crop_x": 0.635,
   "episode": 2,
   "file_name": "[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
   "moods": [
@@ -22,7 +22,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "rezero_from_zero"
+   "rezero_from_zero",
+   "rezero_save_her"
   ],
   "verdict": "good"
  },
@@ -67,7 +68,7 @@
   "why": "Reinhard's light"
  },
  "02-2377.12": {
-  "at": 2376.875,
+  "at": 2376.625,
   "crop_x": 0.156,
   "episode": 2,
   "file_name": "[S01] [E02] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
@@ -78,6 +79,7 @@
   "used_in": [
    "intro:subaru_intro",
    "rezero_from_zero",
+   "rezero_save_her",
    "rezero_velas_negras"
   ],
   "verdict": "good",
@@ -161,17 +163,18 @@
   "x": 0.525
  },
  "04-2972.12": {
-  "at": 2972.12,
-  "crop_x": 0.542,
+  "at": 2971.25,
+  "crop_x": 0.5,
   "episode": 4,
   "file_name": "[S01] [E04] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
   "moods": [
    "dark"
   ],
-  "role": "drop",
+  "role": "drive",
   "used_in": [
    "intro:subaru_intro",
-   "rezero_from_zero"
+   "rezero_from_zero",
+   "rezero_save_her"
   ],
   "verdict": "good",
   "why": "resolve in golden light",
@@ -213,10 +216,11 @@
   "moods": [
    "dark"
   ],
-  "role": "drive",
+  "role": "drop",
   "used_in": [
    "intro:subaru_intro",
-   "rezero_from_zero"
+   "rezero_from_zero",
+   "rezero_save_her"
   ],
   "verdict": "good",
   "why": "Subaru leaps",
@@ -233,6 +237,7 @@
   "role": "drive",
   "used_in": [
    "intro:subaru_intro",
+   "rezero_save_her",
    "rezero_velas_negras"
   ],
   "verdict": "good",
@@ -251,6 +256,7 @@
   "used_in": [
    "intro:subaru_intro",
    "rezero_from_zero",
+   "rezero_save_her",
    "rezero_velas_negras"
   ],
   "verdict": "good",
@@ -258,7 +264,7 @@
   "x": 0.578
  },
  "06-2204.4": {
-  "at": 2204.375,
+  "at": 2204.5,
   "crop_x": 0.625,
   "episode": 6,
   "file_name": "[S01] [E06] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
@@ -267,7 +273,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "rezero_from_zero"
+   "rezero_from_zero",
+   "rezero_save_her"
   ],
   "verdict": "good"
  },
@@ -325,7 +332,7 @@
  },
  "07-2162.75": {
   "at": 2162.625,
-  "crop_x": 0.75,
+  "crop_x": 0.74,
   "episode": 7,
   "file_name": "[S01] [E07] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
   "moods": [
@@ -334,7 +341,8 @@
   "role": "drive",
   "used_in": [
    "intro:subaru_intro",
-   "rezero_from_zero"
+   "rezero_from_zero",
+   "rezero_save_her"
   ],
   "verdict": "good",
   "why": "Subaru turns",
@@ -621,6 +629,62 @@
   "verdict": "good",
   "why": "Rem: from square one - no, from zero!"
  },
+ "10-1502.98": {
+  "at": 1502.98,
+  "episode": 10,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 1509.3,
+  "used_in": [
+   "rezero_save_her"
+  ],
+  "verdict": "good",
+  "why": "Rem: show me how awesome you can be, Subaru-kun"
+ },
+ "10-1503.45": {
+  "at": 1503.45,
+  "episode": 10,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 1509.3,
+  "used_in": [
+   "rezero_save_her"
+  ],
+  "verdict": "good",
+  "why": "Rem: show me how awesome you can be, Subaru-kun"
+ },
+ "10-1524.08": {
+  "at": 1524.08,
+  "episode": 10,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 1537.21,
+  "used_in": [
+   "rezero_save_her"
+  ],
+  "verdict": "good",
+  "why": "I want to see Emilia smile... even if she tells me to stay away, I want to be next to her"
+ },
+ "10-1547.58": {
+  "at": 1547.58,
+  "episode": 10,
+  "moods": [
+   "dark"
+  ],
+  "role": "story",
+  "until": 1558.7,
+  "used_in": [
+   "rezero_save_her"
+  ],
+  "verdict": "good",
+  "why": "it's okay if she doesn't understand. I just want to save her"
+ },
  "10-1652.94": {
   "at": 1652.94,
   "episode": 10,
@@ -681,8 +745,8 @@
   "x": 0.526
  },
  "11-166.5": {
-  "at": 166.5,
-  "crop_x": 0.844,
+  "at": 166.25,
+  "crop_x": 0.208,
   "episode": 11,
   "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
   "moods": [
@@ -692,6 +756,7 @@
   "used_in": [
    "intro:subaru_intro",
    "rezero_from_zero",
+   "rezero_save_her",
    "rezero_velas_negras"
   ],
   "verdict": "good",
@@ -713,7 +778,7 @@
   "x": 0.498
  },
  "11-177.0": {
-  "at": 176.75,
+  "at": 176.625,
   "crop_x": 0.844,
   "episode": 11,
   "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
@@ -723,12 +788,13 @@
   "role": "drive",
   "used_in": [
    "rezero_from_zero",
+   "rezero_save_her",
    "rezero_velas_negras"
   ],
   "verdict": "good"
  },
  "11-1930.2": {
-  "at": 1931.875,
+  "at": 1932.125,
   "crop_x": 0.615,
   "episode": 11,
   "file_name": "[S01] [E11] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
@@ -737,7 +803,8 @@
   ],
   "role": "drive",
   "used_in": [
-   "rezero_from_zero"
+   "rezero_from_zero",
+   "rezero_save_her"
   ],
   "verdict": "good"
  },
@@ -766,7 +833,8 @@
   "role": "drive",
   "used_in": [
    "intro:subaru_intro",
-   "rezero_from_zero"
+   "rezero_from_zero",
+   "rezero_save_her"
   ],
   "verdict": "good",
   "why": "torn and bloodied",
@@ -805,16 +873,17 @@
  },
  "12-1906.12": {
   "at": 1906.12,
-  "crop_x": 0.354,
+  "crop_x": 0.344,
   "episode": 12,
   "file_name": "[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
   "moods": [
    "dark"
   ],
-  "role": "drive",
+  "role": "end",
   "used_in": [
    "intro:subaru_intro",
    "rezero_from_zero",
+   "rezero_save_her",
    "rezero_velas_negras"
   ],
   "verdict": "good",
@@ -875,8 +944,8 @@
   "why": "the hands rise - into the drop"
  },
  "12-2370.8": {
-  "at": 2371.375,
-  "crop_x": 0.594,
+  "at": 2371.125,
+  "crop_x": 0.615,
   "episode": 12,
   "file_name": "[S01] [E12] Re_Zero [1080p] [Multi] @The_Mortals.mkv",
   "moods": [
@@ -888,6 +957,7 @@
    "intro:flow_intro",
    "intro:subaru_intro",
    "rezero_from_zero",
+   "rezero_save_her",
    "rezero_velas_negras"
   ],
   "verdict": "good",

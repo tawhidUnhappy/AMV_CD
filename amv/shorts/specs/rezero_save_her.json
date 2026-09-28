@@ -1,0 +1,102 @@
+{
+ "name": "rezero_save_her",
+ "series": "Re_Zero",
+ "anime": "Re:ZERO -Starting Life in Another World-",
+ "song": "/mnt/datadisk/song/Hollywood Undead - Believe Instrumental Redone.mp3",
+ "drop": 125.0,
+ "mood": "dark",
+ "video_fx": [
+  "grain"
+ ],
+ "about": "Re:Zero story Short: Rem asks Subaru to show her how awesome he can be; he answers with why he keeps dying and coming back - he just wants to see Emilia smile and save her. The drop runs his comeback.",
+ "story": [
+  {
+   "ep": 10,
+   "from": 1503.45,
+   "to": 1509.3,
+   "why": "Rem: show me how awesome you can be, Subaru-kun",
+   "exact": true
+  },
+  {
+   "ep": 10,
+   "from": 1524.4,
+   "to": 1537.1,
+   "why": "I want to see Emilia smile... even if she tells me to stay away, I want to be next to her"
+  },
+  {
+   "ep": 10,
+   "from": 1547.8,
+   "to": 1558.7,
+   "why": "it's okay if she doesn't understand. I just want to save her"
+  }
+ ],
+ "hook_text": "He dies *again and again* for her...",
+ "title": "He Died Over And Over Just To See Her Smile - Re:Zero",
+ "hook": "Subaru can't stay dead. Every time he fails, he wakes up and tries again - for a girl who doesn't even know.",
+ "tags": [
+  "rezero",
+  "subaru",
+  "emilia",
+  "rezeroedit",
+  "animestory"
+ ],
+ "seconds": "auto",
+ "drop_shot": "06-1354.75",
+ "shots": [
+  "11-166.5",
+  "11-177.0",
+  "02-2377.12",
+  "06-1784.62",
+  "11-1930.2",
+  "02-2361.8",
+  "07-2162.75",
+  "11-2250.75",
+  "06-2204.4",
+  "12-2370.8",
+  "06-1806.25",
+  "04-2972.12",
+  {
+   "id": "12-1906.12",
+   "x": 0.25
+  }
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 10,
+    "t": 1530.0,
+    "x": 0.5,
+    "y": 0.45
+   },
+   {
+    "ep": 4,
+    "t": 2973.0,
+    "x": 0.45,
+    "y": 0.45
+   }
+  ],
+  "labels": [
+   {
+    "text": "HE KEEPS DYING",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 130
+   },
+   {
+    "text": "TO SAVE HER",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 160,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}

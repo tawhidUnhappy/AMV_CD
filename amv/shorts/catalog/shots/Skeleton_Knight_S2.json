@@ -1,0 +1,268 @@
+{
+ "01-119.92": {
+  "at": 119.92,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 127.01,
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good",
+  "why": "and that, my friends, was all too easy!"
+ },
+ "01-126.98": {
+  "at": 126.98,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 130.55,
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good",
+  "why": "How is this your idea of avoiding attention?!"
+ },
+ "01-36.06": {
+  "at": 36.06,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 39.97,
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good",
+  "why": "Hello again. It's me, Arc."
+ },
+ "01-42.52": {
+  "at": 42.52,
+  "episode": 1,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 54.3,
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good",
+  "why": "I had intended to live a low-profile life... it's not working out"
+ },
+ "03-1228.1": {
+  "at": 1228.125,
+  "crop_x": 0.667,
+  "episode": 3,
+  "file_name": "Skeleton_Knight_S2 - E03.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "03-1229.2": {
+  "at": 1229.25,
+  "crop_x": 0.167,
+  "episode": 3,
+  "file_name": "Skeleton_Knight_S2 - E03.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "04-1292.6": {
+  "at": 1292.625,
+  "crop_x": 0.24,
+  "episode": 4,
+  "file_name": "Skeleton_Knight_S2 - E04.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "04-1304.1": {
+  "at": 1304.625,
+  "crop_x": 0.458,
+  "episode": 4,
+  "file_name": "Skeleton_Knight_S2 - E04.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "04-167.9": {
+  "at": 168.75,
+  "crop_x": 0.552,
+  "episode": 4,
+  "file_name": "Skeleton_Knight_S2 - E04.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "04-430.1": {
+  "at": 430.375,
+  "crop_x": 0.604,
+  "episode": 4,
+  "file_name": "Skeleton_Knight_S2 - E04.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "04-737.8": {
+  "at": 739.75,
+  "crop_x": 0.677,
+  "episode": 4,
+  "file_name": "Skeleton_Knight_S2 - E04.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "05-404.8": {
+  "at": 405.875,
+  "crop_x": 0.323,
+  "episode": 5,
+  "file_name": "Skeleton_Knight_S2 - E05.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "09-1181.6": {
+  "at": 1181.625,
+  "crop_x": 0.5,
+  "episode": 9,
+  "file_name": "Skeleton_Knight_S2 - E09.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "09-1188.6": {
+  "at": 1188.875,
+  "crop_x": 0.219,
+  "episode": 9,
+  "file_name": "Skeleton_Knight_S2 - E09.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "09-1210.9": {
+  "at": 1210.875,
+  "crop_x": 0.406,
+  "episode": 9,
+  "file_name": "Skeleton_Knight_S2 - E09.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "09-691.9": {
+  "at": 692.25,
+  "crop_x": 0.229,
+  "episode": 9,
+  "file_name": "Skeleton_Knight_S2 - E09.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "09-876.9": {
+  "at": 878.75,
+  "crop_x": 0.49,
+  "episode": 9,
+  "file_name": "Skeleton_Knight_S2 - E09.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drop",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "10-30.4": {
+  "at": 30.375,
+  "crop_x": 0.5,
+  "episode": 10,
+  "file_name": "Skeleton_Knight_S2 - E10.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ },
+ "10-619.9": {
+  "at": 621.625,
+  "crop_x": 0.531,
+  "episode": 10,
+  "file_name": "Skeleton_Knight_S2 - E10.mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "skeleton_low_profile"
+  ],
+  "verdict": "good"
+ }
+}

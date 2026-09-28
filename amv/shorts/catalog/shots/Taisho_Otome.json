@@ -84,7 +84,7 @@
   "why": "father: a good-for-nothing has no place here, get out of my sight"
  },
  "02-655.2": {
-  "at": 657.125,
+  "at": 657.0,
   "crop_x": 0.167,
   "episode": 2,
   "file_name": "[SA] Taisho Otome - 02 - 1080p Dual Audio Eng sub.mkv",
@@ -93,6 +93,7 @@
   ],
   "role": "drive",
   "used_in": [
+   "taisho_birthday",
    "taisho_otome_bride"
   ],
   "verdict": "good"
@@ -180,6 +181,216 @@
   ],
   "verdict": "good",
   "why": "Tamahiko: a single thought - I want to make Yuzu happy"
+ },
+ "05-1102.6": {
+  "at": 1103.25,
+  "crop_x": 0.302,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-1206.1": {
+  "at": 1206.875,
+  "crop_x": 0.594,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-482.6": {
+  "at": 483.5,
+  "crop_x": 0.406,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-671.9": {
+  "at": 672.75,
+  "crop_x": 0.521,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-679.8": {
+  "at": 679.75,
+  "crop_x": 0.479,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-814.6": {
+  "at": 814.625,
+  "crop_x": 0.51,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drop",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-819.0": {
+  "at": 820.75,
+  "crop_x": 0.604,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-842.0": {
+  "at": 842.0,
+  "crop_x": 0.281,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-846.5": {
+  "at": 846.5,
+  "crop_x": 0.729,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-887.1": {
+  "at": 887.125,
+  "crop_x": 0.396,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-898.1": {
+  "at": 898.5,
+  "crop_x": 0.177,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-900.22": {
+  "at": 900.22,
+  "episode": 5,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 909.79,
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good",
+  "why": "all alone again this year. It's my birthday, and nobody..."
+ },
+ "05-938.5": {
+  "at": 938.5,
+  "episode": 5,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 954.17,
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good",
+  "why": "Tamahiko-sama! Happy birthday. When I heard these words for the very first time..."
+ },
+ "05-953.0": {
+  "at": 953.0,
+  "crop_x": 0.552,
+  "episode": 5,
+  "file_name": "[SA] Taisho Otome - 05 - 1080p Dual Audio Eng sub.mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good"
+ },
+ "05-956.24": {
+  "at": 956.24,
+  "episode": 5,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 960.7,
+  "used_in": [
+   "taisho_birthday"
+  ],
+  "verdict": "good",
+  "why": "I'll hold on. Forever and ever."
  },
  "06-1126.2": {
   "at": 1127.875,
@@ -275,6 +486,7 @@
   ],
   "role": "drive",
   "used_in": [
+   "taisho_birthday",
    "taisho_otome_bride"
   ],
   "verdict": "good"

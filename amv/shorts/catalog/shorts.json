@@ -36,6 +36,36 @@
    64.578
   ]
  },
+ "angel_hold_hand": {
+  "built": "2026-09-28",
+  "drop": 102.864,
+  "mood": "soft",
+  "number": 19,
+  "series": "Angel_Next_Door",
+  "shots": [
+   "07-1318.4",
+   "08-544.8",
+   "08-549.1",
+   "08-673.0",
+   "08-952.2",
+   "09-157.1",
+   "10-650.1",
+   "10-1312.1",
+   "11-328.1",
+   "11-336.8",
+   "11-1296.0",
+   "11-1297.0",
+   "11-1307.1",
+   "12-102.9",
+   "12-110.4"
+  ],
+  "song": "Crying Alone - Sad Emotional Piano Song .slowed_reverb.0.85.9625cbe478f3ffcb.wav",
+  "spec": "amv/shorts/specs/angel_hold_hand.json",
+  "window": [
+   82.544,
+   121.024
+  ]
+ },
  "angel_umbrella": {
   "built": "2026-09-27",
   "drop": 126.665,
@@ -128,6 +158,36 @@
   "window": [
    43.953,
    87.833
+  ]
+ },
+ "iruma_kalego_familiar": {
+  "built": "2026-09-28",
+  "drop": 64.946,
+  "mood": "power",
+  "number": 20,
+  "series": "Mairimashita_Iruma_kun",
+  "shots": [
+   "02-672.4",
+   "02-668.6",
+   "02-750.8",
+   "02-795.0",
+   "02-807.5",
+   "02-292.8",
+   "02-301.2",
+   "11-466.5",
+   "11-489.5",
+   "11-494.4",
+   "11-694.5",
+   "11-767.9",
+   "04-363.2",
+   "05-689.0",
+   "11-759.4"
+  ],
+  "song": "Nightcore - Monster Lyrics.mp3",
+  "spec": "amv/shorts/specs/iruma_kalego_familiar.json",
+  "window": [
+   35.456,
+   92.376
   ]
  },
  "iruma_sold_to_demon": {
@@ -274,6 +334,35 @@
    52.985
   ]
  },
+ "rezero_save_her": {
+  "built": "2026-09-28",
+  "drop": 125.063,
+  "mood": "dark",
+  "number": 21,
+  "series": "Re_Zero",
+  "shots": [
+   "06-1354.75",
+   "11-166.5",
+   "11-177.0",
+   "02-2377.12",
+   "06-1784.62",
+   "11-1930.2",
+   "02-2361.8",
+   "07-2162.75",
+   "11-2250.75",
+   "06-2204.4",
+   "12-2370.8",
+   "06-1806.25",
+   "04-2972.12",
+   "12-1906.12"
+  ],
+  "song": "Hollywood Undead - Believe Instrumental Redone.mp3",
+  "spec": "amv/shorts/specs/rezero_save_her.json",
+  "window": [
+   94.963,
+   145.463
+  ]
+ },
  "rezero_velas_negras": {
   "built": "2026-09-26",
   "deleted": "2026-09-28: music only, no episode audio - user asked to delete",
@@ -371,6 +460,36 @@
    69.0
   ]
  },
+ "skeleton_low_profile": {
+  "built": "2026-09-28",
+  "drop": 47.508,
+  "mood": "power",
+  "number": 17,
+  "series": "Skeleton_Knight_S2",
+  "shots": [
+   "09-876.9",
+   "03-1228.1",
+   "03-1229.2",
+   "04-430.1",
+   "04-737.8",
+   "04-1292.6",
+   "04-167.9",
+   "09-691.9",
+   "09-1181.6",
+   "09-1188.6",
+   "10-30.4",
+   "04-1304.1",
+   "05-404.8",
+   "09-1210.9",
+   "10-619.9"
+  ],
+  "song": "INSANE A Hazbin Hotel Song - Black Gryph0n Baasik.mp3",
+  "spec": "amv/shorts/specs/skeleton_low_profile.json",
+  "window": [
+   28.248,
+   72.308
+  ]
+ },
  "smoking_two_faces": {
   "built": "2026-09-27",
   "drop": 119.838,
@@ -426,6 +545,35 @@
   "window": [
    13.624,
    59.204
+  ]
+ },
+ "taisho_birthday": {
+  "built": "2026-09-28",
+  "drop": 160.38,
+  "mood": "soft",
+  "number": 18,
+  "series": "Taisho_Otome",
+  "shots": [
+   "05-814.6",
+   "05-482.6",
+   "05-671.9",
+   "05-679.8",
+   "05-819.0",
+   "05-842.0",
+   "05-846.5",
+   "05-887.1",
+   "05-898.1",
+   "05-953.0",
+   "05-1102.6",
+   "05-1206.1",
+   "02-655.2",
+   "10-964.8"
+  ],
+  "song": "The Other Side Of Paradise - Glass Anima.slowed_reverb.0.85.83ba233ba33f98e3.wav",
+  "spec": "amv/shorts/specs/taisho_birthday.json",
+  "window": [
+   135.14,
+   180.74
   ]
  },
  "taisho_otome_bride": {

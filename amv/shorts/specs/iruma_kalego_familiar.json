@@ -1,0 +1,107 @@
+{
+ "name": "iruma_kalego_familiar",
+ "series": "Mairimashita_Iruma_kun",
+ "anime": "Welcome to Demon School! Iruma-kun",
+ "song": "/mnt/datadisk/song/Nightcore - Monster Lyrics.mp3",
+ "drop": 64.9,
+ "mood": "power",
+ "video_fx": [
+  "glow"
+ ],
+ "about": "Iruma-kun story Short: a human with no magic hopes to fail the familiar ritual and get expelled back home - and summons his strict teacher Kalego as his familiar instead.",
+ "story": [
+  {
+   "ep": 2,
+   "from": 842.6,
+   "to": 845.4,
+   "why": "I'm human, so I don't have any magical powers"
+  },
+  {
+   "ep": 2,
+   "from": 856.7,
+   "to": 867.6,
+   "why": "if they expel me, I'll be scot-free... Hallelujah, back to the human world!"
+  },
+  {
+   "ep": 2,
+   "from": 1078.0,
+   "to": 1087.5,
+   "why": "Kalego: me?! A familiar?! Nullify this contract immediately!"
+  }
+ ],
+ "outro": [
+  {
+   "ep": 2,
+   "from": 1138.4,
+   "to": 1144.1,
+   "why": "Suzuki Iruma, age fourteen, acquired a familiar on his first day of school"
+  }
+ ],
+ "hook_text": "He tried to *fail* on purpose...",
+ "title": "He Tried To FAIL Demon School... And Summoned His Teacher As A Pet",
+ "hook": "Iruma is a human hiding in demon school. He hoped to fail the summoning ritual and get sent home. Instead he summoned his strictest teacher.",
+ "tags": [
+  "irumakun",
+  "welcometodemonschool",
+  "kalego",
+  "animecomedy",
+  "animestory"
+ ],
+ "seconds": "auto",
+ "drop_shot": "02-672.4",
+ "shots": [
+  "02-668.6",
+  "02-750.8",
+  "02-795.0",
+  "02-807.5",
+  "02-292.8",
+  "02-301.2",
+  "11-466.5",
+  "11-489.5",
+  "11-494.4",
+  "11-694.5",
+  "11-767.9",
+  "04-363.2",
+  "05-689.0",
+  "11-759.4"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 2,
+    "t": 673.5,
+    "x": 0.5,
+    "y": 0.45
+   },
+   {
+    "ep": 11,
+    "t": 697.0,
+    "x": 0.3,
+    "y": 0.45
+   }
+  ],
+  "labels": [
+   {
+    "text": "HIS STRICTEST TEACHER",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 110
+   },
+   {
+    "text": "IS NOW HIS PET",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 150,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}

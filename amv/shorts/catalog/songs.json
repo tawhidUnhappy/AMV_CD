@@ -194,6 +194,49 @@
    }
   ]
  },
+ "Crying Alone - Sad Emotional Piano Song .slowed_reverb.0.85.9625cbe478f3ffcb.wav": {
+  "drops": [
+   [
+    331.67,
+    121.2
+   ],
+   [
+    4.02,
+    99.8
+   ],
+   [
+    102.84,
+    17.7
+   ],
+   [
+    308.85,
+    17.6
+   ],
+   [
+    240.19,
+    17.1
+   ]
+  ],
+  "duration": 349.96,
+  "path": "/mnt/datadisk/AMV_CD/tmp/shorts/cache/fx/Crying Alone - Sad Emotional Piano Song .slowed_reverb.0.85.9625cbe478f3ffcb.wav",
+  "period": 0.952,
+  "tempo": 63.02,
+  "windows": [
+   {
+    "accents": [
+     104.745,
+     106.696,
+     110.504,
+     113.267,
+     114.312
+    ],
+    "drop": 102.864,
+    "end": 121.024,
+    "short": "angel_hold_hand",
+    "start": 82.544
+   }
+  ]
+ },
  "FUNK POWER ULTRA SLOWED.mp3": {
   "drops": [
    [
@@ -354,6 +397,101 @@
     "end": 66.618,
     "short": "iruma_sold_to_demon",
     "start": 23.158
+   }
+  ]
+ },
+ "Hollywood Undead - Believe Instrumental Redone.mp3": {
+  "drops": [
+   [
+    125.04,
+    30.5
+   ],
+   [
+    12.1,
+    25.7
+   ],
+   [
+    226.35,
+    15.1
+   ],
+   [
+    91.16,
+    10.4
+   ],
+   [
+    181.51,
+    9.3
+   ]
+  ],
+  "duration": 255.28,
+  "path": "/mnt/datadisk/song/Hollywood Undead - Believe Instrumental Redone.mp3",
+  "period": 0.6966,
+  "tempo": 86.13,
+  "windows": [
+   {
+    "accents": [
+     125.063,
+     126.317,
+     127.896,
+     131.959,
+     134.769,
+     140.434,
+     142.547,
+     143.244
+    ],
+    "drop": 125.063,
+    "end": 145.463,
+    "short": "rezero_save_her",
+    "start": 94.963
+   }
+  ]
+ },
+ "INSANE A Hazbin Hotel Song - Black Gryph0n Baasik.mp3": {
+  "drops": [
+   [
+    104.91,
+    28.1
+   ],
+   [
+    84.59,
+    27.7
+   ],
+   [
+    47.44,
+    25.5
+   ],
+   [
+    94.76,
+    17.2
+   ],
+   [
+    27.86,
+    14.1
+   ]
+  ],
+  "duration": 162.26,
+  "path": "/mnt/datadisk/song/INSANE A Hazbin Hotel Song - Black Gryph0n Baasik.mp3",
+  "period": 0.5805,
+  "tempo": 103.36,
+  "windows": [
+   {
+    "accents": [
+     49.807,
+     50.828,
+     53.801,
+     55.519,
+     56.657,
+     57.237,
+     57.678,
+     58.932,
+     62.949,
+     65.805,
+     69.521
+    ],
+    "drop": 47.508,
+    "end": 72.308,
+    "short": "skeleton_low_profile",
+    "start": 28.248
    }
   ]
  },
@@ -565,6 +703,103 @@
     "end": 76.949,
     "short": "otome_mob_duel",
     "start": 36.899
+   }
+  ]
+ },
+ "Nightcore - Monster Lyrics.mp3": {
+  "drops": [
+   [
+    64.9,
+    32.4
+   ],
+   [
+    42.47,
+    31.8
+   ],
+   [
+    104.79,
+    20.1
+   ],
+   [
+    27.54,
+    17.8
+   ],
+   [
+    114.75,
+    17.6
+   ]
+  ],
+  "duration": 204.73,
+  "path": "/mnt/datadisk/song/Nightcore - Monster Lyrics.mp3",
+  "period": 0.6269,
+  "tempo": 95.7,
+  "windows": [
+   {
+    "accents": [
+     64.946,
+     66.2,
+     67.431,
+     68.685,
+     69.939,
+     72.423,
+     73.677,
+     74.931,
+     83.638,
+     87.377,
+     88.631
+    ],
+    "drop": 64.946,
+    "end": 92.376,
+    "short": "iruma_kalego_familiar",
+    "start": 35.456
+   }
+  ]
+ },
+ "The Other Side Of Paradise - Glass Anima.slowed_reverb.0.85.83ba233ba33f98e3.wav": {
+  "drops": [
+   [
+    160.36,
+    47.5
+   ],
+   [
+    250.87,
+    29.7
+   ],
+   [
+    268.49,
+    28.5
+   ],
+   [
+    277.34,
+    28.2
+   ],
+   [
+    259.69,
+    27.9
+   ]
+  ],
+  "duration": 385.69,
+  "path": "/mnt/datadisk/AMV_CD/tmp/shorts/cache/fx/The Other Side Of Paradise - Glass Anima.slowed_reverb.0.85.83ba233ba33f98e3.wav",
+  "period": 0.5573,
+  "tempo": 107.67,
+  "windows": [
+   {
+    "accents": [
+     162.052,
+     162.609,
+     164.792,
+     167.021,
+     167.578,
+     168.112,
+     169.204,
+     176.402,
+     176.936,
+     178.027
+    ],
+    "drop": 160.38,
+    "end": 180.74,
+    "short": "taisho_birthday",
+    "start": 135.14
    }
   ]
  },

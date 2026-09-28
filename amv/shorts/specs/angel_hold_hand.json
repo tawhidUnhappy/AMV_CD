@@ -1,0 +1,103 @@
+{
+ "name": "angel_hold_hand",
+ "series": "Angel_Next_Door",
+ "anime": "The Angel Next Door Spoils Me Rotten",
+ "song": "/mnt/datadisk/song/Crying Alone - Sad Emotional Piano Song Instrumental.mp3",
+ "song_fx": "slowed_reverb",
+ "drop": 102.8,
+ "mood": "soft",
+ "video_fx": [
+  "glow"
+ ],
+ "about": "Angel Next Door story Short: Mahiru never liked spring - at every ceremony she was alone, with no one to hold her hand. Amane: well, I'm here with you now. Ends with him asking to hold her hand.",
+ "story": [
+  {
+   "ep": 7,
+   "from": 1269.7,
+   "to": 1279.5,
+   "why": "at every ceremony I was always alone. I didn't have anyone to hold my hand."
+  },
+  {
+   "ep": 7,
+   "from": 1285.8,
+   "to": 1293.7,
+   "why": "the season reminds me of being alone. / Well, I'm here with you now. / Yes, you are."
+  }
+ ],
+ "outro": [
+  {
+   "ep": 9,
+   "from": 657.6,
+   "to": 661.0,
+   "why": "Can I hold your hand?"
+  }
+ ],
+ "hook_text": "She was *always* alone...",
+ "title": "She Never Had Anyone To Hold Her Hand... Until Him",
+ "hook": "At every school ceremony Mahiru stood alone. No one to walk with, no one to hold her hand. Then Amane asked.",
+ "tags": [
+  "angelnextdoor",
+  "mahiru",
+  "amane",
+  "wholesome",
+  "romanceanime",
+  "animestory"
+ ],
+ "seconds": "auto",
+ "drop_shot": "07-1318.4",
+ "shots": [
+  "08-544.8",
+  "08-549.1",
+  "08-673.0",
+  "08-952.2",
+  "09-157.1",
+  "10-650.1",
+  "10-1312.1",
+  "11-328.1",
+  "11-336.8",
+  "11-1296.0",
+  "11-1297.0",
+  "11-1307.1",
+  "12-102.9",
+  "12-110.4"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 7,
+    "t": 1283.0,
+    "x": 0.5,
+    "y": 0.45
+   },
+   {
+    "ep": 7,
+    "t": 1320.0,
+    "x": 0.55,
+    "y": 0.5
+   }
+  ],
+  "labels": [
+   {
+    "text": "NO ONE'S HAND",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 135
+   },
+   {
+    "text": "UNTIL HIM",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 160,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}
