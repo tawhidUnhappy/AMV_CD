@@ -28,18 +28,40 @@ HOOK_FONT = "Poppins Black"
 YELLOW = "&H0000E6FF"  # ASS is BGR: #FFE600, the house thumbnail yellow
 
 
+ORIGINAL_LANGS = ("jpn", "ja", "japanese", "kor", "ko", "chi", "zho", "zh")
+
+
 @lru_cache(maxsize=64)
-def english_stream(file: str) -> int:
-    """Index of the English audio track among the file's audio streams."""
+def audio_track(file: str) -> tuple[int, bool]:
+    """(index among the file's audio streams, is it English).
+
+    The English dub when there is one; else the original-language track
+    (Japanese first, then Korean/Chinese, then the first track) - a show with
+    no dub keeps its own voices, captioned from its English SUBTITLES instead
+    of a transcript (amv.shorts.build.dub_segments)."""
     out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries",
                           "stream_tags=language,title", "-of", "json", file], capture_output=True, text=True,
                          check=True).stdout
     streams = json.loads(out).get("streams", [])
-    for k, s in enumerate(streams):
-        tags = {key.lower(): str(v).lower() for key, v in s.get("tags", {}).items()}
-        if tags.get("language") in ("eng", "en") or "english" in tags.get("title", ""):
-            return k
-    raise SystemExit(f"no English audio track in {file}")
+    if not streams:
+        raise SystemExit(f"no audio track in {file}")
+    tags = [{key.lower(): str(v).lower() for key, v in s.get("tags", {}).items()} for s in streams]
+    for k, t in enumerate(tags):
+        if t.get("language") in ("eng", "en") or "english" in t.get("title", ""):
+            return k, True
+    for lang in ORIGINAL_LANGS:
+        for k, t in enumerate(tags):
+            if t.get("language") == lang or lang in t.get("title", ""):
+                return k, False
+    return 0, False
+
+
+def english_stream(file: str) -> int:
+    """Index of the English audio track (raises when there is none)."""
+    k, english = audio_track(file)
+    if not english:
+        raise SystemExit(f"no English audio track in {file}")
+    return k
 
 
 def lines(series: str, episode: int, start: float, end: float) -> list[dict]:

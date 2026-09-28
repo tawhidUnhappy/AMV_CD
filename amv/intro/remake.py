@@ -355,6 +355,10 @@ def render(plan: dict, out: Path) -> Path:
         if i % chunk == 0:
             sources = fetch_frames(frames[i:i + chunk], src_w, src_h)
         frame = compose(entry, sources, out_size)
+        if plan.get("video_fx") and not entry.get("plain"):  # optional light effects (amv.shorts.fx)
+            from amv.shorts.fx import apply as apply_fx
+
+            frame = apply_fx(frame, plan["video_fx"], i)
         if layout:
             frame = blur_fill(frame, width, height, layout)
         frame = look(frame)

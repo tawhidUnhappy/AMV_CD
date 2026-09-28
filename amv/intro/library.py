@@ -32,6 +32,7 @@ VIDEO_SUFFIXES = {".mkv", ".mp4", ".avi", ".webm", ".m4v"}
 # "[S01 E06] Title", "..._S01_Ep20_...", "[S01] [E12] ...", "[SO] [06 - Title]",
 # "08. Title", "Title_13_1080p", "[SA] Title - 01 - 1080p".
 EPISODE_PATTERNS = (
+    r" - E(\d{1,3})\.\w+$",  # the house naming: "Show_Name - E05.mkv"
     r"\bS\d{1,2}\s*E(\d{1,3})(?!\d)",
     r"[Ee]p(?:isode)?[ _.-]?(\d{1,3})(?!\d)",
     r"\[E(\d{1,3})\]",

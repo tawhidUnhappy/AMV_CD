@@ -112,6 +112,8 @@ def build(spec: dict, song: Path) -> dict:
         center = [round(c0[0] + (c1[0] - c0[0]) * ease, 4), round(c0[1] + (c1[1] - c0[1]) * ease, 4)]
         entry = {"file": shot["file"], "n": round(src_t * SOURCE_FPS), "punch": round(z0 + (z1 - z0) * ease, 4),
                  "center": center}
+        if shot.get("plain"):  # no video_fx on this shot (a Short's story scenes)
+            entry["plain"] = True
         # Fast stretches smear: the previous source frames blended in, the
         # motion blur a velocity edit relies on to make speed read as speed.
         if speed > 1.4:
@@ -198,6 +200,7 @@ def build(spec: dict, song: Path) -> dict:
         frames.append(entry)
     return {"fps": fps, "width": spec.get("width", 1920), "height": spec.get("height", 1080), "seconds": seconds,
             "frames": frames, "look": spec.get("look"), "caption": None, "layout": spec.get("layout"),
+            "video_fx": spec.get("video_fx"),
             "audio": {"file": str(song), "start": spec.get("song_start", 0.0), "delay": spec.get("audio_delay", 0.0),
                       "fade_out": spec.get("fade_out", 0.0), "fade_in": spec.get("audio_fade_in", 0.0)}}
 

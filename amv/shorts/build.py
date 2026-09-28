@@ -25,6 +25,16 @@ Story Shorts (English dub + captions) add scenes played as they are:
 The song plays quietly under the story and comes up to full on the drop;
 see amv.shorts.story.
 
+Language: each scene uses the episode's English dub when it has one
+(transcribed; captions are the dub's words). An episode with no English audio
+keeps its original voices, and its English SUBTITLES become the captions and
+set the scene's bounds (widened to whole lines).
+
+Optional effects (amv.shorts.fx), none required:
+     "song_fx": "slowed_reverb" | "slowed" | "nightcore" | "sped_up",   # the music only
+     "video_fx": ["outline", "glow", "grain"],   # or {"outline": {"color": [255, 80, 80]}}
+     "video_fx_scope": "montage" (default) | "all"
+
 A shot entry is an id, or {"id", "why" (kept in the catalog), "x"/"y" (crop
 centre, 0-1), "at" (source start), "speed", "zoom": [a, b]}. The last shot
 holds to the end. Every build records the song window and each shot used
@@ -179,15 +189,29 @@ def dub_segments(spec: dict, segs: list[dict]) -> list[dict]:
     if not segs:
         return []
     eps = {x.number: x for x in load_show(spec["series"])}
-    jobs = [(str(eps[g["ep"]].file), story.english_stream(str(eps[g["ep"]].file)),
-             max(0.0, g["from"] - dub.PAD), g["to"] + dub.PAD) for g in segs]
-    words = dub.transcribe(jobs)
+    tracks = [story.audio_track(str(eps[g["ep"]].file)) for g in segs]
+    # English dub: transcribe it (the dub is a different script from the subtitles).
+    jobs = [(str(eps[g["ep"]].file), stream, max(0.0, g["from"] - dub.PAD), g["to"] + dub.PAD)
+            for g, (stream, english) in zip(segs, tracks, strict=True) if english]
+    words = dub.transcribe(jobs) if jobs else {}
     out = []
-    for g, job in zip(segs, jobs, strict=True):
-        w = words[dub._key(*job)]
-        start, end, kept = (g["from"], g["to"], [x for x in w if g["from"] <= (x[0] + x[1]) / 2 <= g["to"]]) \
-            if g.get("exact") else dub.refine(w, g["from"], g["to"])
-        out.append({**g, "from": start, "to": end, "words": kept})
+    for g, (stream, english) in zip(segs, tracks, strict=True):
+        if english:
+            w = words[dub._key(str(eps[g["ep"]].file), stream, max(0.0, g["from"] - dub.PAD), g["to"] + dub.PAD)]
+            start, end, kept = (g["from"], g["to"], [x for x in w if g["from"] <= (x[0] + x[1]) / 2 <= g["to"]]) \
+                if g.get("exact") else dub.refine(w, g["from"], g["to"])
+            out.append({**g, "from": start, "to": end, "words": kept, "stream": stream, "english": True})
+            continue
+        # No dub: the original voices, and the English SUBTITLES are both the
+        # captions and the clock - a scene is widened to whole subtitle lines
+        # so no line is cut mid-sentence.
+        start, end = g["from"], g["to"]
+        if not g.get("exact"):
+            near = story.lines(spec["series"], g["ep"], g["from"] - 0.05, g["to"] + 0.05)
+            if near:
+                start = min(start, near[0]["start"] - 0.15)
+                end = max(end, near[-1]["end"] + 0.3)
+        out.append({**g, "from": round(max(0.0, start), 3), "to": round(end, 3), "stream": stream, "english": False})
     return out
 
 
@@ -314,8 +338,21 @@ def plan(spec: dict) -> tuple[dict, list[dict], object]:
         montage["layout"] = {**LAYOUT, **spec.get("layout", {})}
     montage["story"] = story_audio(spec, story_segs, outro_segs, w, story_len, outro_len)
     montage["story"]["segments"] = [{k: v for k, v in g.items() if k != "words"} for g in [*story_segs, *outro_segs]]
-    montage["story"]["transcript"] = [" ".join(x[2] for x in g["words"]) for g in [*story_segs, *outro_segs]]
+    montage["story"]["transcript"] = [
+        f"dub: {' '.join(x[2] for x in g['words'])}" if g.get("english") else
+        "subs (original audio): " + " / ".join(ln["text"] for ln in story_lines(spec, g))
+        for g in [*story_segs, *outro_segs]]
+    if spec.get("video_fx"):
+        from amv.shorts.fx import normalise
+
+        montage["video_fx"] = normalise(spec["video_fx"])
     return montage, items, w
+
+
+def story_lines(spec: dict, g: dict) -> list[dict]:
+    from amv.shorts import story
+
+    return story.lines(spec["series"], g["ep"], g["from"], g["to"])
 
 
 def _scene(spec: dict, g: dict, until: float) -> dict:
@@ -324,7 +361,8 @@ def _scene(spec: dict, g: dict, until: float) -> dict:
 
     e = next(x for x in load_show(spec["series"]) if x.number == g["ep"])
     return {"why": g.get("why", "story"), "file": str(e.file), "at": g["from"], "until": round(until, 4),
-            "zoom": g.get("zoom", [1.0, 1.05]), "ease": True, "center": [g.get("x", 0.5), 0.5], "speed": 1.0}
+            "zoom": g.get("zoom", [1.0, 1.05]), "ease": True, "center": [g.get("x", 0.5), 0.5], "speed": 1.0,
+            "plain": spec.get("video_fx_scope", "montage") != "all"}
 
 
 # Music under dialogue, and how fast it comes back up for the drop.
@@ -349,7 +387,7 @@ def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, s
         for g in segs:
             file = str(eps[g["ep"]].file)
             dur = g["to"] - g["from"]
-            clips.append({"file": file, "stream": story.english_stream(file), "src": g["from"], "at": round(t, 3),
+            clips.append({"file": file, "stream": g["stream"], "src": g["from"], "at": round(t, 3),
                           "dur": round(dur, 3), "gain": g.get("gain", DIALOGUE_GAIN)})
             if g.get("words"):  # what the dub says (subtitle tracks are a different script)
                 captions += dub.captions(g["words"], g["from"], t)
@@ -384,7 +422,12 @@ def credit(song: Path) -> tuple[str, str]:
 
 
 def write_text(spec: dict, out_dir: Path) -> None:
-    title, artist = credit(Path(spec["song"]))
+    title, artist = credit(Path(spec.get("song_credit", spec["song"])))
+    fx_name = {"slowed_reverb": "Slowed + Reverb", "slowed": "Slowed", "nightcore": "Nightcore",
+               "sped_up": "Sped Up"}
+    kind = spec.get("song_fx") if isinstance(spec.get("song_fx"), str) else (spec.get("song_fx") or {}).get("kind")
+    if kind and fx_name.get(kind, "").lower() not in title.lower():
+        title += f" ({fx_name[kind]} edit)"
     tags = spec.get("tags", [])
     hashtags = " ".join(f"#{t}" for t in ["shorts", "anime", "amv", "animeedit", *tags])
     head = spec["title"]
@@ -425,12 +468,18 @@ def main() -> None:
                         help="copy video, texts, thumbnail to DIR/SNNN_NAME/ (see amv.shorts.deliver)")
     args = parser.parse_args()
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
+    if spec.get("song_fx"):  # slowed+reverb / nightcore: the processed song IS the song from here on
+        from amv.shorts.fx import song_fx
+
+        spec["song_credit"] = spec["song"]
+        spec["song"] = str(song_fx(Path(spec["song"]), spec["song_fx"]))
+        print(f"song_fx {spec['song_fx']}: {spec['song']}")
     montage, items, w = plan(spec)
     print(f"{spec['name']}: song {w.start:.2f}-{w.end:.2f}s (drop {w.drop:.2f}, beat {w.period:.3f}s), "
           f"{len(items)} shots")
     segs = montage.get("story", {}).get("segments", [])
     for g, said in zip(segs, montage.get("story", {}).get("transcript", []), strict=True):
-        print(f"  story ep{g['ep']:02d} {g['from']:8.2f}-{g['to']:8.2f} ({g['to'] - g['from']:.2f}s)  dub: {said}")
+        print(f"  story ep{g['ep']:02d} {g['from']:8.2f}-{g['to']:8.2f} ({g['to'] - g['from']:.2f}s)  {said}")
     drive_shots = montage["shots"][len(spec.get("story", [])):len(montage["shots"]) - len(spec.get("outro", []))]
     for it, s in zip(items, drive_shots, strict=True):
         a, b = it["slot"]
