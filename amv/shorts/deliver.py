@@ -11,7 +11,7 @@ files can ever collide:
       by_anime/Re_Zero/S004_rezero_from_zero -> ../../S004_rezero_from_zero
 
 A Short's number is given once, on its first delivery, and kept in the
-catalog (global/shorts/catalog/shorts.json) - it is never reused, so
+catalog (workspace/global/shorts/catalog/shorts.json) - it is never reused, so
 every file name is unique even when files from many Shorts end up in one
 folder (a download dir, a phone). Re-rendering a Short replaces its own files;
 a spec that reuses another spec's name is refused.
@@ -59,7 +59,7 @@ def short_id(name: str, spec_path: str | None = None) -> str:
 
 
 def deliver(name: str, spec_path: str, src: Path, root: Path | None = None) -> Path:
-    """Copy a render's files from tmp/shorts/NAME/ to its numbered folder."""
+    """Copy a render's files from workspace/tmp/shorts/NAME/ to its numbered folder."""
     root = root or out_dir()
     sid = short_id(name, spec_path)
     dest = root / sid

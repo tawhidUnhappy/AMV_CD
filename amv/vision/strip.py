@@ -5,8 +5,8 @@ it: credit text fading in at the start, a cut or a dissolve halfway, a pan
 that ends somewhere it should not. This is the check that caught an opening-
 credits shot and an off-tone pan in the intro.
 
-    ./amv.sh strip                          # tmp/intro/edl.json
-    ./amv.sh strip --edl tmp/edl.json --slots 0-20
+    ./amv.sh strip                          # workspace/tmp/intro/edl.json
+    ./amv.sh strip --edl workspace/tmp/edl.json --slots 0-20
 """
 
 from __future__ import annotations

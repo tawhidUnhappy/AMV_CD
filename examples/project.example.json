@@ -1,10 +1,10 @@
 {
  "name": "my_edit",
- "about": "One lyric AMV: a show cut to a song, lyrics burned in. Copy to projects/my_edit/project.json and set \"project\": \"my_edit\" in config.json.",
+ "about": "One lyric AMV: a show cut to a song, lyrics burned in. Copy to workspace/projects/my_edit/project.json and set \"project\": \"my_edit\" in config.json.",
  "song": "~/Music/My Song.mp3",
  "source_dir": "~/Videos/anime/My_Show",
  "lyrics": {
-  "notes": ["Word indices refer to tmp/song/words_vocals.txt - run vocals, transcribe, then ./amv.sh words and read the numbers off it."],
+  "notes": ["Word indices refer to workspace/tmp/song/words_vocals.txt - run vocals, transcribe, then ./amv.sh words and read the numbers off it."],
   "phrases": [
    {"first_word": 0, "last_word": 5, "lines": ["FIRST LINE OF THE SONG"], "section": "intro"},
    {"first_word": 6, "last_word": 13, "lines": ["SECOND LINE OF THE SONG"], "section": "verse1"},

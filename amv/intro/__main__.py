@@ -4,12 +4,12 @@
 
 Plans cuts from the song (a calm swell, then a cut per beat from the
 orchestra's entrance), picks a shot per slot, writes a contact sheet to look
-at, and renders tmp/intro/intro.mp4. Everything lands in tmp/intro/.
+at, and renders workspace/tmp/intro/intro.mp4. Everything lands in workspace/tmp/intro/.
 
 With --library DIR every sub-folder of DIR is a show and each shot comes from
 a different one - an intro for a channel rather than for one series.
 
-The picks are in tmp/intro/edl.json. To change a shot: reject its region with
+The picks are in workspace/tmp/intro/edl.json. To change a shot: reject its region with
 --skip EP:START-END (repeatable) and run again, or edit the JSON by hand and
 run with --render-only.
 """
@@ -45,10 +45,10 @@ def main() -> None:
                         help="a folder of series folders: a multi-show intro, one show per shot, no subtitles needed "
                              "(see amv.intro.library)")
     parser.add_argument("--gallery", action="store_true",
-                        help="with --library: write candidate sheets to tmp/intro/gallery/ to choose from, and stop")
+                        help="with --library: write candidate sheets to workspace/tmp/intro/gallery/ to choose from, and stop")
     parser.add_argument("--picks", type=Path, default=None,
-                        help="with --library: a JSON {\"picks\": [gallery ids in slot order]} (see global/intro/picks/)")
-    parser.add_argument("--render-only", action="store_true", help="render tmp/intro/edl.json as it stands")
+                        help="with --library: a JSON {\"picks\": [gallery ids in slot order]} (see workspace/global/intro/picks/)")
+    parser.add_argument("--render-only", action="store_true", help="render workspace/tmp/intro/edl.json as it stands")
     parser.add_argument("--out", type=Path, default=paths.INTRO / "intro.mp4")
     args = parser.parse_args()
 

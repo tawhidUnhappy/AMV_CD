@@ -1,6 +1,6 @@
 {
  "name": "my_show_story",
- "about": "A story Short: scenes with the English dub and captions, then a beat-cut montage from the song's drop, then an outro line. Copy to global/shorts/specs/NAME.json; ids come from ./amv.sh short-find sheets, times from ./amv.sh dialogue.",
+ "about": "A story Short: scenes with the English dub and captions, then a beat-cut montage from the song's drop, then an outro line. Copy to workspace/global/shorts/specs/NAME.json; ids come from ./amv.sh short-find sheets, times from ./amv.sh dialogue.",
  "series": "My_Show",
  "anime": "My Show (official English title)",
  "song": "~/Music/My Song.mp3",

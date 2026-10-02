@@ -3,7 +3,7 @@ sight - the active project's (amv.core.project: "themes", "main_speakers",
 "blacklist"), kept apart from the scoring/candidate code that consumes them.
 
 THEMES keys are the joined display lines of the lyric plan. Choose search
-terms against the real dialogue (tmp/subs/scene_index.json), not synonyms.
+terms against the real dialogue (workspace/tmp/subs/scene_index.json), not synonyms.
 An empty MAIN_SPEAKERS means "any dialogue line" (bitmap/OCR subtitles carry
 no speaker names).
 """

@@ -51,7 +51,7 @@ def analyse(song: Path) -> dict:
 @lru_cache(maxsize=4)
 def _analyse(song: str) -> dict:
     """librosa's view of a track, cached on disk per file version
-    (tmp/shorts/cache/song_*.npz) - ~10 s saved per call."""
+    (workspace/tmp/shorts/cache/song_*.npz) - ~10 s saved per call."""
     from amv.shorts.catalog import CACHE, song_key
 
     path = CACHE / f"song_{song_key(Path(song))}.npz"

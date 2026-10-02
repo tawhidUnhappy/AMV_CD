@@ -7,9 +7,9 @@ Self-contained: the only external requirements are `ffmpeg`/`ffprobe` on PATH,
 `uv`, and an NVIDIA GPU for the ML steps. Nothing outside this directory is
 read except the media you point it at in `config.json`, and everything the
 pipeline generates (vocal stem, transcript, subtitle index, EDL, QA sheets,
-the rendered video) is written under `tmp/` inside this project folder — so
+the rendered video) is written under `workspace/tmp/` inside this project folder — so
 the whole thing is isolated to `AMV_CD/` plus its `.venv`, portable, and
-deleting `tmp/` gets you back to a clean slate.
+deleting `workspace/tmp/` gets you back to a clean slate.
 
 Nothing about any series, song or machine is hard-coded: your choices live in
 gitignored folders beside the code (remanga-style), and everything that comes
@@ -18,8 +18,10 @@ in more than one flavour is a plug-in.
 | Where | What | Tracked |
 | --- | --- | --- |
 | `config.json` | machine paths, active project, plug-in choice + settings | no (`config.example.json` is) |
-| `projects/<name>/project.json` | one lyric AMV: song, source, lyric plan, story arc, pacing, themes, blacklist, thumbnails | no (`examples/project.example.json` is) |
-| `global/` | Short specs and the shot/song catalog, intro picks/montages/remakes | no (`examples/short.example.json` is) |
+| `workspace/projects/<name>/project.json` | one lyric AMV: song, source, lyric plan, story arc, pacing, themes, blacklist, thumbnails | no (`examples/project.example.json` is) |
+| `workspace/global/` | Short specs and the shot/song catalog, intro picks/montages/remakes | no (`examples/short.example.json` is) |
+| `workspace/output/` | delivered Shorts (`shorts_dir` moves them) | no |
+| `workspace/tmp/` | every generated file and cache - delete it for a clean slate | no |
 | `amv/plugins/`, `plugins/` | built-in and your own plug-ins | built-ins yes |
 
 ## Plug-ins
@@ -53,9 +55,10 @@ select clips, render or run a check. The GPU stages (`vocals`, `transcribe`,
 | `song` | the track to cut to |
 | `lyric_font_file` / `lyric_font_family` | font for burned-in lyrics |
 | `width` / `height` / `fps` | output format |
-| `project` | the active lyric AMV: `projects/<name>/project.json` |
+| `workspace_dir` | the one folder holding everything you make (default `workspace/`) |
+| `project` | the active lyric AMV: `workspace/projects/<name>/project.json` |
 | `library_dir` | anime library, one folder per show (Shorts, multi-show intros) |
-| `shorts_dir` | where finished Shorts are delivered |
+| `shorts_dir` | where finished Shorts are delivered (default `workspace/output/shorts`) |
 | `separator` / `separators` | voice separation plug-in + its settings |
 | `transcriber` / `transcribers` | dub transcription plug-in + its settings |
 
@@ -70,17 +73,17 @@ AMV_FULL=1 ./amv.sh vocals       # Demucs -> vocal stem
 AMV_FULL=1 ./amv.sh transcribe   # WhisperX -> word-level timings
 ./amv.sh beats                   # librosa -> beat grid
 AMV_FULL=1 ./amv.sh subs         # episodes -> subtitles + scene index
-./amv.sh select --candidates 8   # -> tmp/edl.json
+./amv.sh select --candidates 8   # -> workspace/tmp/edl.json
 ./amv.sh sheet                   # REVIEW THIS before rendering (./amv.sh strip for start/mid/end)
 ./amv.sh lyrics                  # -> lyrics.ass  (needs the EDL)
-./amv.sh render                  # -> tmp/out/amv.mp4
+./amv.sh render                  # -> workspace/tmp/out/amv.mp4
 ```
 
 Changing code? Run `./amv.sh regress snapshot` first and `./amv.sh regress
 check` after. It confirms the timeline, a fresh EDL, the lyric overlay and
 every remake plan came out the same.
 
-`lyric_overlay` reads `tmp/edl.json`, so run it *after* `select_clips`.
+`lyric_overlay` reads `workspace/tmp/edl.json`, so run it *after* `select_clips`.
 
 ### Adapting to your own song
 
@@ -136,11 +139,11 @@ description.txt:
 ./amv.sh short-catalog                       # what is already known (songs, vetted shots, Shorts built)
 ./amv.sh short-song "path/to/track.mp3"      # the drop, the window, the bass-hit grid
 ./amv.sh short-find Re_Zero --find "kill|why" --motion 30 --tag dark   # candidate sheets, crop drawn
-./amv.sh short global/shorts/specs/NAME.json  # render -> tmp/shorts/NAME/, copy to <shorts_dir>/SNNN_NAME/
+./amv.sh short workspace/global/shorts/specs/NAME.json  # render -> workspace/tmp/shorts/NAME/, copy to <shorts_dir>/SNNN_NAME/
 ```
 
 The spec only lists shot ids; slots, crop, speed and effects are derived.
-`global/shorts/catalog/` (yours, not committed): every build records the song window and each
+`workspace/global/shorts/catalog/` (yours, not committed): every build records the song window and each
 shot it used, so the next edit starts from vetted footage.
 
 ### Channel intro
@@ -156,8 +159,8 @@ comes in, and cuts to that: two calm, wide shots over the swell, a white
 flash where the music enters, then a cut every couple of beats. The swell's
 shots come from the dialogue-free stretches (establishing shots). The drive
 section uses the busiest cut-free windows from a per-episode motion map,
-which is built once and cached in `tmp/intro/motion/`. Output goes to
-`tmp/intro/`: `intro.mp4`, `edl.json` and `sheet.jpg`. **Look at the sheet.**
+which is built once and cached in `workspace/tmp/intro/motion/`. Output goes to
+`workspace/tmp/intro/`: `intro.mp4`, `edl.json` and `sheet.jpg`. **Look at the sheet.**
 To swap out a shot, reject its region with `--skip EP:START-END` and run
 again, or edit `edl.json` by hand and run with `--render-only`. It needs the
 scene index from `amv.subs.extract_subs`, but nothing from the lyric stages.
@@ -167,21 +170,21 @@ scene index from `amv.subs.extract_subs`, but nothing from the lyric stages.
 To reproduce an intro someone cut from this series, frame for frame:
 
 ```bash
-./amv.sh reference "their_video.mp4" --seconds 11      # -> tmp/intro/reference_map.json
-./amv.sh remake --spec global/intro/remakes/NAME.json      # -> tmp/intro/remake.mp4
-./amv.sh compare "their_video.mp4" tmp/intro/remake.mp4 --seconds 11 --watermark tr
+./amv.sh reference "their_video.mp4" --seconds 11      # -> workspace/tmp/intro/reference_map.json
+./amv.sh remake --spec workspace/global/intro/remakes/NAME.json      # -> workspace/tmp/intro/remake.mp4
+./amv.sh compare "their_video.mp4" workspace/tmp/intro/remake.mp4 --seconds 11 --watermark tr
 ```
 
 `reference` finds the episode frame behind every frame of the video. It
 first searches a coarse 8 fps index of every episode (built once, cached in
-`tmp/intro/index/`), then matches frame by frame around each hit. Frames
+`workspace/tmp/intro/index/`), then matches frame by frame around each hit. Frames
 with no close match are the effects, composites or footage from outside
 these episodes. The plan fills those in by hand from a small effect
 vocabulary: `zoom_blur`, `white_burst`, a `punch` zoom with an `rgb` split,
 a per-channel colour `grade`, and a fading `caption`. `remake` then renders
 the plan with the song laid under it. A spec is the committed part: the footage
 frames always come from the map, so the spec holds only the frames the map
-can't match, plus the look (a spec in `global/intro/remakes/` is a
+can't match, plus the look (a spec in `workspace/global/intro/remakes/` is a
 worked example).
 
 ## Environment notes (Windows + NVIDIA)

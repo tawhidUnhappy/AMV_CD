@@ -2,16 +2,16 @@
 
 Two layers:
 
-- global/shorts/catalog/ (yours, gitignored, small JSON, the knowledge):
+- workspace/global/shorts/catalog/ (yours, gitignored, small JSON, the knowledge):
     songs.json          per track: tempo, beat period, bass drops, the windows used
     shots/<Series>.json per shot: what it shows ("why"), moods, crop x, verdict
                         (good / reject + reason), which Shorts used it
     shorts.json         every Short built: spec, song window, series, when
   `./amv.sh short` records into it on every build; `short-find` reads it (rejects
   are skipped, known-good shots are starred on the sheets); `--import-intros`
-  seeds it from the hand-vetted montage specs in global/intro/montages/.
+  seeds it from the hand-vetted montage specs in workspace/global/intro/montages/.
 
-- tmp/shorts/cache/ (machine-local, the measurements): crop/focus/motion per
+- workspace/tmp/shorts/cache/ (machine-local, the measurements): crop/focus/motion per
   shot window and the librosa analysis per song, keyed by file + times (+ mtime
   for songs), so a rerun decodes nothing it already measured.
 
@@ -51,7 +51,7 @@ def _write(path: Path, data: dict) -> None:
     path.write_text(json.dumps(data, indent=1, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
 
 
-# ---- measurement cache (tmp/, machine-local) ---------------------------------
+# ---- measurement cache (workspace/tmp/, machine-local) ---------------------------------
 
 def cached(kind: str, key: str, compute):
     """compute() once per (kind, key); the value must be JSON-able."""
@@ -164,7 +164,7 @@ def record_song(song: Path, drops: list[tuple[float, float]], tempo: float, dura
 # ---- seeding from the hand-vetted intro montages --------------------------------
 
 def import_intros() -> int:
-    """Every shot of global/intro/montages/*.json has a "why" someone wrote
+    """Every shot of workspace/global/intro/montages/*.json has a "why" someone wrote
     after looking at it - the best-vetted footage there is. The montage's
     "mood" key (default power) is recorded with each shot."""
     from amv.intro.library import episode_number

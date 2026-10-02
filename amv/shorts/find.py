@@ -10,14 +10,14 @@ Two sources, because neither alone finds a story edit:
   motion alone picks carriages and birds, so it is the filler, not the plan.
 
 OP/ED/recaps (footage repeated across episodes), the first/last minutes,
-global/intro/blacklist.json and catalog rejects are kept out; a shot the catalog
+workspace/global/intro/blacklist.json and catalog rejects are kept out; a shot the catalog
 knows is labelled "* <why>" on its row. Each row of a sheet is one shot:
 start / middle / end, with the automatic 9:16 crop drawn in yellow, so a
 shot whose subject falls outside the crop is seen before it is picked.
 
     ./amv.sh short-find Hell_Mode --find "level|skill|summon" --motion 30 --tag power
 
--> tmp/shorts/pool/<show>-<tag>.json and <show>-<tag>-NN.jpg. A shot's id
+-> workspace/tmp/shorts/pool/<show>-<tag>.json and <show>-<tag>-NN.jpg. A shot's id
 ("08-1059.3" = episode 8, shot starting at 1059.3 s) is what a spec lists.
 """
 

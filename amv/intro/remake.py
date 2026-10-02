@@ -1,4 +1,4 @@
-"""Render an intro frame by frame from a remake plan (tmp/intro/remake_plan.json).
+"""Render an intro frame by frame from a remake plan (workspace/tmp/intro/remake_plan.json).
 
 A remake reproduces an existing intro: every output frame names the episode
 frame it shows (found by amv.intro.reference), plus the few frames that are
@@ -25,15 +25,15 @@ that frame; seeking to n/fps itself does not - the container's 7ms start
 offset and millisecond timestamps put some seeks one frame late or early,
 measured on every segment of the first remake.
 
-A plan is usually built from a SPEC (global/intro/remakes/*.json, yours)
+A plan is usually built from a SPEC (workspace/global/intro/remakes/*.json, yours)
 plus the reference map amv.intro.reference wrote: the map supplies every
 footage frame, the spec only the frames the map cannot (effects, shots from
 outside these episodes) and the look (grade, caption, audio offset). See
 build_plan() for the override forms.
 
     ./amv.sh reference VIDEO --seconds 11
-    ./amv.sh remake --spec global/intro/remakes/NAME.json [--song PATH]
-    ./amv.sh remake --plan tmp/intro/remake_plan.json      # a plan edited by hand
+    ./amv.sh remake --spec workspace/global/intro/remakes/NAME.json [--song PATH]
+    ./amv.sh remake --plan workspace/tmp/intro/remake_plan.json      # a plan edited by hand
 """
 
 from __future__ import annotations
@@ -435,7 +435,7 @@ def build_plan(spec: dict, reference_map: list[dict], song: Path) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     source = parser.add_mutually_exclusive_group()
-    source.add_argument("--spec", type=Path, help="a remake spec (global/intro/remakes/*.json)")
+    source.add_argument("--spec", type=Path, help="a remake spec (workspace/global/intro/remakes/*.json)")
     source.add_argument("--plan", type=Path, help="render this plan as it stands")
     parser.add_argument("--map", type=Path, default=paths.INTRO / "reference_map.json",
                         help="the reference map a spec is built on")

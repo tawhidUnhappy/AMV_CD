@@ -1,7 +1,7 @@
 """A library of series for a multi-show intro: every folder under a root is
 one series, every video in it one episode - no subtitles, no config.json.
 
-Per episode, one cached decode (8 fps, 48x27 grey; tmp/intro/library/) gives
+Per episode, one cached decode (8 fps, 48x27 grey; workspace/tmp/intro/library/) gives
 everything the intro needs without looking at subtitles:
 
 - motion: frame-to-frame change, and cuts (one big change);

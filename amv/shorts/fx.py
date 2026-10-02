@@ -3,7 +3,7 @@ Both are plug-ins (amv/plugins/song_fx, amv/plugins/video_fx; add your own in
 plugins/): this module only looks them up and applies them.
 
 Song (spec "song_fx": NAME or {"kind": NAME, "rate": 0.8, ...}): rendered ONCE
-  to a cached wav (tmp/shorts/cache/fx/) and used as the song from then on -
+  to a cached wav (workspace/tmp/shorts/cache/fx/) and used as the song from then on -
   so short-song's drop/beat analysis runs on the song you hear, and cuts stay
   on its beats. Dialogue clips are never touched.
 

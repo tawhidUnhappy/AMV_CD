@@ -2,7 +2,7 @@
 
     ./amv.sh short-song SONG                 # where the drop is, the window, the hit grid
     ./amv.sh short-find SHOW --find REGEX    # candidate shots + review sheets (crop box drawn)
-    ./amv.sh short global/shorts/specs/NAME.json  # plan, crop, effects, render, title/description
+    ./amv.sh short workspace/global/shorts/specs/NAME.json  # plan, crop, effects, render, title/description
 
 The only hand step is reading the sheets and listing shot ids in a spec -
 everything a person used to decide per shot (sub-window, crop, speed, whip

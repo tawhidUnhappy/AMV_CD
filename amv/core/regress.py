@@ -5,13 +5,13 @@ the code, check them again.
     ./amv.sh regress check               # after: every output compared
     ./amv.sh regress check --quick       # skip select (the slow one, ~3 min)
 
-What it runs, each into its own folder under tmp/regress/:
+What it runs, each into its own folder under workspace/tmp/regress/:
   timeline  - the printed cut schedule
-  select    - a fresh EDL (--out, so tmp/edl.json is never touched); compared
+  select    - a fresh EDL (--out, so workspace/tmp/edl.json is never touched); compared
               slot by slot, ignoring the song path
-  lyrics    - the ASS overlay built from tmp/edl.json
+  lyrics    - the ASS overlay built from workspace/tmp/edl.json
   remake    - every committed remake spec built into a plan against
-              tmp/intro/reference_map.json, when that map exists (no render)
+              workspace/tmp/intro/reference_map.json, when that map exists (no render)
 
 A deliberate behaviour change shows up as a difference too; that is the
 point. Snapshot again once it is the new normal.

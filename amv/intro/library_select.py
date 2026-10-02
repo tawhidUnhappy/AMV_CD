@@ -37,7 +37,7 @@ BLACKLIST_FILE = paths.INTRO_BLACKLIST
 
 
 def blacklist() -> list[dict]:
-    """Regions rejected on sight, per series (global/intro/blacklist.json)."""
+    """Regions rejected on sight, per series (workspace/global/intro/blacklist.json)."""
     return json.loads(BLACKLIST_FILE.read_text(encoding="utf-8")) if BLACKLIST_FILE.exists() else []
 
 
@@ -167,7 +167,7 @@ def gallery(library: dict[str, list[Episode]], out_dir: Path, per_series: int = 
     tell a striking shot from a door opening (the first automatic pick had
     both). So the last step is a person - or Claude - looking: one sheet per
     (kind, series), each candidate as start/middle/end with its id, written
-    to tmp/intro/gallery/, and the ids go in a picks file (see --picks).
+    to workspace/tmp/intro/gallery/, and the ids go in a picks file (see --picks).
     """
     from amv.vision.contact_sheet import tile
 

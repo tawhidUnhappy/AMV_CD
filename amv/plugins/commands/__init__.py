@@ -8,15 +8,15 @@ the full project environment (`uv sync`, then AMV_FULL=1 ./amv.sh ...)."""
 from amv.plugins import Command, register
 
 _COMMANDS = (
-    ('song', 'vocals', 'amv.audio.isolate_vocals', True, 'Demucs -> tmp/song/vocals.wav'),
+    ('song', 'vocals', 'amv.audio.isolate_vocals', True, 'Demucs -> workspace/tmp/song/vocals.wav'),
     ('song', 'transcribe', 'amv.audio.transcribe_song', True, 'WhisperX word timings of the vocal stem'),
-    ('song', 'beats', 'amv.audio.beats', False, 'librosa beat grid -> tmp/song/beats.json'),
+    ('song', 'beats', 'amv.audio.beats', False, 'librosa beat grid -> workspace/tmp/song/beats.json'),
     ('song', 'words', 'amv.subs.dump_words', False, 'numbered transcript words, for writing amv/audio/lyrics.py'),
     ('source', 'subs', 'amv.subs.extract_subs', True, 'episode subtitles (OCR for bitmap tracks) -> scene index'),
     ('the edit', 'timeline', 'amv.render.timeline', False, 'print the cut schedule'),
-    ('the edit', 'select', 'amv.render.select_clips', False, 'fill every slot -> tmp/edl.json'),
-    ('the edit', 'lyrics', 'amv.render.lyric_overlay', False, 'lyric overlay -> tmp/work/lyrics.ass (reads the EDL)'),
-    ('the edit', 'render', 'amv.render.pipeline', False, 'grade, join, burn lyrics, mux -> tmp/out/amv.mp4'),
+    ('the edit', 'select', 'amv.render.select_clips', False, 'fill every slot -> workspace/tmp/edl.json'),
+    ('the edit', 'lyrics', 'amv.render.lyric_overlay', False, 'lyric overlay -> workspace/tmp/work/lyrics.ass (reads the EDL)'),
+    ('the edit', 'render', 'amv.render.pipeline', False, 'grade, join, burn lyrics, mux -> workspace/tmp/out/amv.mp4'),
     ('look at it', 'sheet', 'amv.vision.contact_sheet', False, 'contact sheets of an EDL (one frame per slot)'),
     ('look at it', 'strip', 'amv.vision.strip', False, 'start/middle/end of every slot of an EDL, one row each'),
     ('look at it', 'compare', 'amv.vision.compare', False, 'two videos frame by frame: correlation report + sheet'),

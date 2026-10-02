@@ -94,7 +94,7 @@ def face_targets(image: Path, halves: int = 2) -> list[tuple[int, int]]:
 def thumbnails() -> list[Thumb]:
     """The active project's thumbnails (amv.core.project: "thumbnails").
 
-    Each: {"name", "source": a frame in tmp/qa/thumbcand/ (./amv.sh
+    Each: {"name", "source": a frame in workspace/tmp/qa/thumbcand/ (./amv.sh
     thumb-candidates) or a path, "texts": [{"text", "x", "y", "an", "size",
     "colour": yellow|white|red|black or "&H..&", "angle"}], optional "arrows" /
     "bubbles" (Arrow / Bubble fields), "right_source" and the Thumb framing

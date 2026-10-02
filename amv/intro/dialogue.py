@@ -6,7 +6,7 @@ Text tracks only (ASS/SRT) - cheap, no OCR, no torch. Of an episode's English
 text tracks the one with the most lines is taken: releases ship a signs-only
 track beside the dialogue (Re:Zero's first English track is "Signs & Songs").
 A series without text subtitles falls back to the OCR'd scene index when it is
-the configured series (tmp/subs/scene_index.json), else has none.
+the configured series (workspace/tmp/subs/scene_index.json), else has none.
 
     ./amv.sh dialogue ~/Videos/anime --find "laugh|kill|die" [--series Re_Zero]
 """

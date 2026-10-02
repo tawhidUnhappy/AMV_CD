@@ -49,14 +49,14 @@ AMV_FULL=1 ./amv.sh vocals       # Demucs -> vocal stem (~8s on a 3060)
 AMV_FULL=1 ./amv.sh transcribe   # WhisperX on the stem -> word timings
 ./amv.sh beats                   # librosa -> beat grid
 AMV_FULL=1 ./amv.sh subs         # episodes -> subtitles + scene index
-./amv.sh select --candidates 8   # -> tmp/edl.json
+./amv.sh select --candidates 8   # -> workspace/tmp/edl.json
 ./amv.sh sheet                   # QA — REVIEW THIS BEFORE RENDERING
-./amv.sh lyrics                  # -> tmp/work/lyrics.ass   (reads edl.json!)
-./amv.sh render                  # -> tmp/out/amv.mp4
+./amv.sh lyrics                  # -> workspace/tmp/work/lyrics.ass   (reads edl.json!)
+./amv.sh render                  # -> workspace/tmp/out/amv.mp4
 ./amv.sh check-timing            # verify text sits over singing
 ```
 
-Ordering traps: `lyric_overlay` reads `tmp/edl.json`, so it must run *after*
+Ordering traps: `lyric_overlay` reads `workspace/tmp/edl.json`, so it must run *after*
 `select_clips`. Re-running `select_clips` invalidates lyric placement.
 
 Every generated path is defined once, in `amv/core/paths.py` — import from

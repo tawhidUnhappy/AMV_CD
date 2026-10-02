@@ -10,8 +10,8 @@ the ones it links) hold the details for each stage.
 - Refactoring: `./amv.sh regress snapshot` before the first edit, `./amv.sh regress
   check` after.
 - Look at any footage you pick (`./amv.sh strip`) before calling it done.
-- Code only in git. Your data lives in gitignored `config.json`, `projects/<name>/`
-  and `global/` (see amv-ops "Where things live"); never hard-code a show, song
+- Code only in git. Everything a user makes lives in ONE gitignored folder,
+  `workspace/` (+ `config.json`; see amv-ops "Where things live"); never hard-code a show, song
   or machine path in code. Anything with several flavours is a plug-in
   (`amv/plugins/`, drop-ins in `plugins/`).
 - Commit and push to main after changes.

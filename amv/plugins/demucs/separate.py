@@ -1,7 +1,7 @@
 """The demucs Separator. Each dialogue clip is cut from the episode (with PAD s either side, so the
 model has context at the edges), run through Demucs (Meta's open-source
 music/audio separation model, github.com/facebookresearch/demucs) and only
-the vocals stem is kept. Stems are cached in tmp/shorts/cache/vocals/ by
+the vocals stem is kept. Stems are cached in workspace/tmp/shorts/cache/vocals/ by
 file|stream|start|length|model, so a re-render costs nothing.
 
 Model: $AMV_DEMUCS_MODEL, else settings "model", else htdemucs_ft (the

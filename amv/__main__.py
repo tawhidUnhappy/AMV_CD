@@ -2,7 +2,7 @@
 
     ./amv.sh list                 # every command, grouped, with what it needs
     ./amv.sh select --candidates 8
-    ./amv.sh remake --spec global/intro/remakes/NAME.json
+    ./amv.sh remake --spec workspace/global/intro/remakes/NAME.json
 
 Commands are `command` plug-ins (amv/plugins/commands/, or your own in
 plugins/ - see amv.plugins). Each is a module with its own --help; this only

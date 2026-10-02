@@ -2,9 +2,9 @@
 window, crop, speed and effects - all derived - then the montage renderer,
 then title.txt / description.txt beside the video.
 
-    ./amv.sh short global/shorts/specs/NAME.json [--plan-only] [--deliver DIR]
+    ./amv.sh short workspace/global/shorts/specs/NAME.json [--plan-only] [--deliver DIR]
 
-Spec (global/shorts/specs/*.json, yours - examples/short.example.json to start; ids come from ./amv.sh short-find sheets):
+Spec (workspace/global/shorts/specs/*.json, yours - examples/short.example.json to start; ids come from ./amv.sh short-find sheets):
 
     {"name": "hell_mode_alquimia", "series": "Hell_Mode", "anime": "Hell Mode",
      "song": "~/Music/X.mp3", "drop": 25.7, "build": 7.0, "seconds": 24,
@@ -40,7 +40,7 @@ Optional effects (amv.shorts.fx), none required:
 A shot entry is an id, or {"id", "why" (kept in the catalog), "x"/"y" (crop
 centre, 0-1), "at" (source start), "speed", "zoom": [a, b]}. The last shot
 holds to the end. Every build records the song window and each shot used
-(crop, mood, why) in global/shorts/catalog/ - see amv.shorts.catalog.
+(crop, mood, why) in workspace/global/shorts/catalog/ - see amv.shorts.catalog.
 
 What is derived, and the rule behind it:
 - slots: build shots split the build on its beats; after the drop a cut
@@ -481,7 +481,7 @@ def main() -> None:
     parser.add_argument("--deliver", type=Path, default=None,
                         help="copy video, texts, thumbnail to DIR/SNNN_NAME/ (default: config.json "
                              "shorts_dir; see amv.shorts.deliver)")
-    parser.add_argument("--no-deliver", action="store_true", help="render into tmp/shorts/NAME/ only")
+    parser.add_argument("--no-deliver", action="store_true", help="render into workspace/tmp/shorts/NAME/ only")
     args = parser.parse_args()
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     if spec.get("song_fx"):  # slowed+reverb / nightcore: the processed song IS the song from here on

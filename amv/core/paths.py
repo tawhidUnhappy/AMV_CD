@@ -1,12 +1,12 @@
 """Every file the pipeline generates or keeps, in one place.
 
-Generated files live under tmp/ (deleting tmp/ is a clean slate), and each
+Generated files live under workspace/tmp/ (deleting it is a clean slate), and each
 stage reads what an earlier one wrote - so a path spelled out in two modules
 is a path that can drift apart. Modules import these names instead of
-joining ROOT / "tmp" / ... themselves.
+joining a tmp path themselves.
 
-Your own work (specs, picks, the catalog) lives under global/ - gitignored,
-moved with config.json "global_dir"; see amv.core.config.
+Your own work (specs, picks, the catalog) lives under workspace/global/ -
+gitignored; config.json "workspace_dir" moves the whole workspace.
 """
 
 from __future__ import annotations
@@ -14,9 +14,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from amv.core.config import ROOT, load
+from amv.core.config import load
 
-TMP = ROOT / "tmp"
+TMP = load().tmp_dir
 GLOBAL = load().global_dir
 
 # Shorts (amv.shorts): your specs and what earlier builds learned
@@ -58,7 +58,7 @@ INTRO = TMP / "intro"
 
 
 def load_slots(path: Path | None = None) -> list[dict]:
-    """The slots of an EDL (tmp/edl.json unless told otherwise)."""
+    """The slots of an EDL (workspace/tmp/edl.json unless told otherwise)."""
     return json.loads((path or EDL).read_text(encoding="utf-8"))["slots"]
 
 

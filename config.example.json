@@ -1,16 +1,15 @@
 {
-  "_comment": "Copy this file to config.json and edit. Paths may be absolute or relative to the repo root; ~ and environment variables are expanded. config.json, projects/, global/ and output/ are yours and never committed.",
+  "_comment": "Copy this file to config.json and edit. Paths may be absolute or relative to the repo root; ~ and environment variables are expanded. config.json and everything in workspace/ (your projects, specs, catalog, outputs, caches) are yours and never committed.",
 
+  "workspace_dir": "workspace",
   "project": "my_edit",
-  "projects_dir": "projects",
-  "global_dir": "global",
 
   "source_dir": "~/Videos/My Series Season 1",
   "episode_pattern": "(?:Ep[-_ ]?|E|Episode[ _])(\\d{1,3})",
-  "song": "assets/song.mp3",
+  "song": "workspace/projects/my_edit/song.mp3",
 
   "library_dir": "~/Videos/anime",
-  "shorts_dir": "output/shorts",
+  "shorts_dir": "",
 
   "lyric_font_file": "assets/lyric.ttf",
   "lyric_font_family": "Georgia",

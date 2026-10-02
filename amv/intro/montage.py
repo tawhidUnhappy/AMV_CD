@@ -3,7 +3,7 @@ the remake renderer - for intros cut like an editor would cut them: beat-
 timed shots, dissolves in the quiet part, a push-in on every shot, flashes,
 zoom punches and a whoosh into the drop.
 
-    ./amv.sh montage global/intro/montages/NAME.json [--song PATH] [--out PATH]
+    ./amv.sh montage workspace/global/intro/montages/NAME.json [--song PATH] [--out PATH]
 
 Spec (times are output seconds; "at" is where a shot starts in its file;
 "song_start" is where in the song the intro begins):

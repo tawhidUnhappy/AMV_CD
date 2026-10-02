@@ -4,7 +4,7 @@ For remaking an existing intro (amv.intro.remake): given a video that was cut
 from this series, this names the episode frame behind each of its frames.
 
 1. Coarse: every episode decoded at 8 fps, 48x27 grey (cached in
-   tmp/intro/index/), and each reference frame at 10 fps correlated against
+   workspace/tmp/intro/index/), and each reference frame at 10 fps correlated against
    all of it - one matrix product per episode.
 2. Fine: around each coarse hit, the episode decoded at its full frame rate
    exactly the way remake.py fetches frames (CPU decode, seek half a frame

@@ -1,4 +1,4 @@
-"""The active lyric-AMV project: projects/<name>/project.json (config.json
+"""The active lyric-AMV project: workspace/projects/<name>/project.json (config.json
 "project" picks it; the folder is yours and gitignored).
 
 A project holds everything one edit decides that is not code:
@@ -6,7 +6,7 @@ A project holds everything one edit decides that is not code:
     song, source_dir, episode_pattern   override config.json for this edit
     lyrics.phrases                      the lyric plan: [{first_word, last_word,
                                         lines, section, emphasis?, show?}]
-                                        word indices into tmp/song/words_vocals.txt
+                                        word indices into workspace/tmp/song/words_vocals.txt
     lyrics.expected_first_word          {index: word} - guards against drift
     section_episodes                    {section: [first_ep, last_ep]} - the story arc
     pacing                              cut lengths: max_shot, break_cut, min_shot,
@@ -51,7 +51,7 @@ def required(key: str):
     data = optional()
     if not data:
         raise SystemExit('no project: set "project" in config.json to a folder in projects/ '
-                         "(copy examples/project.example.json to projects/<name>/project.json)")
+                         "(copy examples/project.example.json to workspace/projects/<name>/project.json)")
     if key not in data:
         raise SystemExit(f"project {data.get('name', load().project)!r} has no {key!r} - see amv.core.project")
     return data[key]

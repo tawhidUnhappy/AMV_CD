@@ -1,10 +1,10 @@
 """The lyric plan of the active project (amv.core.project: "lyrics").
 
 A plan is a list of phrases, each a run of transcript words
-(`tmp/song/words_vocals.txt`, from ./amv.sh words) shown as one or more
+(`workspace/tmp/song/words_vocals.txt`, from ./amv.sh words) shown as one or more
 display lines, with a section name the story arc (section_episodes) and the
 cut pacing key off. Timings come from WhisperX on the Demucs-isolated vocal
-stem (`tmp/song/transcript_vocals.json`): ASR on the full mix misplaces words.
+stem (`workspace/tmp/song/transcript_vocals.json`): ASR on the full mix misplaces words.
 
 Display text may correct a mishearing; the word indices still point at the
 real audio. `expected_first_word` ({index: word}) guards the indices against

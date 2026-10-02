@@ -1,7 +1,7 @@
 """Compare two videos frame by frame: how alike every frame is, and a sheet of
 the frames you name, A above B.
 
-    ./amv.sh compare reference.mp4 tmp/intro/remake.mp4 --seconds 11 --frames 200-215,284,300
+    ./amv.sh compare reference.mp4 workspace/tmp/intro/remake.mp4 --seconds 11 --frames 200-215,284,300
     ./amv.sh compare a.mp4 b.mp4 --video            # also a side-by-side mp4
 
 Likeness is the correlation of mean-removed grey 64x36 frames (1.0 = same

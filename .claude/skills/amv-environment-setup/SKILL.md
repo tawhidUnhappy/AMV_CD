@@ -57,7 +57,7 @@ before any GPU work:
   Do not chase the allowlist; the required globals differ per release.
 
 All pipeline output (vocal stem, transcript, subtitle index, EDL, QA sheets,
-rendered video) lives under `tmp/` in the project root — delete it to reset.
+rendered video) lives under `workspace/tmp/` in the project root — delete it to reset.
 
 ## PGS subtitle OCR (same venv — no isolation needed)
 

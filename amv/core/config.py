@@ -5,13 +5,15 @@ comes from `config.json` at the repo root, so the pipeline is not tied to any
 one machine, series or track. Copy `config.example.json` to `config.json` and
 edit it, or override any single value from the command line.
 
-Your own work lives beside the code, never in it (both folders are
-gitignored, like remanga's projects/ and global/):
+Everything you make lives in ONE folder beside the code, never in it -
+`workspace/` (config "workspace_dir"; gitignored), like remanga's:
 
-    projects/<name>/project.json   one lyric AMV: its lyric plan, story arc,
-                                   themes, blacklist, thumbnails (amv.core.project)
-    global/                        what every edit shares: Short specs and the
-                                   shot/song catalog, intro picks/montages/remakes
+    workspace/projects/<name>/project.json  one lyric AMV: its lyric plan, story arc,
+                                            themes, blacklist, thumbnails (amv.core.project)
+    workspace/global/                       what every edit shares: Short specs, the
+                                            shot/song catalog, intro picks/montages/remakes
+    workspace/output/shorts/                delivered Shorts ("shorts_dir" moves them)
+    workspace/tmp/                          every generated file and cache (amv.core.paths)
 
 `project` picks the active project. Plug-ins (amv.plugins) read their own
 settings from `separators` / `transcribers` here.
@@ -42,14 +44,13 @@ DEFAULTS: dict = {
     "width": 1920,
     "height": 1080,
     "fps": "24000/1001",
-    # where your work lives (gitignored) - see the module docstring
+    # where everything you make lives (gitignored) - see the module docstring
+    "workspace_dir": "workspace",
     "project": "",
-    "projects_dir": "projects",
-    "global_dir": "global",
     # the anime library: one folder per show (Shorts, multi-show intros)
     "library_dir": "",
-    # where finished Shorts are delivered (numbered folders + INDEX.md)
-    "shorts_dir": "output/shorts",
+    # where finished Shorts are delivered (default: workspace/output/shorts)
+    "shorts_dir": "",
     # plug-ins: "" = the kind's default; settings per plug-in name
     "separator": "",
     "separators": {},
@@ -69,9 +70,11 @@ class Config:
     width: int
     height: int
     fps: str
+    workspace: Path
     project: str
     projects_dir: Path
     global_dir: Path
+    tmp_dir: Path
     library_dir: Path
     shorts_dir: Path
     raw: dict
@@ -93,7 +96,7 @@ class Config:
 
     @property
     def data(self) -> Path:
-        return ROOT / "tmp"
+        return self.tmp_dir
 
     def require_source(self) -> Path:
         if not self.source_dir or not self.source_dir.is_dir():
@@ -122,8 +125,9 @@ def load() -> Config:
     values = dict(DEFAULTS)
     if CONFIG_PATH.is_file():
         values.update(json.loads(CONFIG_PATH.read_text(encoding="utf-8")))
+    workspace = _resolve(values["workspace_dir"] or "workspace")
     if values.get("project"):  # the active project's own song/source override these
-        project = _resolve(values.get("projects_dir") or DEFAULTS["projects_dir"]) / values["project"] / "project.json"
+        project = workspace / "projects" / values["project"] / "project.json"
         if project.is_file():
             own = json.loads(project.read_text(encoding="utf-8"))
             values.update({k: own[k] for k in ("song", "source_dir", "episode_pattern") if own.get(k)})
@@ -143,11 +147,13 @@ def load() -> Config:
         width=int(values["width"]),
         height=int(values["height"]),
         fps=values["fps"],
+        workspace=workspace,
         project=values["project"],
-        projects_dir=_resolve(values["projects_dir"]),
-        global_dir=_resolve(values["global_dir"]),
+        projects_dir=workspace / "projects",
+        global_dir=workspace / "global",
+        tmp_dir=workspace / "tmp",
         library_dir=_resolve(values["library_dir"]),
-        shorts_dir=_resolve(values["shorts_dir"]),
+        shorts_dir=_resolve(values["shorts_dir"]) if values["shorts_dir"] else workspace / "output" / "shorts",
         raw=values,
     )
 
@@ -203,6 +209,6 @@ if __name__ == "__main__":
     cfg = load()
     print(f"config file : {CONFIG_PATH} ({'found' if CONFIG_PATH.is_file() else 'missing, using defaults'})")
     for field in ("source_dir", "song", "lyric_font_file", "lyric_font_family", "width", "height", "fps",
-                  "project", "projects_dir", "global_dir", "library_dir", "shorts_dir"):
+                  "workspace", "project", "library_dir", "shorts_dir"):
         print(f"  {field:18s} {getattr(cfg, field)}")
     print(f"  site-packages      {site_packages()}")

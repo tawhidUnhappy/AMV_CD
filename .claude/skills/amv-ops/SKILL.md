@@ -6,7 +6,7 @@ description: Fast start for working in AMV_CD - how to run anything (./amv.sh), 
 # AMV_CD fast start
 
 The repo is code only. Source media, outputs and every user choice are never
-committed: `config.json`, `projects/`, `global/`, `output/` and `tmp/` are
+committed: `config.json`, `workspace/projects/`, `workspace/global/`, `output/` and `workspace/tmp/` are
 gitignored. A user's own preferences belong in a private skill or memory,
 never in these tracked skills.
 
@@ -27,15 +27,18 @@ never in these tracked skills.
 
 ## Where things live (remanga-style)
 
-The repo is code only; your work is gitignored beside it:
-- `config.json` - machine paths: `library_dir` (one folder per show),
-  `shorts_dir` (delivery), `project`, plug-in choice + settings
-  (`separators`/`transcribers`). Template: `config.example.json`.
-- `projects/<name>/project.json` - one lyric AMV (`amv.core.project`): song,
-  source, lyric plan, `section_episodes`, `pacing`, `themes`, `blacklist`,
-  `thumbnails`.
-- `global/` - shared: `shorts/specs/`, `shorts/catalog/` (shots, songs,
-  Shorts built), `intro/{picks,montages,remakes,blacklist.json}`.
+The repo is code only. Everything a user makes is in ONE gitignored folder,
+`workspace/` (config "workspace_dir"), plus `config.json` at the root:
+- `config.json` - machine paths (`library_dir`: one folder per show), the
+  active `project`, plug-in choice + settings (`separators`/`transcribers`),
+  optional `shorts_dir`. Template: `config.example.json`.
+- `workspace/projects/<name>/project.json` - one lyric AMV (`amv.core.project`):
+  song, source, lyric plan, `section_episodes`, `pacing`, `themes`,
+  `blacklist`, `thumbnails`; its song file can sit beside it.
+- `workspace/global/` - shared: `shorts/specs/`, `shorts/catalog/` (shots,
+  songs, Shorts built), `intro/{picks,montages,remakes,blacklist.json}`.
+- `workspace/output/shorts/` - delivered Shorts.
+- `workspace/tmp/` - every generated file and cache (`amv.core.paths`).
 - `examples/` (tracked) - `project.example.json`, `short.example.json`.
 
 **Plug-ins** (`amv/plugins/`, copied from remanga's design): `_registry.py`,
@@ -49,15 +52,15 @@ project, global/ or config.json.
 
 ## Code map
 
-`amv/core/` config (config.json -> Config), **paths (every tmp/ path +
+`amv/core/` config (config.json -> Config), **paths (every workspace/tmp/ path +
 load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 (run, encoders, concat, subtitles_filter), regress.
 `amv/audio/` isolate_vocals, transcribe_song, beats, lyrics (the lyric plan).
-`amv/subs/` extract_subs (+ pgs/pgs_ocr for bitmap tracks) -> tmp/subs/scene_index.json.
+`amv/subs/` extract_subs (+ pgs/pgs_ocr for bitmap tracks) -> workspace/tmp/subs/scene_index.json.
 `amv/render/` timeline (slots), select_clips/ (candidates, scoring, themes = the project's themes/blacklist, cli: score_all/pick/order_breaks), grade, pipeline (render), lyric_overlay/.
 `amv/vision/` **decode (decode_tiny: the one way to read footage small)**, contact_sheet (grab_all/tile), strip, compare, skin, checks.
 `amv/shorts/` song (drop/window), find (candidate shots + crop), build (spec -> Short), catalog (global/ knowledge + tmp cache), dub, fx, deliver.
-`amv/intro/` plan+select+render (`intro`: new intro from a song), reference (`reference`: which episode frame is behind each frame of a video), remake (`remake`: plan/spec renderer; specs in global/intro/remakes/).
+`amv/intro/` plan+select+render (`intro`: new intro from a song), reference (`reference`: which episode frame is behind each frame of a video), remake (`remake`: plan/spec renderer; specs in workspace/global/intro/remakes/).
 `amv/plugins/` registry + built-ins; `amv/core/project.py` the active project; `amv/core/tools.py` isolated tool envs.
 
 ## Checking your work - use these, don't hand-roll them
@@ -76,16 +79,16 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 The anime library is config.json `library_dir`: one folder per show,
 episode number read from the file name (`library.EPISODE_PATTERNS`).
 `./amv.sh intro --library LIBRARY ...` needs no subtitles: each
-episode is decoded once to an 8 fps index (tmp/intro/library/, ~45 min for
+episode is decoded once to an 8 fps index (workspace/tmp/intro/library/, ~45 min for
 70 episodes), and footage that repeats across a show's episodes (OP, ED,
 eyecatches, title cards, recaps) is excluded. Scores alone picked dull shots
 (a door, a crowd pan) twice, even with spectacle terms - so the real flow is
 `--gallery` (12 sheets, start/mid/end per candidate), look, write
-`global/intro/picks/NAME.json` (ids, optional `{"id", "shift"}`), then
-`--picks`. Per-show rejects go in `global/intro/blacklist.json`.
+`workspace/global/intro/picks/NAME.json` (ids, optional `{"id", "shift"}`), then
+`--picks`. Per-show rejects go in `workspace/global/intro/blacklist.json`.
 
 **Montage:** a gallery/picks intro feels flat - hard cuts only, a still shot,
-one cut per two beats. A montage is a shot list (`global/intro/montages/NAME.json`,
+one cut per two beats. A montage is a shot list (`workspace/global/intro/montages/NAME.json`,
 `./amv.sh montage SPEC`; its "mood" key feeds the Shorts catalog) rendered
 frame by frame through remake.render: dissolves in the swell, a push-in on
 every shot, a whoosh into the drop, a cut on EVERY beat after it, white flash
@@ -97,7 +100,7 @@ motion with no cut; override by eye when the striking moment is elsewhere.
 **Mood intros (evil/sad):** the
 picture can't find a mood, the dialogue can. `./amv.sh dialogue ROOT --find
 REGEX [--series S]` searches every show's English text subtitles (cached in
-tmp/intro/dialogue/; a show with only bitmap subs falls back to the OCR'd scene index). Broad words
+workspace/tmp/intro/dialogue/; a show with only bitmap subs falls back to the OCR'd scene index). Broad words
 ("why", "die") drown in hits - search specific phrases, then sample the
 matching stretch every 3 s (`ffmpeg -vf fps=1/3,...,tile`) and pick by eye.
 Say so when a chosen song is not royalty-free. Look for dark footage: `lift` before contrast, `saturation` < 1, a `tint`.
@@ -136,9 +139,9 @@ night scenes at luma < 0.1 read as gaps, replace rather than lift.
 ```bash
 ./amv.sh short-song SONG                         # drops (bass rise), window, hit grid, accents
 ./amv.sh short-find SHOW --find REGEX [--motion N] [--episodes 11-12] --tag T
-#   -> tmp/shorts/pool/SHOW-T-NN.jpg: start/mid/end per shot, 9:16 crop drawn; LOOK at them
-./amv.sh short global/shorts/specs/NAME.json        # plan+render 1080x1920, review.jpg, title/description
-#   -> tmp/shorts/NAME/ and delivered to <shorts_dir>/SNNN_NAME/ (short.mp4, title.txt, description.txt)
+#   -> workspace/tmp/shorts/pool/SHOW-T-NN.jpg: start/mid/end per shot, 9:16 crop drawn; LOOK at them
+./amv.sh short workspace/global/shorts/specs/NAME.json        # plan+render 1080x1920, review.jpg, title/description
+#   -> workspace/tmp/shorts/NAME/ and delivered to <shorts_dir>/SNNN_NAME/ (short.mp4, title.txt, description.txt)
 ```
 
 Layout (default): the WHOLE 16:9 picture centred on a
@@ -159,7 +162,7 @@ from the drop, then an outro line. Spec keys `story`, `outro`, `hook_text`,
 3. `short SPEC` - read the printed `dub:` line per scene. The dub is a
    different script from the subtitles (whisper large-v3 transcribes it,
    cached): when a scene starts/ends mid-sentence, read the words in
-   tmp/shorts/cache/dub.json and pin the scene with `"exact": true`.
+   workspace/tmp/shorts/cache/dub.json and pin the scene with `"exact": true`.
 4. `short-thumb SPEC --candidates EP:T:X,...` -> bare frames with a 0.1 grid;
    choose, then write labels (`at`/`to` read off the grid) or `panels` (a
    two-frame comparison: SAME GIRL?!, BEFORE / AFTER) and render.
@@ -168,7 +171,7 @@ number (never reused; kept in catalog/shorts.json), INDEX.md, by_anime/.
 `./amv.sh short-index` rebuilds them. Titles <= 100 chars incl. " #shorts".
 Optional effects (`song_fx` / `video_fx` plug-ins, all optional):
 `"song_fx": "slowed_reverb"|"slowed"|"nightcore"|"sped_up"` renders the song once
-to tmp/shorts/cache/fx/ and THAT file is analysed (drops/beats move with the
+to workspace/tmp/shorts/cache/fx/ and THAT file is analysed (drops/beats move with the
 speed: find drops on the processed song, not the original); dialogue untouched;
 the description says "(Slowed + Reverb edit)". `"video_fx": ["outline", "glow",
 "grain"]` (or {"outline": {"color": [r,g,b], "strength", "width"}}) is applied on
@@ -184,7 +187,7 @@ Voices only (default): story/outro clips go through Demucs
 htdemucs_ft (the `separator` plug-in, `amv/plugins/demucs/`, own uv env: torch +
 demucs on Python 3.12 - demucs' `lameenc` has no cp311/cp312 wheel in an
 offline cache, the first build needs the network, ~3 min) and only the vocals
-stem is mixed; stems cached in tmp/shorts/cache/vocals/. Measured: speech
+stem is mixed; stems cached in workspace/tmp/shorts/cache/vocals/. Measured: speech
 -0.5 dB, the episode's music in a pause -12.5 dB. `"dialogue_only": false`
 in a spec keeps the full mix.
 The thumbnail is a separate file (YouTube ignores MP4 cover art and picks a
@@ -193,7 +196,7 @@ frame); deliver copies the render untouched.
 A spec lists shot ids ("EP-SECONDS") for build / drop / after-drop; slots,
 sub-windows, speed, crop, whips, punches on accents, look per mood are derived
 (build.py docstring). Per-shot facts go in the spec (`x`, `at`, `why`) and are
-recorded in the catalog on every build. Always read `tmp/shorts/NAME/review.jpg`
+recorded in the catalog on every build. Always read `workspace/tmp/shorts/NAME/review.jpg`
 (a frame every 0.5 s) before delivering.
 A story longer than the song's run-up to its drop is refused (the window
 would clamp at 0 s and the slots run backwards): pick a later drop.
@@ -231,8 +234,8 @@ Traps (all fixed in code; keep the rules):
 
 ## Remaking an intro someone else cut
 
-`./amv.sh reference VIDEO --seconds N` -> tmp/intro/reference_map.json, then
-write a spec in `global/intro/remakes/` (`require`
+`./amv.sh reference VIDEO --seconds N` -> workspace/tmp/intro/reference_map.json, then
+write a spec in `workspace/global/intro/remakes/` (`require`
 pins the map frames it assumes, `overrides` fill effect frames via
 `like`/`anchor`+`step`, plus grade/caption/audio delay) and
 `./amv.sh remake --spec ... --song ...`. Find the audio offset by
@@ -263,7 +266,7 @@ frame (`ffmpeg -vf select=between(n,a,b),tile`), then rebuild.
   duration too (`ffprobe -show_entries stream=codec_type,duration`).
 - **Long GPU decodes** (motion map / reference index over 24 episodes) take
   ~8-10 min the first time; run them in the background and let them cache
-  under tmp/intro/.
+  under workspace/tmp/intro/.
 - **OP/ED**: a release that subtitles the OP lyrics defeats the gap
   detector; `scoring.song_zones` catches it (opt-in).
 - Content: some shows have fanservice involving child characters. Every
