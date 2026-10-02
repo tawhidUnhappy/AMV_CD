@@ -168,12 +168,9 @@ English SUBTITLES are the captions and the clock (scene widened to whole lines).
 No music-only Shorts (user, 2026-09-28): every Short needs the anime's own
 English audio (`story`/`outro`). S001-S003 were montage-only and were deleted,
 specs included; their numbers stay retired.
-The thumbnail is INSIDE each delivered video (user, 2026-09-28: no separate
-upload): frames 0-2 are the thumbnail, plus MP4 cover art (`amv/shorts/cover.py`;
-deliver does it; `./amv.sh short-cover [NAME]` redoes it from the untouched
-tmp render, so it never stacks encodes). YouTube ignores cover art and picks a
-FRAME for a Short's thumbnail - it may auto-pick another one, so the uploader
-drags the cover picker to the far left (frame 0).
+The thumbnail is a separate file, uploaded by hand (user, 2026-10-02): the
+thumbnail-in-the-video logic (frames 0-2 + MP4 cover art, 2026-09-28) was
+removed as no use - deliver copies the render untouched.
 
 A spec lists shot ids ("EP-SECONDS") for build / drop / after-drop; slots,
 sub-windows, speed, crop, whips, punches on accents, look per mood are derived

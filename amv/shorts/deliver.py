@@ -59,15 +59,8 @@ def deliver(name: str, spec_path: str, src: Path, root: Path = ROOT) -> Path:
     dest = root / sid
     dest.mkdir(parents=True, exist_ok=True)
     for f, pattern in FILES.items():
-        if (src / f).exists() and f != "short.mp4":
+        if (src / f).exists():
             shutil.copy2(src / f, dest / pattern.format(id=sid))
-    video = dest / FILES["short.mp4"].format(id=sid)
-    if (src / "thumbnail.jpg").exists():  # the thumbnail goes inside the video (amv.shorts.cover)
-        from amv.shorts.cover import apply
-
-        apply(src / "short.mp4", src / "thumbnail.jpg", video)
-    else:
-        shutil.copy2(src / "short.mp4", video)
     index(root)
     return dest
 
