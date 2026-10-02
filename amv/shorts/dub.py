@@ -33,21 +33,37 @@ def transcriber():
     return plug, cfg.plugin_settings("transcriber", plug.name)
 
 
-def _key(file: str, stream: int, t0: float, t1: float) -> str:
-    return f"{file}|{stream}|{t0:.3f}|{t1:.3f}"
+def _key(file: str, stream: int, t0: float, t1: float, voices: bool = False) -> str:
+    return f"{file}|{stream}|{t0:.3f}|{t1:.3f}" + ("|voices" if voices else "")
 
 
-def transcribe(jobs: list[tuple[str, int, float, float]]) -> dict[str, list[list]]:
+def separate(clips: list[dict]) -> list[dict]:
+    """The clips pointed at their voices only (the configured separator plug-in)."""
+    from amv import plugins
+    from amv.core.config import load
+
+    cfg = load()
+    sep = plugins.get("separator", cfg.raw.get("separator") or None)
+    return plugins.call(sep.isolate, clips, cfg.plugin_settings("separator", sep.name))
+
+
+def transcribe(jobs: list[tuple[str, int, float, float]], voices: bool = False) -> dict[str, list[list]]:
     """Words (absolute source seconds) for each (file, audio stream, t0, t1);
-    one model load for all the ones not cached yet."""
+    one model load for all the ones not cached yet. `voices`: transcribe the
+    separated voices, not the full mix - an explosion under "Wyvern Slash!"
+    made whisper hear "Wyvern great googly" in the mix, and nothing in the stem."""
     store = catalog._read(catalog.CACHE / "dub.json")
-    todo = [j for j in jobs if _key(*j) not in store]
+    todo = [j for j in jobs if _key(*j, voices) not in store]
     if todo:
+        sources = [(file, stream, t0) for file, stream, t0, _ in todo]
+        if voices:
+            stems = separate([{"file": f, "stream": s, "src": t0, "dur": t1 - t0} for f, s, t0, t1 in todo])
+            sources = [(c["file"], c["stream"], c["src"]) for c in stems]
         with tempfile.TemporaryDirectory() as tmp:
             wavs = []
-            for k, (file, stream, t0, t1) in enumerate(todo):
+            for k, ((_, _, t0, t1), (file, stream, at)) in enumerate(zip(todo, sources, strict=True)):
                 wav = Path(tmp) / f"{k}.wav"
-                subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t0:.3f}", "-t", f"{t1 - t0:.3f}", "-i", file,
+                subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{at:.3f}", "-t", f"{t1 - t0:.3f}", "-i", file,
                                 "-map", f"0:a:{stream}", "-ac", "1", "-ar", "16000", str(wav)], check=True)
                 wavs.append(str(wav))
             from amv import plugins
@@ -55,9 +71,9 @@ def transcribe(jobs: list[tuple[str, int, float, float]]) -> dict[str, list[list
             plug, settings = transcriber()
             words = plugins.call(plug.transcribe, wavs, settings)
             for (file, stream, t0, t1), wav in zip(todo, wavs, strict=True):
-                store[_key(file, stream, t0, t1)] = [[round(a + t0, 3), round(b + t0, 3), w] for a, b, w in words[wav]]
+                store[_key(file, stream, t0, t1, voices)] = [[round(a + t0, 3), round(b + t0, 3), w] for a, b, w in words[wav]]
         catalog._write(catalog.CACHE / "dub.json", store)
-    return {_key(*j): store[_key(*j)] for j in jobs}
+    return {_key(*j, voices): store[_key(*j, voices)] for j in jobs}
 
 
 def refine(words: list[list], start: float, end: float) -> tuple[float, float, list[list]]:

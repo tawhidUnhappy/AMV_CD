@@ -65,6 +65,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -194,11 +195,13 @@ def dub_segments(spec: dict, segs: list[dict]) -> list[dict]:
     # English dub: transcribe it (the dub is a different script from the subtitles).
     jobs = [(str(eps[g["ep"]].file), stream, max(0.0, g["from"] - dub.PAD), g["to"] + dub.PAD)
             for g, (stream, english) in zip(segs, tracks, strict=True) if english]
-    words = dub.transcribe(jobs) if jobs else {}
+    voices = spec.get("dialogue_only", True)  # transcribe the separated voices: SFX masked words in the full mix
+    words = dub.transcribe(jobs, voices) if jobs else {}
     out = []
     for g, (stream, english) in zip(segs, tracks, strict=True):
         if english:
-            w = words[dub._key(str(eps[g["ep"]].file), stream, max(0.0, g["from"] - dub.PAD), g["to"] + dub.PAD)]
+            w = words[dub._key(str(eps[g["ep"]].file), stream, max(0.0, g["from"] - dub.PAD), g["to"] + dub.PAD,
+                               voices)]
             start, end, kept = (g["from"], g["to"], [x for x in w if g["from"] <= (x[0] + x[1]) / 2 <= g["to"]]) \
                 if g.get("exact") else dub.refine(w, g["from"], g["to"])
             out.append({**g, "from": start, "to": end, "words": kept, "stream": stream, "english": True})
@@ -220,7 +223,8 @@ def plan(spec: dict) -> tuple[dict, list[dict], object]:
     story_segs = dub_segments(spec, spec.get("story", []))
     outro_segs = dub_segments(spec, spec.get("outro", []))
     story_len = sum(g["to"] - g["from"] for g in story_segs)
-    outro_len = sum(g["to"] - g["from"] for g in outro_segs)
+    # The outro plays out, then OUTRO_TAIL s of music: the end fade must not eat its last word.
+    outro_len = sum(g["to"] - g["from"] for g in outro_segs) + (OUTRO_TAIL if outro_segs else 0.0)
     build_len = spec.get("build", 7.0 if not story_segs else 3.0) if spec.get("build_shots") else 0.0
     seconds = spec.get("seconds", 24.0)
     if seconds == "auto":  # just long enough: story + a cut per N hits for every shot + outro
@@ -337,6 +341,7 @@ def plan(spec: dict) -> tuple[dict, list[dict], object]:
         outro_shots.append(_scene(spec, g, t))
     if outro_shots:
         outro_shots[0]["in"] = {"flash": 0.2}
+        outro_shots[-1]["until"] = w.seconds  # the last scene holds through the tail
     montage = {"about": spec.get("about", spec["name"]), "fps": FPS, "width": WIDTH, "height": HEIGHT,
                "seconds": w.seconds, "song": spec["song"], "song_start": w.start, "audio_fade_in": 0.05,
                "look": LOOKS[mood], "fade_in": 0.2, "fade_out": 0.6,
@@ -374,7 +379,12 @@ def _scene(spec: dict, g: dict, until: float) -> dict:
 
 # Music under dialogue, and how fast it comes back up for the drop.
 UNDER_DIALOGUE = 0.16
-DIALOGUE_GAIN = 1.35
+# Every dialogue clip is levelled to this loudness (spec "dialogue_lufs"): one
+# fixed gain left separated voices 4-10 LU under the montage music.
+DIALOGUE_LUFS = -14.0
+MAX_DIALOGUE_GAIN = 8.0
+# Music after the outro line, so the end fade (0.6 s) never cuts the last word.
+OUTRO_TAIL = 1.2
 
 
 def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, story_len: float,
@@ -395,7 +405,7 @@ def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, s
             file = str(eps[g["ep"]].file)
             dur = g["to"] - g["from"]
             clips.append({"file": file, "stream": g["stream"], "src": g["from"], "at": round(t, 3),
-                          "dur": round(dur, 3), "gain": g.get("gain", DIALOGUE_GAIN)})
+                          "dur": round(dur, 3), **({"gain": g["gain"]} if "gain" in g else {})})
             if g.get("words"):  # what the dub says (subtitle tracks are a different script)
                 captions += dub.captions(g["words"], g["from"], t)
             else:
@@ -404,12 +414,12 @@ def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, s
                                      "text": ln["text"]})
             t += dur
     if spec.get("dialogue_only", True):  # voices only: the episode's own music/effects removed
-        from amv import plugins
-        from amv.core.config import load
-
-        cfg = load()
-        sep = plugins.get("separator", cfg.raw.get("separator") or None)
-        clips = plugins.call(sep.isolate, clips, cfg.plugin_settings("separator", sep.name))
+        clips = dub.separate(clips)
+    target = float(spec.get("dialogue_lufs", DIALOGUE_LUFS))
+    for c in clips:
+        if "gain" not in c:
+            level = loudness(c["file"], c["stream"], c["src"], c["dur"])
+            c["gain"] = round(min(MAX_DIALOGUE_GAIN, 10 ** ((target - level) / 20)), 3) if level > -70 else 1.0
     gain = [[0.0, UNDER_DIALOGUE]]
     if story_segs:
         gain += [[max(0.0, story_len - 0.2), UNDER_DIALOGUE]]
@@ -417,8 +427,21 @@ def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, s
             gain += [[story_len + 0.4, 0.6], [drop_at - 0.05, 0.75]]
     gain += [[drop_at, 1.0]]
     if outro_segs:
-        gain += [[drive_end - 0.3, 1.0], [drive_end + 0.2, UNDER_DIALOGUE]]
+        gain += [[drive_end - 0.3, 1.0], [drive_end + 0.2, UNDER_DIALOGUE],
+                 [w.seconds - OUTRO_TAIL + 0.05, UNDER_DIALOGUE], [w.seconds - OUTRO_TAIL + 0.6, 0.5]]
     return {"clips": clips, "captions": captions, "music_gain": gain}
+
+
+def loudness(file: str, stream: int, src: float, dur: float) -> float:
+    """Integrated loudness (LUFS, EBU R128) of one stretch of a file, cached."""
+    def measure() -> float:
+        err = subprocess.run(["ffmpeg", "-v", "info", "-ss", f"{src:.3f}", "-t", f"{dur:.3f}", "-i", file,
+                              "-map", f"0:a:{stream}", "-af", "ebur128", "-f", "null", "-"],
+                             capture_output=True, text=True).stderr
+        found = re.findall(r"I:\s+(-?[\d.]+) LUFS", err)
+        return float(found[-1]) if found else -70.0
+
+    return catalog.cached("lufs", f"{file}|{stream}|{src:.3f}|{dur:.3f}", measure)
 
 
 def _entry(s) -> dict:
