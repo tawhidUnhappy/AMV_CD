@@ -243,6 +243,10 @@ Traps (all fixed in code; keep the rules):
   read off the song's actual hits for the latest cut phase now.
 - The song at full gain put the montage at ~-8 LUFS vs dialogue at -14 (YouTube
   normalises to -14 and would pull the voices down): `MUSIC_FULL` 0.55.
+- An OP cut differently mid-way in one episode was split into two repeat runs,
+  and a catalog shot from the 13 s hole (burned-in OP lyrics) got into a
+  Short: repeat runs <= 20 s apart are merged (`library.REPEAT_MERGE_GAP`),
+  and `short` refuses a spec shot inside a show's repeats.
 - Song credits come from the file name "Title - Artist"; no " - " means an
   explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
 

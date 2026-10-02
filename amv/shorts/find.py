@@ -110,6 +110,11 @@ def usable(e: Episode, start: float, end: float, luma: float, rejects: list[dict
 def shot_at(series: str, episode: int, t: float) -> Shot:
     """The shot of an episode that contains time t (a spec's id resolves here)."""
     e = next(x for x in load_show(series) if x.number == episode)
+    for lo, hi in e.repeats:  # OP/ED/recaps: footage repeated across episodes (song lyrics burned in)
+        if lo <= t <= hi:
+            raise SystemExit(f"{series} {episode:02d}-{t:g} is inside footage repeated across episodes "
+                             f"({lo:.0f}-{hi:.0f} s: OP, ED or recap) - pick another shot "
+                             f"(short-catalog {series} --reject {episode:02d}-{t:g} --reason ...)")
     for start, end, motion, luma in shots_of(e):
         if start - 0.2 <= t <= end:
             return Shot(f"{episode:02d}-{start:.1f}", series, episode, str(e.file), start, end, motion, luma)

@@ -53,6 +53,10 @@ REPEAT_MIN_EPISODES = 2
 # static establishing shot reused once), not a sequence.
 REPEAT_MIN_SECONDS = 4.0
 REPEAT_PAD = 2.0
+# Two repeat runs this close are one sequence: an OP whose middle was cut
+# differently in one episode split in two (Skeleton Knight ep7: 76-130 +
+# 143-169), and a shot from the 13 s hole - burned-in OP lyrics - got picked.
+REPEAT_MERGE_GAP = 20.0
 
 
 def episode_number(name: str) -> int | None:
@@ -167,7 +171,13 @@ def find_repeats(episodes: list[Episode]) -> None:
             end = k - gap
             if (end - start) / REPEAT_FPS >= REPEAT_MIN_SECONDS:
                 runs.append((max(0.0, start / REPEAT_FPS - REPEAT_PAD), end / REPEAT_FPS + REPEAT_PAD))
-        e.repeats = runs
+        merged: list[tuple[float, float]] = []
+        for lo, hi in runs:
+            if merged and lo - merged[-1][1] <= REPEAT_MERGE_GAP:
+                merged[-1] = (merged[-1][0], max(merged[-1][1], hi))
+            else:
+                merged.append((lo, hi))
+        e.repeats = merged
 
 
 def main() -> None:
