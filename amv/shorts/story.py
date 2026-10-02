@@ -96,9 +96,10 @@ def _hook(text: str) -> str:
 
 
 def write_ass(path: Path, captions: list[dict], hook: str | None, seconds: float, width: int, height: int,
-              picture_top: int, picture_bottom: int) -> Path:
-    """Captions just under the picture, the hook just above it (both in the
-    blurred band, clear of YouTube's own overlay at the bottom/right)."""
+              picture_top: int, picture_bottom: int, anime: str | None = None) -> Path:
+    """Captions just under the picture, the hook just above it, and the
+    anime's name above the hook so viewers know what they are watching (all
+    in the blurred band, clear of YouTube's own overlay at the bottom/right)."""
     path.parent.mkdir(parents=True, exist_ok=True)
     for f in FONTS.glob("*.ttf"):
         shutil.copy2(f, path.parent / f.name)
@@ -115,11 +116,15 @@ ScaledBorderAndShadow: yes
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Caption,{CAPTION_FONT},74,&H00FFFFFF,&H00FFFFFF,&H00000000,&H96000000,0,0,0,0,100,100,1,0,1,6,2,8,90,90,0,1
 Style: Hook,{HOOK_FONT},66,&H00FFFFFF,&H00FFFFFF,&H00000000,&H96000000,0,0,0,0,100,100,0,0,1,7,3,2,70,70,0,1
+Style: Anime,{HOOK_FONT},50,{YELLOW},{YELLOW},&H00000000,&H96000000,0,0,0,0,100,100,1,0,1,5,2,2,70,70,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
     events = []
+    if anime:  # one or two lines, bottom-anchored above the hook
+        events.append(f"Dialogue: 1,{_ts(0)},{_ts(seconds)},Anime,,0,0,0,,"
+                      f"{{\\an2\\pos({width // 2},{hook_y - (86 if hook else 0)})\\fad(250,300)}}{anime.upper()}")
     if hook:
         events.append(f"Dialogue: 1,{_ts(0)},{_ts(seconds)},Hook,,0,0,0,,"
                       f"{{\\an2\\pos({width // 2},{hook_y})\\fad(250,300)}}{_hook(hook)}")

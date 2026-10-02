@@ -19,6 +19,7 @@ Story Shorts (English dub + captions) add scenes played as they are:
      "story": [{"ep": 3, "from": 612.4, "to": 618.9, "why": "..."}, ...],   # before the build/drop
      "outro": [{"ep": 12, "from": 1500.2, "to": 1503.0}],                  # after the montage
      "hook_text": "She was *sold* to him",     # top line for the whole Short, *yellow*
+     "anime_label": "Iruma-kun",               # the anime name above it (default: "anime"; "" hides)
      "seconds": "auto",                        # story + a cut per N hits for each shot + outro
      "thumbnail": {"ep": 3, "t": 615.0, "lines": ["SHE WAS SOLD", "TO HIM"]}
 
@@ -446,6 +447,13 @@ def _entry(s) -> dict:
     return {**e, "ep": int(ep), "t": float(t)}
 
 
+def anime_label(spec: dict) -> str | None:
+    """The anime's name shown at the top of the Short: spec "anime_label" (a
+    shorter form of a long official title), else "anime"; "" hides it."""
+    label = spec.get("anime_label", spec.get("anime"))
+    return label or None
+
+
 def credit(song: Path) -> tuple[str, str]:
     """(title, artist) from "Title - Artist.mp3"; the artist is a visible
     placeholder when the file does not say - never a guess."""
@@ -539,7 +547,7 @@ def main() -> None:
     if story_plan:
         frames["audio"]["clips"] = story_plan["clips"]
         frames["audio"]["music_gain"] = story_plan["music_gain"]
-    if story_plan.get("captions") or spec.get("hook_text"):
+    if story_plan.get("captions") or spec.get("hook_text") or anime_label(spec):
         from amv.intro.remake import frame_size
         from amv.shorts import story
 
@@ -547,7 +555,7 @@ def main() -> None:
         top = (HEIGHT - pic_h) // 2
         frames["subtitles"] = str(story.write_ass(out_dir / "text" / "captions.ass", story_plan.get("captions", []),
                                                   spec.get("hook_text"), w.seconds, WIDTH, HEIGHT, top,
-                                                  top + pic_h))
+                                                  top + pic_h, anime_label(spec)))
     video = render(frames, out_dir / "short.mp4")
     review_sheet(video, out_dir / "review.jpg")
     print(f"Wrote {out_dir / 'review.jpg'}")
