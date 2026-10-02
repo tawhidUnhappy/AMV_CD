@@ -35,3 +35,28 @@ assets/*.otf
 .idea/
 Thumbs.db
 desktop.ini
+
+# Local media and outputs, wherever they land: only code, specs, the catalog,
+# skills and the OFL fonts in assets/fonts/ are tracked.
+*.mp4
+*.mkv
+*.mov
+*.webm
+*.avi
+*.mp3
+*.wav
+*.flac
+*.m4a
+*.ogg
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.gif
+*.srt
+*.zip
+*.log
+
+# Local Claude Code settings and secrets
+.claude/settings.local.json
+.env
