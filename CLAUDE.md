@@ -1,6 +1,6 @@
 # AMV_CD
 
-Load the `amv-ops` skill first (.claude/skills/amv-ops/SKILL.md). It covers how to run
+Load the `amv-ops` and `amv-preferences` skills first (.claude/skills/). amv-ops covers how to run
 anything (`./amv.sh list`), the code map, the check tools (`regress`, `strip`,
 `compare`) and the traps that cost time before. The stage skills (amv-lyric-video and
 the ones it links) hold the details for each stage.

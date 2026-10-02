@@ -7,8 +7,8 @@ description: Fast start for working in AMV_CD - how to run anything (./amv.sh), 
 
 The repo is code only. Source media, outputs and every user choice are never
 committed: `config.json`, `workspace/projects/`, `workspace/global/`, `output/` and `workspace/tmp/` are
-gitignored. A user's own preferences belong in a private skill or memory,
-never in these tracked skills.
+gitignored. The owner's preferences, machine layout and per-show notes are in
+the amv-preferences skill - load it with this one; it wins where they differ.
 
 ## Running things: `./amv.sh`
 
