@@ -5,9 +5,10 @@ description: Fast start for working in AMV_CD - how to run anything (./amv.sh), 
 
 # AMV_CD fast start
 
-Repo: github.com/tawhidUnhappy/AMV_CD. Push straight to `main` after changes
-(the user's standing habit). Source media and outputs are never committed:
-`config.json` (media paths) and `tmp/` (everything generated) are gitignored.
+The repo is code only. Source media, outputs and every user choice are never
+committed: `config.json`, `projects/`, `global/`, `output/` and `tmp/` are
+gitignored. A user's own preferences belong in a private skill or memory,
+never in these tracked skills.
 
 ## Running things: `./amv.sh`
 
@@ -18,14 +19,13 @@ Repo: github.com/tawhidUnhappy/AMV_CD. Push straight to `main` after changes
 
 - It runs in a small cached environment built from `requirements-light.txt`
   (numpy/librosa/pillow/scipy) with `PYTHONPATH` set, from any cwd.
-  **The project `.venv` is broken** (its `bin/` is empty since 2026-09) and a
-  full `uv sync` pulls torch/CUDA, so don't reach for `uv run` in the project
-  env. Only `vocals`, `transcribe` and `subs` need torch; they say so and run
-  with `AMV_FULL=1 ./amv.sh ...` after the user has chosen to `uv sync`.
-- `python -m amv.x.y` still works for any module; `amv/__main__.py:COMMANDS`
-  is the one table of names.
+  A full `uv sync` pulls torch/CUDA, so don't reach for `uv run` in the
+  project env. Only `vocals`, `transcribe` and `subs` need torch; they say so
+  and run with `AMV_FULL=1 ./amv.sh ...` after `uv sync`.
+- `python -m amv.x.y` still works for any module; commands are `command`
+  plug-ins (`amv/plugins/commands/`).
 
-## Where things live (2026-10-02 restructure, remanga-style)
+## Where things live (remanga-style)
 
 The repo is code only; your work is gitignored beside it:
 - `config.json` - machine paths: `library_dir` (one folder per show),
@@ -33,7 +33,7 @@ The repo is code only; your work is gitignored beside it:
   (`separators`/`transcribers`). Template: `config.example.json`.
 - `projects/<name>/project.json` - one lyric AMV (`amv.core.project`): song,
   source, lyric plan, `section_episodes`, `pacing`, `themes`, `blacklist`,
-  `thumbnails`. The Mushoku x "Who I Am Anymore" one is `mushoku_who_i_am`.
+  `thumbnails`.
 - `global/` - shared: `shorts/specs/`, `shorts/catalog/` (shots, songs,
   Shorts built), `intro/{picks,montages,remakes,blacklist.json}`.
 - `examples/` (tracked) - `project.example.json`, `short.example.json`.
@@ -54,18 +54,17 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 (run, encoders, concat, subtitles_filter), regress.
 `amv/audio/` isolate_vocals, transcribe_song, beats, lyrics (the lyric plan).
 `amv/subs/` extract_subs (+ pgs/pgs_ocr for bitmap tracks) -> tmp/subs/scene_index.json.
-`amv/render/` timeline (slots), select_clips/ (candidates, scoring, themes = BLACKLIST, cli: score_all/pick/order_breaks), grade, pipeline (render), lyric_overlay/.
+`amv/render/` timeline (slots), select_clips/ (candidates, scoring, themes = the project's themes/blacklist, cli: score_all/pick/order_breaks), grade, pipeline (render), lyric_overlay/.
 `amv/vision/` **decode (decode_tiny: the one way to read footage small)**, contact_sheet (grab_all/tile), strip, compare, skin, checks.
-`amv/shorts/` song (drop/window), find (candidate shots + crop), build (spec -> Short), catalog (committed knowledge + tmp cache).
-`amv/intro/` plan+select+render (`intro`: new intro from a song), reference (`reference`: which episode frame is behind each frame of a video), remake (`remake`: plan/spec renderer), `remakes/*.json` (committed specs).
+`amv/shorts/` song (drop/window), find (candidate shots + crop), build (spec -> Short), catalog (global/ knowledge + tmp cache), dub, fx, deliver.
+`amv/intro/` plan+select+render (`intro`: new intro from a song), reference (`reference`: which episode frame is behind each frame of a video), remake (`remake`: plan/spec renderer; specs in global/intro/remakes/).
+`amv/plugins/` registry + built-ins; `amv/core/project.py` the active project; `amv/core/tools.py` isolated tool envs.
 
 ## Checking your work - use these, don't hand-roll them
 
 - **Refactor?** `./amv.sh regress snapshot` BEFORE the first edit, `./amv.sh
   regress check` after (`--quick` skips the 3-5 min select). It diffs the
-  timeline, a fresh EDL (slots), lyrics.ass and every remake plan. On
-  2026-09-24 this was done by hand with a git worktree; it proved the
-  paths/decode/select refactor byte-identical.
+  timeline, a fresh EDL (slots), lyrics.ass and every remake plan.
 - **Any picked footage?** `./amv.sh strip --edl ...` - start/middle/end of
   every slot. One mid-frame per shot (contact sheet) missed credit text fading
   in at a shot's start and a pan onto a child's legs; the strip caught both.
@@ -74,9 +73,9 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 
 ## Multi-show (channel) intros: library -> gallery -> picks
 
-The anime library is `/mnt/datadisk/anime/<Show>/` (one folder per show,
-episode number read from the file name - see `library.EPISODE_PATTERNS`).
-`./amv.sh intro --library /mnt/datadisk/anime ...` needs no subtitles: each
+The anime library is config.json `library_dir`: one folder per show,
+episode number read from the file name (`library.EPISODE_PATTERNS`).
+`./amv.sh intro --library LIBRARY ...` needs no subtitles: each
 episode is decoded once to an 8 fps index (tmp/intro/library/, ~45 min for
 70 episodes), and footage that repeats across a show's episodes (OP, ED,
 eyecatches, title cards, recaps) is excluded. Scores alone picked dull shots
@@ -84,13 +83,10 @@ eyecatches, title cards, recaps) is excluded. Scores alone picked dull shots
 `--gallery` (12 sheets, start/mid/end per candidate), look, write
 `global/intro/picks/NAME.json` (ids, optional `{"id", "shift"}`), then
 `--picks`. Per-show rejects go in `global/intro/blacklist.json`.
-The delivered channel intro (no name on screen, 11 s) is
-`global/intro/picks/channel_intro.json`; copies live in /mnt/datadisk/channel_intro/
-(1080p, plus a 4K/24 fps/44.1 kHz copy that joins onto remanga recaps by stream copy).
 
-**Montage (v2, the current channel intro):** the gallery/picks intro felt
-flat - hard cuts only, a still shot, one cut per two beats. v2 is a shot list
-(`global/intro/montages/channel_intro.json`, `./amv.sh montage SPEC`) rendered
+**Montage:** a gallery/picks intro feels flat - hard cuts only, a still shot,
+one cut per two beats. A montage is a shot list (`global/intro/montages/NAME.json`,
+`./amv.sh montage SPEC`; its "mood" key feeds the Shorts catalog) rendered
 frame by frame through remake.render: dissolves in the swell, a push-in on
 every shot, a whoosh into the drop, a cut on EVERY beat after it, white flash
 on the drop, zoom punch + RGB split on the two strongest accents. Beat times
@@ -98,19 +94,15 @@ come from `amv.intro.plan` (librosa onsets). Short beat-length shots were
 found inside gallery windows by probing every 0.05 s offset for the most
 motion with no cut; override by eye when the striking moment is elsewhere.
 
-**Mood intros (evil/sad, `global/intro/montages/evil_intro.json`):** the
+**Mood intros (evil/sad):** the
 picture can't find a mood, the dialogue can. `./amv.sh dialogue ROOT --find
 REGEX [--series S]` searches every show's English text subtitles (cached in
-tmp/intro/dialogue/; Mushoku falls back to the OCR'd scene index). Broad words
+tmp/intro/dialogue/; a show with only bitmap subs falls back to the OCR'd scene index). Broad words
 ("why", "die") drown in hits - search specific phrases, then sample the
 matching stretch every 3 s (`ffmpeg -vf fps=1/3,...,tile`) and pick by eye.
-Re:Zero DC ep08 2140-2690 s is Petelgeuse + Subaru's breakdown. The song is
-Unravel (remanga/global/bgm) from 20 s (`song_start`) - NOT royalty-free,
-the user was told; the other tracks in /mnt/datadisk/background_music are.
-Look for dark footage: `lift` before contrast, `saturation` < 1, a `tint`.
+Say so when a chosen song is not royalty-free. Look for dark footage: `lift` before contrast, `saturation` < 1, a `tint`.
 
-**Flow intro (`global/intro/montages/flow_intro.json`, from /mnt/datadisk/ReferanceEdit):**
-the reference edits (Voidwalker, a JJK edit) cut at a median 0.17-0.29 s with
+**Flow intros (from reference edits):** fast fan edits cut at a median 0.17-0.29 s with
 bursts, and flow comes from movement carried across cuts. `./amv.sh flow
 POOL.json` measures each shot's global motion at head and tail (phase
 correlation) - most anime shots read "still" (held frames, subject-only
@@ -120,7 +112,7 @@ motion), so flow is mostly MADE: `pan` continuing the neighbour's direction,
 song's own accents (librosa onsets > ~6). Check the render for clips that
 burn to white or fade to black inside a slot (both happened) and move "at".
 
-**AMV flow rules (researched 2026-09-25, applied in `montages/subaru_intro.json`):**
+**AMV flow rules:**
 1. Eye trace - keep the focal point (usually a face) where it was across a cut;
    `align: true` + `focus_head/tail` from `./amv.sh flow` does it automatically.
 2. Motion continuity - carry direction across the cut; cut DURING motion, not at
@@ -149,13 +141,13 @@ night scenes at luma < 0.1 read as gaps, replace rather than lift.
 #   -> tmp/shorts/NAME/ and delivered to <shorts_dir>/SNNN_NAME/ (short.mp4, title.txt, description.txt)
 ```
 
-Layout (user's choice, 2026-09-26): the WHOLE 16:9 picture centred on a
+Layout (default): the WHOLE 16:9 picture centred on a
 blurred, dimmed copy of itself (`build.LAYOUT`, renderer `remake.blur_fill`),
 not a full-screen 9:16 crop. Spec `"frame": "crop"` gives the old crop;
 `"layout": {"frame_aspect": 1.333}` a bigger, narrower centre picture. The crop
 traps below only matter for "crop" or zoomed-in punches.
 
-**Story Shorts (the user's preferred kind since 2026-09-27; S004-S011):** scenes
+**Story Shorts:** scenes
 played as-is with the ENGLISH dub + burned captions, then the beat-cut montage
 from the drop, then an outro line. Spec keys `story`, `outro`, `hook_text`,
 `thumbnail`, `"seconds": "auto"` (build.py docstring). Workflow per Short:
@@ -163,18 +155,18 @@ from the drop, then an outro line. Spec keys `story`, `outro`, `hook_text`,
    story (episode 1 usually holds the premise); print the stretch around them
    to get from/to.
 2. `short-find SHOW --episodes a-b --find ... --motion N` -> montage shot ids;
-   read the sheets; FOCUSED regexes (Smoking's "smok" matched 705 shots).
+   read the sheets; FOCUSED regexes (a show's own name word can match 700+ shots).
 3. `short SPEC` - read the printed `dub:` line per scene. The dub is a
    different script from the subtitles (whisper large-v3 transcribes it,
    cached): when a scene starts/ends mid-sentence, read the words in
    tmp/shorts/cache/dub.json and pin the scene with `"exact": true`.
 4. `short-thumb SPEC --candidates EP:T:X,...` -> bare frames with a 0.1 grid;
    choose, then write labels (`at`/`to` read off the grid) or `panels` (a
-   two-frame comparison: SAME GIRL?!, HELL MODE / WEAKEST CLASS) and render.
+   two-frame comparison: SAME GIRL?!, BEFORE / AFTER) and render.
 Delivery: `<shorts_dir>/SNNN_name/` (config.json) with every file prefixed by the
 number (never reused; kept in catalog/shorts.json), INDEX.md, by_anime/.
 `./amv.sh short-index` rebuilds them. Titles <= 100 chars incl. " #shorts".
-Optional effects (user, 2026-09-28; amv/shorts/fx.py, all optional):
+Optional effects (`song_fx` / `video_fx` plug-ins, all optional):
 `"song_fx": "slowed_reverb"|"slowed"|"nightcore"|"sped_up"` renders the song once
 to tmp/shorts/cache/fx/ and THAT file is analysed (drops/beats move with the
 speed: find drops on the processed song, not the original); dialogue untouched;
@@ -185,28 +177,26 @@ per frame with all three. The first outline was invisible: blurring a thin
 edge mask dilutes it - it is boosted after the blur, and the image border is
 masked out (it read as an edge).
 Language: a scene uses the English dub when the episode has one; with none
-(Rich_Girl_Caretaker is Japanese-only) it keeps the original voices and the
+(a Japanese-only release) it keeps the original voices and the
 English SUBTITLES are the captions and the clock (scene widened to whole lines).
-No music-only Shorts (user, 2026-09-28): every Short needs the anime's own
-English audio (`story`/`outro`). S001-S003 were montage-only and were deleted,
-specs included; their numbers stay retired.
-Voices only (user, 2026-10-02): story/outro clips go through Demucs
+A spec without `story`/`outro` is a music-only montage.
+Voices only (default): story/outro clips go through Demucs
 htdemucs_ft (the `separator` plug-in, `amv/plugins/demucs/`, own uv env: torch +
 demucs on Python 3.12 - demucs' `lameenc` has no cp311/cp312 wheel in an
 offline cache, the first build needs the network, ~3 min) and only the vocals
-stem is mixed; stems cached in tmp/shorts/cache/vocals/. Measured on S024:
-speech -0.5 dB, the episode's music in a pause -12.5 dB. `"dialogue_only":
-false` in a spec keeps the full mix.
-The thumbnail is a separate file, uploaded by hand (user, 2026-10-02): the
-thumbnail-in-the-video logic (frames 0-2 + MP4 cover art, 2026-09-28) was
-removed as no use - deliver copies the render untouched.
+stem is mixed; stems cached in tmp/shorts/cache/vocals/. Measured: speech
+-0.5 dB, the episode's music in a pause -12.5 dB. `"dialogue_only": false`
+in a spec keeps the full mix.
+The thumbnail is a separate file (YouTube ignores MP4 cover art and picks a
+frame); deliver copies the render untouched.
 
 A spec lists shot ids ("EP-SECONDS") for build / drop / after-drop; slots,
 sub-windows, speed, crop, whips, punches on accents, look per mood are derived
 (build.py docstring). Per-shot facts go in the spec (`x`, `at`, `why`) and are
 recorded in the catalog on every build. Always read `tmp/shorts/NAME/review.jpg`
-(a frame every 0.5 s) before delivering. Delivered 2026-09-26: hell_mode_alquimia,
-rezero_velas_negras, angel_heavenly.
+(a frame every 0.5 s) before delivering.
+A story longer than the song's run-up to its drop is refused (the window
+would clamp at 0 s and the slots run backwards): pick a later drop.
 
 Traps (all fixed in code; keep the rules):
 - A centroid focus lands BETWEEN two eyes/characters (a nose, sky) - fatal in a
@@ -218,44 +208,44 @@ Traps (all fixed in code; keep the rules):
   there; search only the first ~2 s. Catalog keys are moments, not index shots.
 - Extreme close-ups (eye macros, teeth) that work in 16:9 are texture at 9:16 -
   `short-catalog SHOW --not-vertical ID --reason ...`; short-find then skips them.
-- A shot slowed to fill the end slot runs into the next real shot (Subaru ->
-  Ram): pin `x` to keep the subject, or pick a longer shot.
-- User ranking 2026-09-26: rezero > hell_mode > angel ("it doesn't follow").
-  Angel's 3 biggest hits fell mid-shot: the 2-beat cut grid is counted from the
-  drop, and a weak drop (12.8 dB rise vs 39 for Velas) put it a beat out of phase.
+- A shot slowed to fill the end slot runs into the next real shot: pin `x`
+  to keep the subject, or pick a longer shot.
+- "It doesn't follow" = the biggest hits fall mid-shot: the 2-beat cut grid is
+  counted from the drop, and a weak drop (12.8 dB rise vs 39) put it a beat out of phase.
   Rule: check the strongest accents land ON cuts (compare montage.json cuts with
   `short-song` accents); pick the grid phase that hits them. And match footage
   energy to the SONG, not the show - talking heads under a jumpstyle track drag.
 - Episode audio as inputs dragged the mkv CHAPTERS into the mp4 as a text
-  track (S004-S011 before the fix): render maps `-map_chapters -1`. Check new
+  track: render maps `-map_chapters -1`. Check new
   renders with ffprobe: only video + audio.
 - Whisper on a finished Short "heard" a story line twice over the music right
   after the story (context hallucination). Verify a suspect line by
   transcribing that stretch alone, and the song alone at the same time.
-- Mushoku's subtitles are OCR'd bitmaps (typos, no punctuation): search them
+- OCR'd bitmap subtitles have typos and no punctuation: search them
   loosely, trust the dub transcript for captions.
 - `[S01 E06] Title` episode names were read as episode 1 (the "S01") -
   library.EPISODE_PATTERNS now tries `S\d+ E(\d+)` first. New show folders go
-  in /mnt/datadisk/anime/<Show_Name>/ (one per show).
+  in the library as `<Show_Name>/` (one per show).
 - Song credits come from the file name "Title - Artist"; no " - " means an
   explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
 
 ## Remaking an intro someone else cut
 
 `./amv.sh reference VIDEO --seconds N` -> tmp/intro/reference_map.json, then
-write a spec in `global/intro/remakes/` (copy mushoku_ep1_recap.json: `require`
+write a spec in `global/intro/remakes/` (`require`
 pins the map frames it assumes, `overrides` fill effect frames via
 `like`/`anchor`+`step`, plus grade/caption/audio delay) and
 `./amv.sh remake --spec ... --song ...`. Find the audio offset by
-cross-correlating the reference audio with the song (scipy.signal.correlate);
-it was 0.242s. Frames with no close match are effects: view them frame by
+cross-correlating the reference audio with the song (scipy.signal.correlate).
+Frames with no close match are effects: view them frame by
 frame (`ffmpeg -vf select=between(n,a,b),tile`), then rebuild.
 
 ## Traps that cost time before
 
 - **`./amv.sh` dies with "Failed to fetch https://pypi.org/simple/..."** when
   PyPI is slow: `uv run --with-requirements` re-resolves every run. The light
-  env is cached, so `UV_OFFLINE=1 ./amv.sh ...` works (2026-10-02).
+  env is cached, so `UV_OFFLINE=1 ./amv.sh ...` works. Tool plug-ins
+  already try offline first.
 
 - **`pkill -f <pattern>` matches your own shell** when the pattern is in the
   same command line - it killed the job it was meant to precede. Kill by PID.
@@ -274,10 +264,9 @@ frame (`ffmpeg -vf select=between(n,a,b),tile`), then rebuild.
 - **Long GPU decodes** (motion map / reference index over 24 episodes) take
   ~8-10 min the first time; run them in the background and let them cache
   under tmp/intro/.
-- **OP/ED**: this release subtitles the OP lyrics, so the gap detector misses
-  it; `scoring.song_zones` catches it. The full AMV does not use it yet (the
-  user has not decided).
-- Content: Mushoku Tensei has fanservice involving child characters. Every
+- **OP/ED**: a release that subtitles the OP lyrics defeats the gap
+  detector; `scoring.song_zones` catches it (opt-in).
+- Content: some shows have fanservice involving child characters. Every
   pick gets looked at (strip); rejects go in the project's `blacklist` with a reason.
 
 ## Maintenance

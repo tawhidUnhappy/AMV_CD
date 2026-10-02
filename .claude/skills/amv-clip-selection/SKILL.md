@@ -103,9 +103,9 @@ Since the text-screen detector failed, avoid those shots structurally:
 - Detect OP/ED as dialogue-free gaps ≥80s and exclude them. Expect this to find
   only one of the two in some episodes (dialogue over the ED breaks the gap) —
   the tail trim is the backstop.
-- **A subtitled OP has no gap to find.** The Mushoku Tensei release subtitles
-  the opening song's lyrics, so the gap detector missed it, and the intro picked
-  a shot with credit text fading in (ep12 @128s). `scoring.song_zones` finds
+- **A subtitled OP has no gap to find.** A release that subtitles
+  the opening song's lyrics defeats the gap detector, and an intro picked a
+  shot with credit text fading in. `scoring.song_zones` finds
   songs as runs of lines whose word 3-grams recur in 2+ other episodes (sung
   lines, held 4s+ on average). It found the OP in 14 of 24 episodes and the ED
   in 22. 4-grams missed ep12's OP because the OCR varies between episodes.
