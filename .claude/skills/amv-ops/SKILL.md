@@ -229,13 +229,20 @@ Traps (all fixed in code; keep the rules):
 - `[S01 E06] Title` episode names were read as episode 1 (the "S01") -
   library.EPISODE_PATTERNS now tries `S\d+ E(\d+)` first. New show folders go
   in the library as `<Show_Name>/` (one per show).
-- Separated voices vary 10 LU clip to clip and sat 4-10 LU under the montage:
-  dialogue is levelled per clip to `DIALOGUE_LUFS` (-14, spec "dialogue_lufs").
+- Separated voices vary 10 LU clip to clip and sat 4-10 LU under the montage,
+  and a quick FX'd shout sat ~8 dB under the speech around it (heard as
+  "missing"): dialogue clips run through loudnorm (`DIALOGUE_LUFS` -14,
+  `DIALOGUE_LRA` 5; spec "dialogue_lufs"). Demucs itself kept the shout (-2 dB).
 - The end fade (0.6 s) ate an outro's last word when the Short ended on it:
   `OUTRO_TAIL` holds music after the outro.
 - An explosion under a shouted line made whisper caption "Wyvern great
   googly" for "Wyvern Slash": captions are transcribed from the separated
   voices (dub cache keys end "|voices").
+- "seconds": "auto" sized the drive from a perfect beat grid; real hits drift
+  later, so it came up one hit short ("14 shots need 28 hits, has 27"). It is
+  read off the song's actual hits for the latest cut phase now.
+- The song at full gain put the montage at ~-8 LUFS vs dialogue at -14 (YouTube
+  normalises to -14 and would pull the voices down): `MUSIC_FULL` 0.55.
 - Song credits come from the file name "Title - Artist"; no " - " means an
   explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
 
