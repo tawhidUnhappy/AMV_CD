@@ -168,6 +168,13 @@ English SUBTITLES are the captions and the clock (scene widened to whole lines).
 No music-only Shorts (user, 2026-09-28): every Short needs the anime's own
 English audio (`story`/`outro`). S001-S003 were montage-only and were deleted,
 specs included; their numbers stay retired.
+Voices only (user, 2026-10-02): story/outro clips go through Demucs
+htdemucs_ft (`amv/shorts/vocals.py` + `vocals_worker.py`, own uv env: torch +
+demucs on Python 3.12 - demucs' `lameenc` has no cp311/cp312 wheel in an
+offline cache, the first build needs the network, ~3 min) and only the vocals
+stem is mixed; stems cached in tmp/shorts/cache/vocals/. Measured on S024:
+speech -0.5 dB, the episode's music in a pause -12.5 dB. `"dialogue_only":
+false` in a spec keeps the full mix.
 The thumbnail is a separate file, uploaded by hand (user, 2026-10-02): the
 thumbnail-in-the-video logic (frames 0-2 + MP4 cover art, 2026-09-28) was
 removed as no use - deliver copies the render untouched.

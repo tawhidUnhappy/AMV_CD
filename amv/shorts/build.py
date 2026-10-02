@@ -23,7 +23,9 @@ Story Shorts (English dub + captions) add scenes played as they are:
      "thumbnail": {"ep": 3, "t": 615.0, "lines": ["SHE WAS SOLD", "TO HIM"]}
 
 The song plays quietly under the story and comes up to full on the drop;
-see amv.shorts.story.
+see amv.shorts.story. The scenes keep only the voices: Demucs strips the
+episode's own background music and effects (amv.shorts.vocals; spec
+"dialogue_only": false keeps the full mix).
 
 Language: each scene uses the episode's English dub when it has one
 (transcribed; captions are the dub's words). An episode with no English audio
@@ -402,6 +404,10 @@ def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, s
                     captions.append({"start": t + ln["start"] - g["from"], "end": t + ln["end"] - g["from"],
                                      "text": ln["text"]})
             t += dur
+    if spec.get("dialogue_only", True):  # voices only: the episode's own music/effects removed
+        from amv.shorts import vocals
+
+        clips = vocals.isolate(clips)
     gain = [[0.0, UNDER_DIALOGUE]]
     if story_segs:
         gain += [[max(0.0, story_len - 0.2), UNDER_DIALOGUE]]
