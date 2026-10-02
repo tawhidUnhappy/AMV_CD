@@ -10,7 +10,7 @@ Two sources, because neither alone finds a story edit:
   motion alone picks carriages and birds, so it is the filler, not the plan.
 
 OP/ED/recaps (footage repeated across episodes), the first/last minutes,
-amv/intro/blacklist.json and catalog rejects are kept out; a shot the catalog
+global/intro/blacklist.json and catalog rejects are kept out; a shot the catalog
 knows is labelled "* <why>" on its row. Each row of a sheet is one shot:
 start / middle / end, with the automatic 9:16 crop drawn in yellow, so a
 shot whose subject falls outside the crop is seen before it is picked.
@@ -40,7 +40,6 @@ from amv.intro import dialogue
 from amv.intro.library import INDEX_FPS, Episode, discover, index
 from amv.intro.library_select import HEAD_SKIP, INDEX_CUT, TAIL_SKIP, blacklist, blocked
 
-LIBRARY = Path("/mnt/datadisk/anime")
 SHORTS = paths.TMP / "shorts"
 POOL = SHORTS / "pool"
 MIN_SHOT = 0.7  # shorter than this is a flash frame or a smear, not a shot
@@ -70,9 +69,12 @@ class Shot:
 _LOAD = threading.Lock()
 
 
-def load_show(series: str, root: str = str(LIBRARY)) -> tuple[Episode, ...]:
+def load_show(series: str, root: str | None = None) -> tuple[Episode, ...]:
+    """The episodes of one show in the library (config.json "library_dir")."""
+    from amv.core.config import load
+
     with _LOAD:  # worker threads ask at once; index (and find repeats) once
-        return _load_show(series, root)
+        return _load_show(series, root or str(load().require_library()))
 
 
 @lru_cache(maxsize=2)

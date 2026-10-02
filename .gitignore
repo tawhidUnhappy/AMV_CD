@@ -15,9 +15,13 @@ wheels/
 # amv/audio/torch_compat.py._ensure_cudnn8_libs(). Fetched on first use.
 .cudnn8/
 
-# Local configuration: holds machine-specific media paths. config.example.json
-# is committed as the template.
+# Yours, never committed (like remanga's projects/ and global/): machine paths,
+# each edit's project data, Short specs + the shot/song catalog, renders.
+# config.example.json and examples/ are the templates.
 config.json
+projects/
+global/
+output/
 
 # Generated data. Everything under tmp/ is reproducible by re-running the
 # pipeline, and the rendered video alone is ~180MB.

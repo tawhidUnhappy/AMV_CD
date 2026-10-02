@@ -1,7 +1,7 @@
 """Where finished Shorts go, laid out so they are easy to find and no two
 files can ever collide:
 
-    /mnt/datadisk/shorts/
+    <shorts_dir>/                              config.json "shorts_dir"
       INDEX.md                                 every Short: number, date, anime, title, song, length
       S004_rezero_from_zero/
         S004_rezero_from_zero.mp4
@@ -11,7 +11,7 @@ files can ever collide:
       by_anime/Re_Zero/S004_rezero_from_zero -> ../../S004_rezero_from_zero
 
 A Short's number is given once, on its first delivery, and kept in the
-committed catalog (amv/shorts/catalog/shorts.json) - it is never reused, so
+catalog (global/shorts/catalog/shorts.json) - it is never reused, so
 every file name is unique even when files from many Shorts end up in one
 folder (a download dir, a phone). Re-rendering a Short replaces its own files;
 a spec that reuses another spec's name is refused.
@@ -27,9 +27,14 @@ from pathlib import Path
 
 from amv.shorts import catalog
 
-ROOT = Path("/mnt/datadisk/shorts")
 FILES = {"short.mp4": "{id}.mp4", "title.txt": "{id}_title.txt", "description.txt": "{id}_description.txt",
          "thumbnail.jpg": "{id}_thumbnail.jpg"}
+
+
+def out_dir() -> Path:
+    from amv.core.config import load
+
+    return load().shorts_dir
 
 
 def _shorts() -> dict:
@@ -41,7 +46,7 @@ def number(name: str, spec_path: str | None = None) -> int:
     with catalog._LOCK:
         built = _shorts()
         entry = built.setdefault(name, {})
-        if spec_path and entry.get("spec") and Path(entry["spec"]).resolve() != Path(spec_path).resolve():
+        if spec_path and entry.get("spec") and catalog.spec_path(entry["spec"]).resolve() != Path(spec_path).resolve():
             raise SystemExit(f"Short name {name!r} already belongs to {entry['spec']}; rename this spec")
         if not entry.get("number"):
             entry["number"] = 1 + max((v.get("number", 0) for v in built.values()), default=0)
@@ -53,8 +58,9 @@ def short_id(name: str, spec_path: str | None = None) -> str:
     return f"S{number(name, spec_path):03d}_{name}"
 
 
-def deliver(name: str, spec_path: str, src: Path, root: Path = ROOT) -> Path:
+def deliver(name: str, spec_path: str, src: Path, root: Path | None = None) -> Path:
     """Copy a render's files from tmp/shorts/NAME/ to its numbered folder."""
+    root = root or out_dir()
     sid = short_id(name, spec_path)
     dest = root / sid
     dest.mkdir(parents=True, exist_ok=True)
@@ -74,8 +80,11 @@ def _duration(path: Path) -> str:
         return "?"
 
 
-def index(root: Path = ROOT) -> Path:
+def index(root: Path | None = None) -> Path:
     """INDEX.md and by_anime/ from the numbered folders present on disk."""
+    root = root or out_dir()
+    if not root.is_dir():
+        raise SystemExit(f"{root} does not exist - nothing delivered there yet (config.json \"shorts_dir\")")
     built = _shorts()
     rows = []
     links = root / "by_anime"
@@ -88,7 +97,8 @@ def index(root: Path = ROOT) -> Path:
         folder = root / sid
         if not folder.exists():
             continue
-        spec = json.loads(Path(v["spec"]).read_text(encoding="utf-8")) if v.get("spec") and Path(v["spec"]).exists() else {}
+        spec_file = catalog.spec_path(v["spec"]) if v.get("spec") else None
+        spec = json.loads(spec_file.read_text(encoding="utf-8")) if spec_file and spec_file.exists() else {}
         title = (folder / f"{sid}_title.txt").read_text(encoding="utf-8").strip() \
             if (folder / f"{sid}_title.txt").exists() else spec.get("title", "")
         kind = "story + dub" if spec.get("story") else "montage"
@@ -108,8 +118,9 @@ def index(root: Path = ROOT) -> Path:
     return root / "INDEX.md"
 
 
-def migrate(root: Path = ROOT) -> None:
+def migrate(root: Path | None = None) -> None:
     """Old unnumbered delivery folders (root/NAME/short.mp4...) -> numbered ones, in build order."""
+    root = root or out_dir()
     built = _shorts()
     for name, _ in sorted(built.items(), key=lambda kv: (kv[1].get("built", ""), kv[1].get("number", 10**6))):
         old = root / name

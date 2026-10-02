@@ -11,8 +11,25 @@ the rendered video) is written under `tmp/` inside this project folder — so
 the whole thing is isolated to `AMV_CD/` plus its `.venv`, portable, and
 deleting `tmp/` gets you back to a clean slate.
 
-The reference build is a Mirai Nikki × "Black Salt Halo" AMV, but nothing about
-the series or track is hard-coded.
+Nothing about any series, song or machine is hard-coded: your choices live in
+gitignored folders beside the code (remanga-style), and everything that comes
+in more than one flavour is a plug-in.
+
+| Where | What | Tracked |
+| --- | --- | --- |
+| `config.json` | machine paths, active project, plug-in choice + settings | no (`config.example.json` is) |
+| `projects/<name>/project.json` | one lyric AMV: song, source, lyric plan, story arc, pacing, themes, blacklist, thumbnails | no (`examples/project.example.json` is) |
+| `global/` | Short specs and the shot/song catalog, intro picks/montages/remakes | no (`examples/short.example.json` is) |
+| `amv/plugins/`, `plugins/` | built-in and your own plug-ins | built-ins yes |
+
+## Plug-ins
+
+`./amv.sh plugins` lists everything installed. Kinds: `command` (every
+`./amv.sh` command), `tool` (an isolated uv environment for a heavy worker),
+`separator` (voices out of dialogue - Demucs), `transcriber` (dub word timings
+- faster-whisper), `song_fx` (slowed + reverb, nightcore, ...), `video_fx`
+(outline, glow, grain). Add your own as a file in `plugins/` or a package
+with an `amv.plugins` entry point - see `plugins/README.md`.
 
 ## Quick start
 
@@ -36,6 +53,11 @@ select clips, render or run a check. The GPU stages (`vocals`, `transcribe`,
 | `song` | the track to cut to |
 | `lyric_font_file` / `lyric_font_family` | font for burned-in lyrics |
 | `width` / `height` / `fps` | output format |
+| `project` | the active lyric AMV: `projects/<name>/project.json` |
+| `library_dir` | anime library, one folder per show (Shorts, multi-show intros) |
+| `shorts_dir` | where finished Shorts are delivered |
+| `separator` / `separators` | voice separation plug-in + its settings |
+| `transcriber` / `transcribers` | dub transcription plug-in + its settings |
 
 Paths may be absolute or relative to the project root; `~` and environment
 variables are expanded. Every value can also be overridden per-run with a
@@ -62,7 +84,7 @@ every remake plan came out the same.
 
 ### Adapting to your own song
 
-`amv/audio/lyrics.py` holds the lyric plan: phrases mapped to word-index ranges
+The project's `lyrics` holds the lyric plan: phrases mapped to word-index ranges
 in the transcript, with line breaks, a red emphasis word, and a `show` flag.
 Rebuild it for a new track by dumping the aligned words
 (`amv/subs/dump_words.py`) and writing phrases against them. `validate()`
@@ -114,11 +136,11 @@ description.txt:
 ./amv.sh short-catalog                       # what is already known (songs, vetted shots, Shorts built)
 ./amv.sh short-song "path/to/track.mp3"      # the drop, the window, the bass-hit grid
 ./amv.sh short-find Re_Zero --find "kill|why" --motion 30 --tag dark   # candidate sheets, crop drawn
-./amv.sh short amv/shorts/specs/NAME.json    # render -> tmp/shorts/NAME/, copy to /mnt/datadisk/shorts/NAME/
+./amv.sh short global/shorts/specs/NAME.json  # render -> tmp/shorts/NAME/, copy to <shorts_dir>/SNNN_NAME/
 ```
 
 The spec only lists shot ids; slots, crop, speed and effects are derived.
-`amv/shorts/catalog/` is committed: every build records the song window and each
+`global/shorts/catalog/` (yours, not committed): every build records the song window and each
 shot it used, so the next edit starts from vetted footage.
 
 ### Channel intro
@@ -146,7 +168,7 @@ To reproduce an intro someone cut from this series, frame for frame:
 
 ```bash
 ./amv.sh reference "their_video.mp4" --seconds 11      # -> tmp/intro/reference_map.json
-./amv.sh remake --spec amv/intro/remakes/NAME.json      # -> tmp/intro/remake.mp4
+./amv.sh remake --spec global/intro/remakes/NAME.json      # -> tmp/intro/remake.mp4
 ./amv.sh compare "their_video.mp4" tmp/intro/remake.mp4 --seconds 11 --watermark tr
 ```
 
@@ -159,7 +181,7 @@ vocabulary: `zoom_blur`, `white_burst`, a `punch` zoom with an `rgb` split,
 a per-channel colour `grade`, and a fading `caption`. `remake` then renders
 the plan with the song laid under it. A spec is the committed part: the footage
 frames always come from the map, so the spec holds only the frames the map
-can't match, plus the look (`amv/intro/remakes/mushoku_ep1_recap.json` is a
+can't match, plus the look (a spec in `global/intro/remakes/` is a
 worked example).
 
 ## Environment notes (Windows + NVIDIA)

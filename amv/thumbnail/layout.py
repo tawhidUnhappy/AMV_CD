@@ -13,7 +13,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from amv.core import paths
-from amv.thumbnail.colors import RED, WHITE, YELLOW
 from amv.thumbnail.shapes import Arrow, Bubble
 from amv.thumbnail.text import Text
 
@@ -93,29 +92,31 @@ def face_targets(image: Path, halves: int = 2) -> list[tuple[int, int]]:
 
 
 def thumbnails() -> list[Thumb]:
-    """Mushoku Tensei x "Who I Am Anymore".
+    """The active project's thumbnails (amv.core.project: "thumbnails").
 
-    cand01 is the frame this is built around: Rudeus in profile hard left,
-    facing right across an open desert horizon. Two things make it work as a
-    thumbnail — the right two-thirds is empty enough to carry text without
-    covering anything, and his eyeline runs *into* that space, so the reader's
-    eye follows him to the words instead of away from them.
-
-    Text sits right of centre, white with the single payoff word in red, and
-    stops well above the bottom-right corner so YouTube's duration chip has
-    somewhere to land.
+    Each: {"name", "source": a frame in tmp/qa/thumbcand/ (./amv.sh
+    thumb-candidates) or a path, "texts": [{"text", "x", "y", "an", "size",
+    "colour": yellow|white|red|black or "&H..&", "angle"}], optional "arrows" /
+    "bubbles" (Arrow / Bubble fields), "right_source" and the Thumb framing
+    fields}. Positions are 1280x720 - read them off a render, don't guess.
     """
-    return [
-        Thumb(
-            name="01_who_am_i",
-            source=CAND / "cand01.png",
-            texts=[
-                # Positions read off the rendered 1280x720 frame: Rudeus's head
-                # runs to about x=700, so the block is centred at x=980 and
-                # clears him at every size below.
-                Text("WHO AM I", 980, 232, an=5, size=112, colour=WHITE, angle=-3.0),
-                Text("ANYMORE", 980, 358, an=5, size=124, colour=RED, angle=-3.0),
-                Text("MUSHOKU TENSEI AMV", 980, 470, an=5, size=40, colour=YELLOW, angle=-3.0),
-            ],
-        ),
-    ]
+    from amv.core import project
+    from amv.thumbnail import colors
+
+    named = {k.lower(): v for k, v in vars(colors).items() if isinstance(v, str) and v.startswith("&H")}
+    out = []
+    for t in project.required("thumbnails"):
+        extra = {k: v for k, v in t.items() if k not in ("name", "source", "texts", "arrows", "bubbles", "right_source")}
+        texts = [Text(x["text"], x["x"], x["y"], **{k: (named.get(v, v) if k == "colour" else v)
+                                                     for k, v in x.items() if k not in ("text", "x", "y")})
+                 for x in t.get("texts", [])]
+        out.append(Thumb(name=t["name"], source=_frame(t["source"]), texts=texts,
+                         arrows=[Arrow(**a) for a in t.get("arrows", [])],
+                         bubbles=[Bubble(**b) for b in t.get("bubbles", [])],
+                         right_source=_frame(t["right_source"]) if t.get("right_source") else None, **extra))
+    return out
+
+
+def _frame(name: str) -> Path:
+    path = Path(name)
+    return path if path.is_absolute() else CAND / name

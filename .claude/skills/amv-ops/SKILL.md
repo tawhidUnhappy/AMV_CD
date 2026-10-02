@@ -25,6 +25,28 @@ Repo: github.com/tawhidUnhappy/AMV_CD. Push straight to `main` after changes
 - `python -m amv.x.y` still works for any module; `amv/__main__.py:COMMANDS`
   is the one table of names.
 
+## Where things live (2026-10-02 restructure, remanga-style)
+
+The repo is code only; your work is gitignored beside it:
+- `config.json` - machine paths: `library_dir` (one folder per show),
+  `shorts_dir` (delivery), `project`, plug-in choice + settings
+  (`separators`/`transcribers`). Template: `config.example.json`.
+- `projects/<name>/project.json` - one lyric AMV (`amv.core.project`): song,
+  source, lyric plan, `section_episodes`, `pacing`, `themes`, `blacklist`,
+  `thumbnails`. The Mushoku x "Who I Am Anymore" one is `mushoku_who_i_am`.
+- `global/` - shared: `shorts/specs/`, `shorts/catalog/` (shots, songs,
+  Shorts built), `intro/{picks,montages,remakes,blacklist.json}`.
+- `examples/` (tracked) - `project.example.json`, `short.example.json`.
+
+**Plug-ins** (`amv/plugins/`, copied from remanga's design): `_registry.py`,
+`_loader.py`, `_kinds.py`; built-ins are folders (`commands`, `demucs`,
+`faster_whisper`, `song_fx`, `video_fx`); drop-ins in top-level `plugins/`
+(see its README); entry-point group `amv.plugins`. Kinds: command, tool,
+separator, transcriber, song_fx, video_fx. `./amv.sh plugins` lists them.
+A `tool` runs its worker via `amv.core.tools.run` (offline first).
+Never hard-code a show, song or `/mnt/...` path in code - it goes in the
+project, global/ or config.json.
+
 ## Code map
 
 `amv/core/` config (config.json -> Config), **paths (every tmp/ path +
@@ -60,15 +82,15 @@ episode is decoded once to an 8 fps index (tmp/intro/library/, ~45 min for
 eyecatches, title cards, recaps) is excluded. Scores alone picked dull shots
 (a door, a crowd pan) twice, even with spectacle terms - so the real flow is
 `--gallery` (12 sheets, start/mid/end per candidate), look, write
-`amv/intro/picks/NAME.json` (ids, optional `{"id", "shift"}`), then
-`--picks`. Per-show rejects go in `amv/intro/blacklist.json`.
+`global/intro/picks/NAME.json` (ids, optional `{"id", "shift"}`), then
+`--picks`. Per-show rejects go in `global/intro/blacklist.json`.
 The delivered channel intro (no name on screen, 11 s) is
-`amv/intro/picks/channel_intro.json`; copies live in /mnt/datadisk/channel_intro/
+`global/intro/picks/channel_intro.json`; copies live in /mnt/datadisk/channel_intro/
 (1080p, plus a 4K/24 fps/44.1 kHz copy that joins onto remanga recaps by stream copy).
 
 **Montage (v2, the current channel intro):** the gallery/picks intro felt
 flat - hard cuts only, a still shot, one cut per two beats. v2 is a shot list
-(`amv/intro/montages/channel_intro.json`, `./amv.sh montage SPEC`) rendered
+(`global/intro/montages/channel_intro.json`, `./amv.sh montage SPEC`) rendered
 frame by frame through remake.render: dissolves in the swell, a push-in on
 every shot, a whoosh into the drop, a cut on EVERY beat after it, white flash
 on the drop, zoom punch + RGB split on the two strongest accents. Beat times
@@ -76,7 +98,7 @@ come from `amv.intro.plan` (librosa onsets). Short beat-length shots were
 found inside gallery windows by probing every 0.05 s offset for the most
 motion with no cut; override by eye when the striking moment is elsewhere.
 
-**Mood intros (evil/sad, `amv/intro/montages/evil_intro.json`):** the
+**Mood intros (evil/sad, `global/intro/montages/evil_intro.json`):** the
 picture can't find a mood, the dialogue can. `./amv.sh dialogue ROOT --find
 REGEX [--series S]` searches every show's English text subtitles (cached in
 tmp/intro/dialogue/; Mushoku falls back to the OCR'd scene index). Broad words
@@ -87,7 +109,7 @@ Unravel (remanga/global/bgm) from 20 s (`song_start`) - NOT royalty-free,
 the user was told; the other tracks in /mnt/datadisk/background_music are.
 Look for dark footage: `lift` before contrast, `saturation` < 1, a `tint`.
 
-**Flow intro (`amv/intro/montages/flow_intro.json`, from /mnt/datadisk/ReferanceEdit):**
+**Flow intro (`global/intro/montages/flow_intro.json`, from /mnt/datadisk/ReferanceEdit):**
 the reference edits (Voidwalker, a JJK edit) cut at a median 0.17-0.29 s with
 bursts, and flow comes from movement carried across cuts. `./amv.sh flow
 POOL.json` measures each shot's global motion at head and tail (phase
@@ -123,8 +145,8 @@ night scenes at luma < 0.1 read as gaps, replace rather than lift.
 ./amv.sh short-song SONG                         # drops (bass rise), window, hit grid, accents
 ./amv.sh short-find SHOW --find REGEX [--motion N] [--episodes 11-12] --tag T
 #   -> tmp/shorts/pool/SHOW-T-NN.jpg: start/mid/end per shot, 9:16 crop drawn; LOOK at them
-./amv.sh short amv/shorts/specs/NAME.json        # plan+render 1080x1920, review.jpg, title/description
-#   -> tmp/shorts/NAME/ and delivered to /mnt/datadisk/shorts/NAME/ (short.mp4, title.txt, description.txt)
+./amv.sh short global/shorts/specs/NAME.json        # plan+render 1080x1920, review.jpg, title/description
+#   -> tmp/shorts/NAME/ and delivered to <shorts_dir>/SNNN_NAME/ (short.mp4, title.txt, description.txt)
 ```
 
 Layout (user's choice, 2026-09-26): the WHOLE 16:9 picture centred on a
@@ -149,7 +171,7 @@ from the drop, then an outro line. Spec keys `story`, `outro`, `hook_text`,
 4. `short-thumb SPEC --candidates EP:T:X,...` -> bare frames with a 0.1 grid;
    choose, then write labels (`at`/`to` read off the grid) or `panels` (a
    two-frame comparison: SAME GIRL?!, HELL MODE / WEAKEST CLASS) and render.
-Delivery: `/mnt/datadisk/shorts/SNNN_name/` with every file prefixed by the
+Delivery: `<shorts_dir>/SNNN_name/` (config.json) with every file prefixed by the
 number (never reused; kept in catalog/shorts.json), INDEX.md, by_anime/.
 `./amv.sh short-index` rebuilds them. Titles <= 100 chars incl. " #shorts".
 Optional effects (user, 2026-09-28; amv/shorts/fx.py, all optional):
@@ -169,7 +191,7 @@ No music-only Shorts (user, 2026-09-28): every Short needs the anime's own
 English audio (`story`/`outro`). S001-S003 were montage-only and were deleted,
 specs included; their numbers stay retired.
 Voices only (user, 2026-10-02): story/outro clips go through Demucs
-htdemucs_ft (`amv/shorts/vocals.py` + `vocals_worker.py`, own uv env: torch +
+htdemucs_ft (the `separator` plug-in, `amv/plugins/demucs/`, own uv env: torch +
 demucs on Python 3.12 - demucs' `lameenc` has no cp311/cp312 wheel in an
 offline cache, the first build needs the network, ~3 min) and only the vocals
 stem is mixed; stems cached in tmp/shorts/cache/vocals/. Measured on S024:
@@ -221,7 +243,7 @@ Traps (all fixed in code; keep the rules):
 ## Remaking an intro someone else cut
 
 `./amv.sh reference VIDEO --seconds N` -> tmp/intro/reference_map.json, then
-write a spec in `amv/intro/remakes/` (copy mushoku_ep1_recap.json: `require`
+write a spec in `global/intro/remakes/` (copy mushoku_ep1_recap.json: `require`
 pins the map frames it assumes, `overrides` fill effect frames via
 `like`/`anchor`+`step`, plus grade/caption/audio delay) and
 `./amv.sh remake --spec ... --song ...`. Find the audio offset by
@@ -256,7 +278,7 @@ frame (`ffmpeg -vf select=between(n,a,b),tile`), then rebuild.
   it; `scoring.song_zones` catches it. The full AMV does not use it yet (the
   user has not decided).
 - Content: Mushoku Tensei has fanservice involving child characters. Every
-  pick gets looked at (strip); rejects go in `themes.BLACKLIST` with a reason.
+  pick gets looked at (strip); rejects go in the project's `blacklist` with a reason.
 
 ## Maintenance
 

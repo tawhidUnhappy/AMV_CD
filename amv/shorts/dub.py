@@ -2,18 +2,17 @@
 
 Dubs are rewritten for lip-sync: the English SUBTITLE track (which finds the
 moment - see amv.intro.dialogue) has other words and other timings than the
-English AUDIO. So each story segment's dub audio is transcribed (faster-whisper
-large-v3, word timings, cached), the segment's in/out points are moved so no
-spoken word is cut, and the captions are the dub's own words.
+English AUDIO. So each story segment's dub audio is transcribed (the
+`transcriber` plug-in, faster-whisper large-v3 by default: word timings,
+cached), the segment's in/out points are moved so no spoken word is cut, and
+the captions are the dub's own words.
 
-The model: $AMV_WHISPER_MODEL, else remanga's local large-v3 weights when
-present (no second 3 GB download), else "large-v3" from the Hub.
+Which transcriber: config.json "transcriber" (default: the first installed);
+its settings: "transcribers": {name: {...}} - e.g. a local model folder.
 """
 
 from __future__ import annotations
 
-import json
-import os
 import re
 import subprocess
 import tempfile
@@ -22,16 +21,16 @@ from pathlib import Path
 from amv.shorts import catalog
 
 PAD = 2.5  # transcribe this much either side, to see words the approximate bounds cut
-LOCAL_MODEL = Path("/mnt/datadisk/remanga/checkpoints/faster_whisper_large_v3")
-RUN = ["uv", "run", "-q", "--no-project", "--python", "3.12", "--with", "faster-whisper",
-       "--with", "nvidia-cublas-cu12", "--with", "nvidia-cudnn-cu12", "python",
-       str(Path(__file__).with_name("dub_worker.py"))]
 
 
-def model_name() -> str:
-    if os.environ.get("AMV_WHISPER_MODEL"):
-        return os.environ["AMV_WHISPER_MODEL"]
-    return str(LOCAL_MODEL) if (LOCAL_MODEL / "model.bin").exists() else "large-v3"
+def transcriber():
+    """(the configured Transcriber plug-in, its settings)."""
+    from amv import plugins
+    from amv.core.config import load
+
+    cfg = load()
+    plug = plugins.get("transcriber", cfg.raw.get("transcriber") or None)
+    return plug, cfg.plugin_settings("transcriber", plug.name)
 
 
 def _key(file: str, stream: int, t0: float, t1: float) -> str:
@@ -51,11 +50,10 @@ def transcribe(jobs: list[tuple[str, int, float, float]]) -> dict[str, list[list
                 subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{t0:.3f}", "-t", f"{t1 - t0:.3f}", "-i", file,
                                 "-map", f"0:a:{stream}", "-ac", "1", "-ar", "16000", str(wav)], check=True)
                 wavs.append(str(wav))
-            print(f"Transcribing {len(wavs)} dub segment(s) ({model_name()})...", flush=True)
-            done = subprocess.run([*RUN, model_name(), *wavs], capture_output=True, text=True)
-            if done.returncode != 0:
-                raise SystemExit(f"dub transcription failed:\n{done.stderr[-2000:]}")
-            words = json.loads(done.stdout)
+            from amv import plugins
+
+            plug, settings = transcriber()
+            words = plugins.call(plug.transcribe, wavs, settings)
             for (file, stream, t0, t1), wav in zip(todo, wavs, strict=True):
                 store[_key(file, stream, t0, t1)] = [[round(a + t0, 3), round(b + t0, 3), w] for a, b, w in words[wav]]
         catalog._write(catalog.CACHE / "dub.json", store)

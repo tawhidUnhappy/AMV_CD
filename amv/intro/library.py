@@ -11,7 +11,7 @@ everything the intro needs without looking at subtitles:
   (repeated) rather than by what the subtitles around it look like, which
   missed a subtitled OP on the first intro.
 
-    ./amv.sh intro --library /mnt/datadisk/anime --song track.wav
+    ./amv.sh intro --library ~/Videos/anime --song track.wav
 """
 
 from __future__ import annotations

@@ -21,6 +21,7 @@ from pathlib import Path
 
 import numpy as np
 
+from amv.core import paths
 from amv.intro.library import INDEX_FPS, Episode
 from amv.intro.plan import IntroSlot
 from amv.intro.select import Shot, probe, score
@@ -32,11 +33,11 @@ HEAD_SKIP = 10.0
 TAIL_SKIP = 90.0
 # A map frame changing this much (48x27 grey at 8 fps, 0-1) is a hard cut.
 INDEX_CUT = 0.13
-BLACKLIST_FILE = Path(__file__).with_name("blacklist.json")
+BLACKLIST_FILE = paths.INTRO_BLACKLIST
 
 
 def blacklist() -> list[dict]:
-    """Regions rejected on sight, per series (amv/intro/blacklist.json)."""
+    """Regions rejected on sight, per series (global/intro/blacklist.json)."""
     return json.loads(BLACKLIST_FILE.read_text(encoding="utf-8")) if BLACKLIST_FILE.exists() else []
 
 

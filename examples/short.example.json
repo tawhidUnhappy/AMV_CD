@@ -1,0 +1,27 @@
+{
+ "name": "my_show_story",
+ "about": "A story Short: scenes with the English dub and captions, then a beat-cut montage from the song's drop, then an outro line. Copy to global/shorts/specs/NAME.json; ids come from ./amv.sh short-find sheets, times from ./amv.sh dialogue.",
+ "series": "My_Show",
+ "anime": "My Show (official English title)",
+ "song": "~/Music/My Song.mp3",
+ "drop": 61.3,
+ "seconds": "auto",
+ "mood": "power",
+ "song_fx": "slowed_reverb",
+ "video_fx": ["glow"],
+ "story": [
+  {"ep": 1, "from": 48.3, "to": 55.0, "why": "the premise, in one line"},
+  {"ep": 1, "from": 300.2, "to": 312.6, "why": "the turn"}
+ ],
+ "drop_shot": "05-414.5",
+ "shots": ["05-438.7", "07-1269.0", "08-1124.9", {"id": "12-472.0", "x": 0.6}],
+ "outro": [{"ep": 12, "from": 1272.6, "to": 1276.0, "why": "the payoff line"}],
+ "hook_text": "He picked the *hardest* mode",
+ "title": "Short Title In Title Case",
+ "hook": "One or two sentences for the description.",
+ "tags": ["myshow", "animestory"],
+ "thumbnail": {
+  "panels": [{"ep": 1, "t": 50.0, "x": 0.4, "y": 0.45}, {"ep": 12, "t": 1273.0, "x": 0.5, "y": 0.4}],
+  "labels": [{"text": "BEFORE", "at": [0.5, 0.07], "size": 140}, {"text": "AFTER", "at": [0.5, 0.93], "size": 140}]
+ }
+}

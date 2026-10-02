@@ -55,7 +55,7 @@ def produce(where: Path, quick: bool) -> list[str]:
         from amv.intro.remake import build_plan
 
         frames = json.loads(reference_map.read_text(encoding="utf-8"))["frames"]
-        for spec_path in sorted((ROOT / "amv" / "intro" / "remakes").glob("*.json")):
+        for spec_path in sorted(paths.INTRO_REMAKES.glob("*.json")):
             spec = json.loads(spec_path.read_text(encoding="utf-8"))
             try:
                 plan = build_plan(spec, frames, Path("song"))

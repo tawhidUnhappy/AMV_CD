@@ -47,7 +47,7 @@ def main() -> None:
     parser.add_argument("--gallery", action="store_true",
                         help="with --library: write candidate sheets to tmp/intro/gallery/ to choose from, and stop")
     parser.add_argument("--picks", type=Path, default=None,
-                        help="with --library: a JSON {\"picks\": [gallery ids in slot order]} (see amv/intro/picks/)")
+                        help="with --library: a JSON {\"picks\": [gallery ids in slot order]} (see global/intro/picks/)")
     parser.add_argument("--render-only", action="store_true", help="render tmp/intro/edl.json as it stands")
     parser.add_argument("--out", type=Path, default=paths.INTRO / "intro.mp4")
     args = parser.parse_args()

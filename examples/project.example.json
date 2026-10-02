@@ -1,0 +1,34 @@
+{
+ "name": "my_edit",
+ "about": "One lyric AMV: a show cut to a song, lyrics burned in. Copy to projects/my_edit/project.json and set \"project\": \"my_edit\" in config.json.",
+ "song": "~/Music/My Song.mp3",
+ "source_dir": "~/Videos/anime/My_Show",
+ "lyrics": {
+  "notes": ["Word indices refer to tmp/song/words_vocals.txt - run vocals, transcribe, then ./amv.sh words and read the numbers off it."],
+  "phrases": [
+   {"first_word": 0, "last_word": 5, "lines": ["FIRST LINE OF THE SONG"], "section": "intro"},
+   {"first_word": 6, "last_word": 13, "lines": ["SECOND LINE OF THE SONG"], "section": "verse1"},
+   {"first_word": 14, "last_word": 20, "lines": ["THE CHORUS LINE"], "section": "chorus1", "emphasis": "CHORUS"}
+  ],
+  "expected_first_word": {"0": "first", "14": "the"}
+ },
+ "section_episodes": {
+  "intro": [1, 1],
+  "verse1": [1, 4],
+  "chorus1": [3, 8],
+  "break1": [1, 1],
+  "lull": [1, 12]
+ },
+ "pacing": {"max_shot": 4.6, "break_cut": 1.67, "min_shot": 1.05, "tail_cut": 3.34, "open_cut": 4.2, "snap_tolerance": 0.19},
+ "themes": {
+  "FIRST LINE OF THE SONG": {"keywords": ["remember", "who"]},
+  "THE CHORUS LINE": {"keywords": ["fight", "never"]}
+ },
+ "main_speakers": [],
+ "blacklist": [{"episode": 3, "start": 1240.0, "end": 1260.0}],
+ "thumbnails": [
+  {"name": "01_main", "source": "cand01.png",
+   "texts": [{"text": "BIG HOOK", "x": 980, "y": 260, "size": 112, "colour": "white"},
+             {"text": "WORD", "x": 980, "y": 380, "size": 124, "colour": "red"}]}
+ ]
+}

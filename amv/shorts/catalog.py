@@ -2,16 +2,16 @@
 
 Two layers:
 
-- amv/shorts/catalog/ (COMMITTED, small JSON, the knowledge):
+- global/shorts/catalog/ (yours, gitignored, small JSON, the knowledge):
     songs.json          per track: tempo, beat period, bass drops, the windows used
     shots/<Series>.json per shot: what it shows ("why"), moods, crop x, verdict
                         (good / reject + reason), which Shorts used it
     shorts.json         every Short built: spec, song window, series, when
   `./amv.sh short` records into it on every build; `short-find` reads it (rejects
   are skipped, known-good shots are starred on the sheets); `--import-intros`
-  seeds it from the hand-vetted montage specs in amv/intro/montages/.
+  seeds it from the hand-vetted montage specs in global/intro/montages/.
 
-- tmp/shorts/cache/ (NOT committed, the measurements): crop/focus/motion per
+- tmp/shorts/cache/ (machine-local, the measurements): crop/focus/motion per
   shot window and the librosa analysis per song, keyed by file + times (+ mtime
   for songs), so a rerun decodes nothing it already measured.
 
@@ -35,8 +35,9 @@ import threading
 from pathlib import Path
 
 from amv.core import paths
+from amv.core.config import ROOT
 
-CATALOG = Path(__file__).with_name("catalog")
+CATALOG = paths.SHORTS_CATALOG
 CACHE = paths.TMP / "shorts" / "cache"
 _LOCK = threading.Lock()
 
@@ -115,6 +116,18 @@ def vetted_x(series: str, sid: str) -> float | None:
     return shots(series).get(sid, {}).get("x")
 
 
+def spec_ref(path: Path) -> str:
+    """A spec path as stored: relative to the repo when inside it, so the
+    catalog survives the repo moving."""
+    path = Path(path).resolve()
+    return str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path)
+
+
+def spec_path(ref: str) -> Path:
+    path = Path(ref)
+    return path if path.is_absolute() else ROOT / path
+
+
 def record_short(spec: dict, spec_path: Path, items: list[dict], w) -> None:
     """Called by `short` after planning: the song window and every shot used."""
     mood = spec.get("mood", "power")
@@ -133,7 +146,7 @@ def record_short(spec: dict, spec_path: Path, items: list[dict], w) -> None:
                                     "accents": w.accents}]
         _write(CATALOG / "songs.json", songs)
         built = _read(CATALOG / "shorts.json")
-        built[spec["name"]] = {**built.get(spec["name"], {}), "spec": str(spec_path), "series": spec["series"], "song": name, "mood": mood,
+        built[spec["name"]] = {**built.get(spec["name"], {}), "spec": spec_ref(spec_path), "series": spec["series"], "song": name, "mood": mood,
                                "window": [w.start, w.end], "drop": w.drop, "shots": [it["id"] for it in items],
                                "built": dt.date.today().isoformat()}
         _write(CATALOG / "shorts.json", built)
@@ -151,13 +164,13 @@ def record_song(song: Path, drops: list[tuple[float, float]], tempo: float, dura
 # ---- seeding from the hand-vetted intro montages --------------------------------
 
 def import_intros() -> int:
-    """Every shot of amv/intro/montages/*.json has a "why" someone wrote after
-    looking at it - the best-vetted footage in the repo."""
+    """Every shot of global/intro/montages/*.json has a "why" someone wrote
+    after looking at it - the best-vetted footage there is. The montage's
+    "mood" key (default power) is recorded with each shot."""
     from amv.intro.library import episode_number
-    moods = {"evil_intro": "dark", "subaru_intro": "dark", "flow_intro": "power", "channel_intro": "power"}
     count = 0
-    for spec_path in sorted((Path(__file__).parents[1] / "intro" / "montages").glob("*.json")):
-        spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    for montage in sorted(paths.INTRO_MONTAGES.glob("*.json")):
+        spec = json.loads(montage.read_text(encoding="utf-8"))
         for s in spec.get("shots", []):
             file = Path(s["file"])
             series, ep = file.parent.name, episode_number(file.name)
@@ -167,8 +180,8 @@ def import_intros() -> int:
             why = re.sub(r"^(hit|accent|the drop): ", "", s.get("why", "")) or None
             update_shot(series, moment_id(ep, s["at"]), episode=ep, file_name=file.name, at=float(s["at"]),
                         x=round(focus[0], 3) if focus else None, why=why,
-                        moods=[moods.get(spec_path.stem, "power")], verdict="good",
-                        used_in=[f"intro:{spec_path.stem}"])
+                        moods=[spec.get("mood", "power")], verdict="good",
+                        used_in=[f"intro:{montage.stem}"])
             count += 1
     return count
 

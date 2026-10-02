@@ -12,69 +12,25 @@ import math
 from dataclasses import dataclass
 
 from amv.audio.lyrics import song_duration, timed_phrases, validate
+from amv.core import project
 
-# Per-section story arc, deliberately curated against Mushoku Tensei S1's
-# real chronology rather than an even split of 24 episodes -- see
-# amv-clip-selection for the narrative reasoning behind each range. Rip A
-# (unsuffixed sections) plays first and closes unresolved ("...why"); rip B
-# ("_2" sections) plays second and closes on the title hook. The arc walks
-# forward across BOTH passes, so the story keeps advancing into rip B rather
-# than restarting -- see amv/audio/lyrics.py for why the song itself repeats.
+# The project's story arc and pacing (amv.core.project): which episodes each
+# song section draws from, and the cut lengths. Pacing is in seconds - pick
+# cut spacings as multiples of the song's real beat (amv-beat-cutting), and
+# keep MIN_SHOT long enough that anime drawn on twos/threes reads as motion.
+_PROJECT = project.optional()
 SECTION_EPISODES: dict[str, tuple[int, int]] = {
-    # Rip A: birth, early identity confusion, first loss and isolation.
-    "intro": (1, 1),           # birth/rebirth -- "lost in my head again"
-    "verse1": (1, 3),          # first days in the new life
-    "prechorus": (2, 4),
-    "chorus1": (3, 6),         # early magic training under Roxy
-    "verse2": (5, 8),          # isolation, guilt over the old life
-    "chorus2": (7, 10),        # leads into the family rupture
-    # Rip B: the journey -- literal demons, real growth, real resolution.
-    "intro2": (10, 12),        # the family splits; the journey begins
-    "verse1_2": (11, 14),
-    "prechorus2": (13, 16),
-    "chorus1_2": (15, 18),     # danger on the road, the Superd arc
-    "verse2_2": (17, 20),      # hardship, what he's carrying
-    "chorus2_2": (20, 24),     # growth and resolution -- the closing hook
-    # Instrumental breaks, one entry per real gap (there are six, not the
-    # four in the previous song order -- this song has three separate
-    # instrumental stretches around its "yeah, yeah" bridge, not one).
-    "break1": (1, 1),          # opening: see OPEN_CUT below -- kept calm on purpose
-    "break2": (5, 7),          # mid rip A, between chorus 1 and verse 2
-    "break3": (8, 9),          # rip A trailing off into the bridge
-    "break4": (9, 10),         # the bridge itself -- the hinge into rip B
-    "break5": (10, 11),        # short breath just before rip B's intro
-    "break6": (22, 23),        # rip B's final instrumental before the fade
-    "bridge": (9, 11),        # the "yeah, yeah" ad-lib between the two rips
-    "lull": (1, 24),
-}
-
-# Cut pacing, in seconds. The detected beat grid is ~0.418s, but that is a
-# subdivision lock: the track is really ~68 BPM (0.836s), and beat_track found
-# the eighths. Cutting on every grid unit therefore machine-guns a slow,
-# sombre song. These are all multiples of the grid instead (see
-# amv-beat-cutting: any consistent subdivision is valid, pick the cut spacing
-# as a multiple of it).
-#
-# The floor matters more than usual here because the source is anime, which is
-# animated on twos or threes — 8-12 unique drawings a second. An earlier
-# 0.42s floor meant shots holding only 4-5 distinct drawings, and cutting that
-# fast between them reads as stutter rather than as energy. 1.05s (~25 frames)
-# gives every shot enough drawings to register as motion.
-MAX_SHOT = 4.6          # ~11 grid units; lets an emotional line linger
-BREAK_CUT = 1.67        # 4 grid units — instrumental breaks still cut faster
-MIN_SHOT = 1.05         # ~2.5 grid units
-TAIL_CUT = 3.34         # 8 grid units — the closing instrumental breathes
-# The very first gap (before any vocal) used BREAK_CUT like every other
-# instrumental, which for this song's 8.1s intro meant ~5 hard cuts of
-# unrelated establishing shots in the first moment a viewer sees the edit --
-# read as channel-surfing before the video had even started. An opener needs
-# to earn the cut, not spend its only impression proving the edit can cut
-# fast. One slower target instead: 1-2 shots, letting the viewer settle into
-# the tone before BREAK_CUT's energy kicks in at the first real break.
-OPEN_CUT = 4.2
-# How far a cut may be nudged to land on a beat. The grid is ~0.418s, so half
-# an interval is enough to reach the nearest beat from anywhere.
-SNAP_TOLERANCE = 0.19
+    k: (int(v[0]), int(v[1])) for k, v in _PROJECT.get("section_episodes", {}).items()}
+_PACING = _PROJECT.get("pacing", {})
+MAX_SHOT = float(_PACING.get("max_shot", 4.6))        # lets an emotional line linger
+BREAK_CUT = float(_PACING.get("break_cut", 1.67))     # instrumental breaks cut faster
+MIN_SHOT = float(_PACING.get("min_shot", 1.05))
+TAIL_CUT = float(_PACING.get("tail_cut", 3.34))       # the closing instrumental breathes
+# The very first gap (before any vocal): 1-2 slower shots, letting the viewer
+# settle into the tone, instead of channel-surfing establishing shots.
+OPEN_CUT = float(_PACING.get("open_cut", 4.2))
+# How far a cut may be nudged to land on a beat (about half a grid interval).
+SNAP_TOLERANCE = float(_PACING.get("snap_tolerance", 0.19))
 
 
 @dataclass

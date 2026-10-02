@@ -8,7 +8,7 @@ track beside the dialogue (Re:Zero's first English track is "Signs & Songs").
 A series without text subtitles falls back to the OCR'd scene index when it is
 the configured series (tmp/subs/scene_index.json), else has none.
 
-    ./amv.sh dialogue /mnt/datadisk/anime --find "laugh|kill|die" [--series Re_Zero]
+    ./amv.sh dialogue ~/Videos/anime --find "laugh|kill|die" [--series Re_Zero]
 """
 
 from __future__ import annotations

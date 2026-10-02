@@ -1,9 +1,12 @@
-"""Every file the pipeline generates, in one place.
+"""Every file the pipeline generates or keeps, in one place.
 
-All of it lives under tmp/ in the project folder (deleting tmp/ is a clean
-slate), and each stage reads what an earlier one wrote - so a path spelled out
-in two modules is a path that can drift apart. Modules import these names
-instead of joining ROOT / "tmp" / ... themselves.
+Generated files live under tmp/ (deleting tmp/ is a clean slate), and each
+stage reads what an earlier one wrote - so a path spelled out in two modules
+is a path that can drift apart. Modules import these names instead of
+joining ROOT / "tmp" / ... themselves.
+
+Your own work (specs, picks, the catalog) lives under global/ - gitignored,
+moved with config.json "global_dir"; see amv.core.config.
 """
 
 from __future__ import annotations
@@ -11,9 +14,20 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from amv.core.config import ROOT
+from amv.core.config import ROOT, load
 
 TMP = ROOT / "tmp"
+GLOBAL = load().global_dir
+
+# Shorts (amv.shorts): your specs and what earlier builds learned
+SHORT_SPECS = GLOBAL / "shorts" / "specs"
+SHORTS_CATALOG = GLOBAL / "shorts" / "catalog"
+
+# Intros (amv.intro): hand-picked shot lists, montage/remake specs, rejects
+INTRO_PICKS = GLOBAL / "intro" / "picks"
+INTRO_MONTAGES = GLOBAL / "intro" / "montages"
+INTRO_REMAKES = GLOBAL / "intro" / "remakes"
+INTRO_BLACKLIST = GLOBAL / "intro" / "blacklist.json"
 
 # Song analysis (amv.audio)
 SONG_DIR = TMP / "song"

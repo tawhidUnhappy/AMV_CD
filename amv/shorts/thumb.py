@@ -1,5 +1,5 @@
 """A Short's thumbnail (1080x1920) from a real frame, in the user's reference
-style (/mnt/datadisk/thumbnail_examples): the picture full-bleed, one to
+style: the picture full-bleed, one to
 three SHORT labels ("BOUGHT BRIDE", "VILLAIN") in yellow condensed caps with
 a black outline, each with a fat yellow arrow pointing at who it names.
 No generated imagery.

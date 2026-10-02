@@ -2,12 +2,12 @@
 window, crop, speed and effects - all derived - then the montage renderer,
 then title.txt / description.txt beside the video.
 
-    ./amv.sh short amv/shorts/specs/NAME.json [--plan-only] [--deliver DIR]
+    ./amv.sh short global/shorts/specs/NAME.json [--plan-only] [--deliver DIR]
 
-Spec (amv/shorts/specs/*.json; ids come from ./amv.sh short-find sheets):
+Spec (global/shorts/specs/*.json, yours - examples/short.example.json to start; ids come from ./amv.sh short-find sheets):
 
     {"name": "hell_mode_alquimia", "series": "Hell_Mode", "anime": "Hell Mode",
-     "song": "/mnt/datadisk/song/X.mp3", "drop": 25.7, "build": 7.0, "seconds": 24,
+     "song": "~/Music/X.mp3", "drop": 25.7, "build": 7.0, "seconds": 24,
      "mood": "power",                      # look + effect strength: power | dark | soft
      "build_shots": ["12-451.0", "12-491.1"],   # before the drop, calm-ish
      "drop_shot": "12-472.0",                   # lands on the drop
@@ -24,7 +24,7 @@ Story Shorts (English dub + captions) add scenes played as they are:
 
 The song plays quietly under the story and comes up to full on the drop;
 see amv.shorts.story. The scenes keep only the voices: Demucs strips the
-episode's own background music and effects (amv.shorts.vocals; spec
+episode's own background music and effects (the `separator` plug-in; spec
 "dialogue_only": false keeps the full mix).
 
 Language: each scene uses the episode's English dub when it has one
@@ -40,7 +40,7 @@ Optional effects (amv.shorts.fx), none required:
 A shot entry is an id, or {"id", "why" (kept in the catalog), "x"/"y" (crop
 centre, 0-1), "at" (source start), "speed", "zoom": [a, b]}. The last shot
 holds to the end. Every build records the song window and each shot used
-(crop, mood, why) in amv/shorts/catalog/ - see amv.shorts.catalog.
+(crop, mood, why) in global/shorts/catalog/ - see amv.shorts.catalog.
 
 What is derived, and the rule behind it:
 - slots: build shots split the build on its beats; after the drop a cut
@@ -85,7 +85,6 @@ WIDTH, HEIGHT, FPS = 1080, 1920, 24
 LAYOUT = {"frame_aspect": 16 / 9, "blur": 6, "dim": 0.55}
 MIN_CUT = 0.75
 MIN_SPEED = 0.45
-DELIVER = Path("/mnt/datadisk/shorts")
 
 LOOKS = {
     "power": {"contrast": 1.14, "saturation": 1.12, "lift": 2, "vignette": 0.45},
@@ -405,9 +404,12 @@ def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, s
                                      "text": ln["text"]})
             t += dur
     if spec.get("dialogue_only", True):  # voices only: the episode's own music/effects removed
-        from amv.shorts import vocals
+        from amv import plugins
+        from amv.core.config import load
 
-        clips = vocals.isolate(clips)
+        cfg = load()
+        sep = plugins.get("separator", cfg.raw.get("separator") or None)
+        clips = plugins.call(sep.isolate, clips, cfg.plugin_settings("separator", sep.name))
     gain = [[0.0, UNDER_DIALOGUE]]
     if story_segs:
         gain += [[max(0.0, story_len - 0.2), UNDER_DIALOGUE]]
@@ -435,11 +437,11 @@ def credit(song: Path) -> tuple[str, str]:
 
 def write_text(spec: dict, out_dir: Path) -> None:
     title, artist = credit(Path(spec.get("song_credit", spec["song"])))
-    fx_name = {"slowed_reverb": "Slowed + Reverb", "slowed": "Slowed", "nightcore": "Nightcore",
-               "sped_up": "Sped Up"}
-    kind = spec.get("song_fx") if isinstance(spec.get("song_fx"), str) else (spec.get("song_fx") or {}).get("kind")
-    if kind and fx_name.get(kind, "").lower() not in title.lower():
-        title += f" ({fx_name[kind]} edit)"
+    from amv.shorts.fx import song_fx_label
+
+    label = song_fx_label(spec.get("song_fx"))
+    if label and label.lower() not in title.lower():
+        title += f" ({label} edit)"
     tags = spec.get("tags", [])
     hashtags = " ".join(f"#{t}" for t in ["shorts", "anime", "amv", "animeedit", *tags])
     head = spec["title"]
@@ -476,8 +478,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("spec", type=Path)
     parser.add_argument("--plan-only", action="store_true", help="print the plan, render nothing")
-    parser.add_argument("--deliver", type=Path, default=DELIVER,
-                        help="copy video, texts, thumbnail to DIR/SNNN_NAME/ (see amv.shorts.deliver)")
+    parser.add_argument("--deliver", type=Path, default=None,
+                        help="copy video, texts, thumbnail to DIR/SNNN_NAME/ (default: config.json "
+                             "shorts_dir; see amv.shorts.deliver)")
+    parser.add_argument("--no-deliver", action="store_true", help="render into tmp/shorts/NAME/ only")
     args = parser.parse_args()
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     if spec.get("song_fx"):  # slowed+reverb / nightcore: the processed song IS the song from here on
@@ -532,7 +536,7 @@ def main() -> None:
         from amv.shorts.thumb import thumbnail
 
         print(f"Wrote {thumbnail(spec, out_dir / 'thumbnail.jpg')}")
-    if args.deliver:
+    if not args.no_deliver:
         from amv.shorts.deliver import deliver
 
         print(f"Delivered to {deliver(spec['name'], str(args.spec), out_dir, args.deliver)}")
