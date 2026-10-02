@@ -18,7 +18,7 @@ def command(name: str, *args: str) -> list[str]:
     cmd = ["uv", "run", "-q", "--no-project", "--python", tool.python]
     for package in tool.packages:
         cmd += ["--with", package]
-    return [*cmd, "python", str(plugins.resolve(tool.worker)), *args]
+    return [*cmd, "python", str(tool.worker), *args]
 
 
 def run(name: str, *args: str) -> subprocess.CompletedProcess:

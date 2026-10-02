@@ -35,7 +35,7 @@ class Command:
 class Tool:
     """An isolated environment: `uv run --no-project --python <python>
     --with <each package>` - built on first use, cached by uv, never touching
-    the project's own environment. `worker` is the script it runs."""
+    the project's own environment. `worker` is the path of the script it runs."""
 
     name: str
     packages: tuple[str, ...]
