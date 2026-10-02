@@ -1,4 +1,53 @@
 {
+ "Arabian nights [JNo7VKu1bi4].wav": {
+  "drops": [
+   [
+    27.42,
+    55.2
+   ],
+   [
+    137.16,
+    24.3
+   ],
+   [
+    123.44,
+    9.5
+   ],
+   [
+    20.6,
+    8.8
+   ],
+   [
+    13.72,
+    8.2
+   ]
+  ],
+  "duration": 180.05,
+  "path": "/mnt/datadisk/song/Arabian nights [JNo7VKu1bi4].wav",
+  "period": 0.418,
+  "tempo": 143.55,
+  "windows": [
+   {
+    "accents": [
+     137.183,
+     138.902,
+     140.62,
+     141.92,
+     142.338,
+     144.057,
+     145.775,
+     147.47,
+     149.188,
+     149.629,
+     152.625
+    ],
+    "drop": 137.183,
+    "end": 154.673,
+    "short": "otome_mob_cheat_ship",
+    "start": 87.983
+   }
+  ]
+ },
  "Awesome violin beat visualisation.nightcore.1.25.b8749a23fff432a4.wav": {
   "drops": [
    [
@@ -236,6 +285,83 @@
     "start": 82.544
    }
   ]
+ },
+ "Death Note Theme Hip Hop Trap REMIX.mp3": {
+  "drops": [
+   [
+    96.8,
+    34.3
+   ],
+   [
+    24.8,
+    32.0
+   ],
+   [
+    9.8,
+    18.1
+   ],
+   [
+    109.57,
+    18.1
+   ],
+   [
+    54.82,
+    13.6
+   ]
+  ],
+  "duration": 211.07,
+  "path": "/mnt/datadisk/song/Death Note Theme Hip Hop Trap REMIX.mp3",
+  "period": 0.5573,
+  "tempo": 107.67,
+  "windows": [
+   {
+    "accents": [
+     96.85,
+     101.727,
+     102.864,
+     108.298,
+     108.878,
+     109.598,
+     112.361,
+     114.474,
+     115.101,
+     115.612,
+     119.56,
+     122.369
+    ],
+    "drop": 96.85,
+    "end": 123.36,
+    "short": "hell_mode_no_talent",
+    "start": 60.47
+   }
+  ]
+ },
+ "Even Though I Had Loved You English CoverJubyPhonicあいしていたのに.mp3": {
+  "drops": [
+   [
+    78.32,
+    37.4
+   ],
+   [
+    152.9,
+    27.7
+   ],
+   [
+    103.12,
+    23.8
+   ],
+   [
+    195.7,
+    18.5
+   ],
+   [
+    108.32,
+    17.2
+   ]
+  ],
+  "duration": 211.65,
+  "path": "/mnt/datadisk/song/Even Though I Had Loved You English CoverJubyPhonicあいしていたのに.mp3",
+  "tempo": 92.29
  },
  "FUNK POWER ULTRA SLOWED.mp3": {
   "drops": [
@@ -755,6 +881,33 @@
    }
   ]
  },
+ "Nightcore Savage lyrics.mp3": {
+  "drops": [
+   [
+    4.02,
+    62.6
+   ],
+   [
+    80.34,
+    31.3
+   ],
+   [
+    11.96,
+    25.3
+   ],
+   [
+    57.7,
+    19.6
+   ],
+   [
+    125.64,
+    19.3
+   ]
+  ],
+  "duration": 154.76,
+  "path": "/mnt/datadisk/song/Nightcore Savage lyrics.mp3",
+  "tempo": 107.67
+ },
  "The Other Side Of Paradise - Glass Anima.slowed_reverb.0.85.83ba233ba33f98e3.wav": {
   "drops": [
    [
@@ -850,6 +1003,81 @@
     "start": 11.042
    }
   ]
+ },
+ "and you dont seem to understand.mp3": {
+  "drops": [
+   [
+    72.12,
+    27.8
+   ],
+   [
+    26.15,
+    22.7
+   ],
+   [
+    83.48,
+    19.1
+   ],
+   [
+    38.08,
+    18.6
+   ],
+   [
+    49.09,
+    18.5
+   ]
+  ],
+  "duration": 157.11,
+  "path": "/mnt/datadisk/song/and you dont seem to understand.mp3",
+  "period": 0.7198,
+  "tempo": 83.35,
+  "windows": [
+   {
+    "accents": [
+     72.168,
+     75.697,
+     77.16,
+     78.576,
+     81.107,
+     85.705,
+     86.425,
+     88.631,
+     95.898,
+     97.408
+    ],
+    "drop": 72.168,
+    "end": 98.778,
+    "short": "smoking_not_friends",
+    "start": 30.868
+   }
+  ]
+ },
+ "Базовый минимум 𝘽𝙖𝙧𝙚 𝙈𝙞𝙣𝙞𝙢𝙪𝙢 𝙎𝘼𝘽𝙄 𝙈𝙄𝘼 𝘽𝙊𝙔𝙆.mp3": {
+  "drops": [
+   [
+    101.08,
+    21.8
+   ],
+   [
+    25.31,
+    20.6
+   ],
+   [
+    12.47,
+    18.0
+   ],
+   [
+    37.96,
+    15.4
+   ],
+   [
+    113.78,
+    15.1
+   ]
+  ],
+  "duration": 168.25,
+  "path": "/mnt/datadisk/song/Базовый минимум 𝘽𝙖𝙧𝙚 𝙈𝙞𝙣𝙞𝙢𝙪𝙢 𝙎𝘼𝘽𝙄 𝙈𝙄𝘼 𝘽𝙊𝙔𝙆.mp3",
+  "tempo": 152.0
  },
  "ᴏɴᴇ-ꜱɪᴅᴇᴅ ʟᴏᴠᴇ - ᴊᴀ.mp3": {
   "drops": [

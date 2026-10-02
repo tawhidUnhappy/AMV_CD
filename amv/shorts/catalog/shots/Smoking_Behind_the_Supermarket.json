@@ -237,6 +237,202 @@
   ],
   "verdict": "good"
  },
+ "05-1083.0": {
+  "at": 1083.0,
+  "crop_x": 0.292,
+  "episode": 5,
+  "file_name": "[SO] [05 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good"
+ },
+ "06-1311.0": {
+  "at": 1312.0,
+  "crop_x": 0.333,
+  "episode": 6,
+  "file_name": "[S01 E06] Smoking Behind the Supermarket [1080p ⌯ Multi] .mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good"
+ },
+ "06-299.8": {
+  "at": 300.5,
+  "crop_x": 0.26,
+  "episode": 6,
+  "file_name": "[S01 E06] Smoking Behind the Supermarket [1080p ⌯ Multi] .mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good"
+ },
+ "06-778.4": {
+  "at": 778.375,
+  "crop_x": 0.385,
+  "episode": 6,
+  "file_name": "[S01 E06] Smoking Behind the Supermarket [1080p ⌯ Multi] .mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good"
+ },
+ "08-1265.2": {
+  "at": 1266.625,
+  "crop_x": 0.469,
+  "episode": 8,
+  "file_name": "[S01 E08] Smoking Behind the Supermarket [1080p ⌯ Dual] .mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good"
+ },
+ "10-604.9": {
+  "at": 604.875,
+  "crop_x": 0.51,
+  "episode": 10,
+  "file_name": "[SO] [10 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good"
+ },
+ "11-1094.4": {
+  "at": 1094.375,
+  "crop_x": 0.75,
+  "episode": 11,
+  "file_name": "[SO] [11 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good"
+ },
+ "12-1118.78": {
+  "at": 1118.78,
+  "episode": 12,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 1126.88,
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good",
+  "why": "oh? there's a she? didn't realize you had a woman in your life"
+ },
+ "12-1143.91": {
+  "at": 1143.91,
+  "episode": 12,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 1157.67,
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good",
+  "why": "not mere acquaintances, not quite friends - a relationship that could fizzle out any moment"
+ },
+ "12-1144": {
+  "at": 1144.0,
+  "episode": 12,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 1177.2,
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good",
+  "why": "not just acquaintances, not close friends - a gust of wind could blow it away; but that girl lifts me up when I'm broken down, she keeps me going"
+ },
+ "12-1159.52": {
+  "at": 1159.52,
+  "episode": 12,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 1178.0,
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good",
+  "why": "but whenever I'm hunched over in shame, she says it's no big deal and pushes me back up straight"
+ },
+ "12-1179.69": {
+  "at": 1179.69,
+  "episode": 12,
+  "moods": [
+   "soft"
+  ],
+  "role": "story",
+  "until": 1191.6,
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good",
+  "why": "so she must be quite important to you. - Yes."
+ },
+ "12-1335.4": {
+  "at": 1335.75,
+  "crop_x": 0.635,
+  "episode": 12,
+  "file_name": "[SO] [12 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good"
+ },
+ "12-1343.6": {
+  "at": 1343.625,
+  "crop_x": 0.552,
+  "episode": 12,
+  "file_name": "[SO] [12 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drop",
+  "used_in": [
+   "smoking_not_friends"
+  ],
+  "verdict": "good"
+ },
  "12-210.1": {
   "at": 210.125,
   "crop_x": 0.5,
@@ -248,6 +444,20 @@
   "role": "drive",
   "used_in": [
    "smoking_two_faces"
+  ],
+  "verdict": "good"
+ },
+ "12-858.9": {
+  "at": 858.875,
+  "crop_x": 0.615,
+  "episode": 12,
+  "file_name": "[SO] [12 - Smoking Behind the Supermarket] [1080p] [Dual].mkv",
+  "moods": [
+   "soft"
+  ],
+  "role": "drive",
+  "used_in": [
+   "smoking_not_friends"
   ],
   "verdict": "good"
  }

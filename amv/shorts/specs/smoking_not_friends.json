@@ -1,0 +1,102 @@
+{
+ "name": "smoking_not_friends",
+ "about": "Smoking Behind the Supermarket story Short: an old colleague teases Sasaki about the woman in his life; he can't say what they are - not acquaintances, not quite friends, a thing that could fizzle out any moment - but whenever he's hunched over in shame she tells him it's no big deal and pushes him back up straight. The drop runs their evenings out back; he ends admitting she's important to him.",
+ "series": "Smoking_Behind_the_Supermarket",
+ "anime": "Smoking Behind the Supermarket with You",
+ "song": "/mnt/datadisk/song/and you dont seem to understand.mp3",
+ "drop": 72.12,
+ "seconds": "auto",
+ "mood": "soft",
+ "story": [
+  {
+   "ep": 12,
+   "from": 1118.72,
+   "to": 1126.4,
+   "why": "oh? there's a she? didn't realize you had a woman in your life"
+  },
+  {
+   "ep": 12,
+   "from": 1144.0,
+   "to": 1177.2,
+   "exact": true,
+   "why": "not just acquaintances, not close friends - a gust of wind could blow it away; but that girl lifts me up when I'm broken down, she keeps me going"
+  }
+ ],
+ "drop_shot": "12-1343.6",
+ "shots": [
+  "06-299.8",
+  "06-1311.0",
+  "05-1083.0",
+  "10-604.9",
+  "06-778.4",
+  "11-1094.4",
+  "12-858.9",
+  "08-1265.2",
+  "12-1335.4"
+ ],
+ "outro": [
+  {
+   "ep": 12,
+   "from": 1180.37,
+   "to": 1191.6,
+   "why": "so she must be quite important to you. - Yes."
+  }
+ ],
+ "hook_text": "They're *not even* friends...",
+ "title": "They're Not Even Friends... But She's The Reason He Keeps Going",
+ "hook": "Sasaki can't say what he and Tayama are - not acquaintances, not quite friends. But whenever he's ashamed, she's the one who tells him it's no big deal.",
+ "tags": [
+  "smokingbehindthesupermarket",
+  "tayama",
+  "sasaki",
+  "wholesome",
+  "animestory"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 12,
+    "t": 1170.0,
+    "x": 0.5,
+    "y": 0.4
+   },
+   {
+    "ep": 12,
+    "t": 1345.0,
+    "x": 0.6,
+    "y": 0.4
+   }
+  ],
+  "labels": [
+   {
+    "text": "NOT FRIENDS...",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 130
+   },
+   {
+    "text": "SHE'S EVERYTHING",
+    "at": [
+     0.5,
+     0.93
+    ],
+    "size": 130
+   },
+   {
+    "text": "BUT",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 160,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}

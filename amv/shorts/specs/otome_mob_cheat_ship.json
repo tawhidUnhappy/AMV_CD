@@ -1,0 +1,117 @@
+{
+ "name": "otome_mob_cheat_ship",
+ "about": "Otome Game Mob story Short: Leon's stepmother orders him into an arranged marriage with a woman three times his age who has buried seven husbands; with no future otherwise, he remembers he knows this game - all he needs is money - and claims the paid DLC cheat ship before the heroine can. The drop runs Luxion waking, the treasure and the fleet; he ends declining the marriage, rich.",
+ "series": "Otome_Game_Mob",
+ "anime": "Trapped in a Dating Sim: The World of Otome Games Is Tough for Mobs",
+ "song": "/mnt/datadisk/song/Arabian nights [JNo7VKu1bi4].wav",
+ "drop": 137.16,
+ "seconds": "auto",
+ "mood": "power",
+ "video_fx": [
+  "glow"
+ ],
+ "story": [
+  {
+   "ep": 1,
+   "from": 545.2,
+   "to": 564.8,
+   "why": "an arranged marriage - she's three times my age, married seven times, all seven husbands died in battle, she's after my survivor's pension",
+   "exact": true
+  },
+  {
+   "ep": 1,
+   "from": 625.6,
+   "to": 642.3,
+   "why": "unless I do something I have no future - I know this game - I just need money",
+   "exact": true
+  },
+  {
+   "ep": 1,
+   "from": 1147.5,
+   "to": 1160.4,
+   "why": "you're mine now - Luxion, name registered, Master",
+   "exact": true
+  }
+ ],
+ "drop_shot": "01-1081.4",
+ "shots": [
+  "01-887.0",
+  "01-146.2",
+  "01-1273.2",
+  "01-1276.0",
+  "09-722.6",
+  "11-409.2",
+  "11-800.1",
+  "08-871.4",
+  "08-927.8",
+  "11-1021.9",
+  "11-338.8",
+  "02-1174.4",
+  "11-791.4"
+ ],
+ "outro": [
+  {
+   "ep": 1,
+   "from": 1284.41,
+   "to": 1289.5,
+   "why": "having acquired a large amount of wealth, I declined Zora's marriage offer"
+  }
+ ],
+ "hook_text": "Forced to marry a woman *3x his age*",
+ "title": "Forced To Marry A Woman 3x His Age, He Takes The Game's CHEAT SHIP Instead",
+ "hook": "Reborn as a background mob, Leon is ordered to marry a woman three times his age who has buried seven husbands. Instead he uses what he knows of the game to claim its pay-to-win cheat ship, Luxion.",
+ "tags": [
+  "otomegamemob",
+  "leon",
+  "luxion",
+  "isekai",
+  "animestory"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 1,
+    "t": 557.5,
+    "x": 0.75,
+    "y": 0.45
+   },
+   {
+    "ep": 1,
+    "t": 1270.0,
+    "x": 0.45,
+    "y": 0.4
+   }
+  ],
+  "labels": [
+   {
+    "text": "MARRY HER?!",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 140
+   },
+   {
+    "text": "CHEAT SHIP",
+    "at": [
+     0.5,
+     0.93
+    ],
+    "size": 150
+   },
+   {
+    "text": "OR...",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 150,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}

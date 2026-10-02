@@ -160,6 +160,35 @@
    87.833
   ]
  },
+ "hell_mode_no_talent": {
+  "built": "2026-10-02",
+  "drop": 96.85,
+  "mood": "power",
+  "number": 22,
+  "series": "Hell_Mode",
+  "shots": [
+   "09-294.8",
+   "05-1215.1",
+   "05-1210.9",
+   "06-577.0",
+   "07-706.8",
+   "09-1008.0",
+   "08-535.0",
+   "08-612.0",
+   "10-370.9",
+   "09-1222.2",
+   "10-762.2",
+   "10-923.2",
+   "08-230.9",
+   "03-333.9"
+  ],
+  "song": "Death Note Theme Hip Hop Trap REMIX.mp3",
+  "spec": "amv/shorts/specs/hell_mode_no_talent.json",
+  "window": [
+   60.47,
+   123.36
+  ]
+ },
  "iruma_kalego_familiar": {
   "built": "2026-09-28",
   "drop": 64.946,
@@ -275,6 +304,35 @@
   "window": [
    64.706,
    120.696
+  ]
+ },
+ "otome_mob_cheat_ship": {
+  "built": "2026-10-02",
+  "drop": 137.183,
+  "mood": "power",
+  "number": 23,
+  "series": "Otome_Game_Mob",
+  "shots": [
+   "01-1081.4",
+   "01-887.0",
+   "01-146.2",
+   "01-1273.2",
+   "01-1276.0",
+   "09-722.6",
+   "11-409.2",
+   "11-800.1",
+   "08-871.4",
+   "08-927.8",
+   "11-1021.9",
+   "11-338.8",
+   "02-1174.4",
+   "11-791.4"
+  ],
+  "song": "Arabian nights [JNo7VKu1bi4].wav",
+  "spec": "amv/shorts/specs/otome_mob_cheat_ship.json",
+  "window": [
+   87.983,
+   154.673
   ]
  },
  "otome_mob_duel": {
@@ -488,6 +546,31 @@
   "window": [
    28.248,
    72.308
+  ]
+ },
+ "smoking_not_friends": {
+  "built": "2026-10-02",
+  "drop": 72.168,
+  "mood": "soft",
+  "number": 24,
+  "series": "Smoking_Behind_the_Supermarket",
+  "shots": [
+   "12-1343.6",
+   "06-299.8",
+   "06-1311.0",
+   "05-1083.0",
+   "10-604.9",
+   "06-778.4",
+   "11-1094.4",
+   "12-858.9",
+   "08-1265.2",
+   "12-1335.4"
+  ],
+  "song": "and you dont seem to understand.mp3",
+  "spec": "amv/shorts/specs/smoking_not_friends.json",
+  "window": [
+   30.868,
+   98.778
   ]
  },
  "smoking_two_faces": {

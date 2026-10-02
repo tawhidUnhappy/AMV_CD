@@ -228,6 +228,12 @@ def plan(spec: dict) -> tuple[dict, list[dict], object]:
         drive = (1 + len(spec.get("shots", []))) * every * probe.period + (0.6 if not outro_segs else 0.0)
         seconds = round(story_len + build_len + drive + outro_len + 0.3, 2)
     w = window(Path(spec["song"]), seconds, story_len + build_len, spec.get("drop"))
+    if w.drop - w.start < story_len + build_len - 0.05:
+        # window() clamps the start at 0 s: the montage would begin before the
+        # story ends (slots run backwards, the last shot stretched to fill).
+        raise SystemExit(f"{spec['name']}: the song has {w.drop - w.start:.1f} s before its drop at {w.drop:.2f} s, "
+                         f"the story + build need {story_len + build_len:.1f} s - pick a later drop "
+                         f"(./amv.sh short-song lists them) or a shorter story")
     mood = spec.get("mood", "power")
     drop_punch, accent_punch, shake, rgb = FORCE[mood]
     entries = [*({"role": "build", **_entry(s)} for s in spec.get("build_shots", [])),

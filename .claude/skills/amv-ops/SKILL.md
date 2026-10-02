@@ -227,6 +227,10 @@ frame (`ffmpeg -vf select=between(n,a,b),tile`), then rebuild.
 
 ## Traps that cost time before
 
+- **`./amv.sh` dies with "Failed to fetch https://pypi.org/simple/..."** when
+  PyPI is slow: `uv run --with-requirements` re-resolves every run. The light
+  env is cached, so `UV_OFFLINE=1 ./amv.sh ...` works (2026-10-02).
+
 - **`pkill -f <pattern>` matches your own shell** when the pattern is in the
   same command line - it killed the job it was meant to precede. Kill by PID.
 - **`rm` on `$VAR/...` is blocked** by a safety check; write `"${S:?}"/...`

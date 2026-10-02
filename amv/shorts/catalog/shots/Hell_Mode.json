@@ -69,6 +69,118 @@
   "verdict": "good",
   "why": "a demon's burning eyes"
  },
+ "02-393.46": {
+  "at": 393.46,
+  "episode": 2,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 399.44,
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good",
+  "why": "Krena has the talent of a Sword Lord, one of the best there is"
+ },
+ "02-429.98": {
+  "at": 429.98,
+  "episode": 2,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 436.65,
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good",
+  "why": "Allen: finally my parents will know that I'm a Summoner"
+ },
+ "02-459.04": {
+  "at": 459.04,
+  "episode": 2,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 470.0,
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good",
+  "why": "does he have a talent? ...he has no talent"
+ },
+ "02-472.6": {
+  "at": 472.6,
+  "episode": 2,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 485.37,
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good",
+  "why": "a text glitch, useless devs - now nobody will know I'm a summoner"
+ },
+ "03-1039.89": {
+  "at": 1039.89,
+  "episode": 3,
+  "moods": [
+   "power"
+  ],
+  "role": "story",
+  "until": 1050.5,
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good",
+  "why": "time to drop the act - a talentless serf like me can draw a little attention"
+ },
+ "03-333.9": {
+  "at": 334.0,
+  "crop_x": 0.375,
+  "episode": 3,
+  "file_name": "[SO] [03 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
+ "05-1210.9": {
+  "at": 1210.875,
+  "crop_x": 0.417,
+  "episode": 5,
+  "file_name": "[SO] [05 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
+ "05-1215.1": {
+  "at": 1215.125,
+  "crop_x": 0.76,
+  "episode": 5,
+  "file_name": "[SO] [05 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
  "05-414.5": {
   "at": 414.5,
   "episode": 5,
@@ -95,6 +207,20 @@
   "verdict": "good",
   "why": "a boar charging the camera"
  },
+ "06-577.0": {
+  "at": 577.0,
+  "crop_x": 0.833,
+  "episode": 6,
+  "file_name": "[SO] [06 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
  "07-1269.05": {
   "at": 1269.05,
   "episode": 7,
@@ -107,6 +233,20 @@
   ],
   "verdict": "good",
   "why": "a hawk swooping in"
+ },
+ "07-706.8": {
+  "at": 706.75,
+  "crop_x": 0.771,
+  "episode": 7,
+  "file_name": "[SO] [07 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
  },
  "08-1124.9": {
   "at": 1124.875,
@@ -123,6 +263,62 @@
   ],
   "verdict": "good"
  },
+ "08-230.9": {
+  "at": 231.0,
+  "crop_x": 0.573,
+  "episode": 8,
+  "file_name": "[SO] [08 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
+ "08-535.0": {
+  "at": 535.125,
+  "crop_x": 0.542,
+  "episode": 8,
+  "file_name": "[SO] [08 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
+ "08-612.0": {
+  "at": 612.125,
+  "crop_x": 0.656,
+  "episode": 8,
+  "file_name": "[SO] [08 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
+ "09-1008.0": {
+  "at": 1008.0,
+  "crop_x": 0.177,
+  "episode": 9,
+  "file_name": "[SO] [09 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
  "09-1138.5": {
   "at": 1138.5,
   "episode": 9,
@@ -136,6 +332,48 @@
   "verdict": "good",
   "why": "a rush in red"
  },
+ "09-1222.2": {
+  "at": 1222.25,
+  "crop_x": 0.542,
+  "episode": 9,
+  "file_name": "[SO] [09 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
+ "09-294.8": {
+  "at": 294.75,
+  "crop_x": 0.24,
+  "episode": 9,
+  "file_name": "[SO] [09 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drop",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
+ "10-370.9": {
+  "at": 370.875,
+  "crop_x": 0.594,
+  "episode": 10,
+  "file_name": "[SO] [10 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
  "10-730.4": {
   "at": 731.75,
   "crop_x": 0.167,
@@ -148,6 +386,34 @@
   "used_in": [
    "hell_mode_alquimia",
    "hell_mode_bring_it"
+  ],
+  "verdict": "good"
+ },
+ "10-762.2": {
+  "at": 762.25,
+  "crop_x": 0.604,
+  "episode": 10,
+  "file_name": "[SO] [10 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
+  ],
+  "verdict": "good"
+ },
+ "10-923.2": {
+  "at": 923.25,
+  "crop_x": 0.167,
+  "episode": 10,
+  "file_name": "[SO] [10 - HELL MODE The Hardcore Gamer] [1080p] [Dual].mkv",
+  "moods": [
+   "power"
+  ],
+  "role": "drive",
+  "used_in": [
+   "hell_mode_no_talent"
   ],
   "verdict": "good"
  },

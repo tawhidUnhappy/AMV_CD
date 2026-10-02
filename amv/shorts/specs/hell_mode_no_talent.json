@@ -1,0 +1,120 @@
+{
+ "name": "hell_mode_no_talent",
+ "about": "Hell Mode story Short: at the Appraisal Ceremony his childhood friend Krena is a Sword Lord, one of the best talents there is; Allen steps up sure his parents will finally learn he is a Summoner - and the reverend reads 'no talent', all E ranks, a text glitch nobody else can see. The drop runs what the 'talentless' serf summons; he ends deciding to drop the act.",
+ "series": "Hell_Mode",
+ "anime": "Hell Mode",
+ "song": "/mnt/datadisk/song/Death Note Theme Hip Hop Trap REMIX.mp3",
+ "drop": 96.8,
+ "seconds": "auto",
+ "mood": "power",
+ "video_fx": [
+  "glow"
+ ],
+ "story": [
+  {
+   "ep": 2,
+   "from": 393.6,
+   "to": 398.5,
+   "why": "Krena has the talent of a Sword Lord, one of the best there is"
+  },
+  {
+   "ep": 2,
+   "from": 432.6,
+   "to": 435.5,
+   "why": "Allen: finally my parents will know that I'm a Summoner"
+  },
+  {
+   "ep": 2,
+   "from": 459.4,
+   "to": 470.0,
+   "why": "does he have a talent? ...he has no talent"
+  },
+  {
+   "ep": 2,
+   "from": 473.2,
+   "to": 484.0,
+   "why": "a text glitch, useless devs - now nobody will know I'm a summoner"
+  }
+ ],
+ "drop_shot": "09-294.8",
+ "shots": [
+  "05-1215.1",
+  "05-1210.9",
+  "06-577.0",
+  "07-706.8",
+  "09-1008.0",
+  "08-535.0",
+  "08-612.0",
+  "10-370.9",
+  "09-1222.2",
+  "10-762.2",
+  "10-923.2",
+  "08-230.9",
+  "03-333.9"
+ ],
+ "outro": [
+  {
+   "ep": 3,
+   "from": 1039.89,
+   "to": 1050.5,
+   "why": "time to drop the act - a talentless serf like me can draw a little attention"
+  }
+ ],
+ "hook_text": "They said he had *no talent*",
+ "title": "His Friend Got The Best Talent There Is... He Got NONE - Hell Mode",
+ "hook": "Krena is appraised a Sword Lord. Allen, the reincarnated gamer who picked Hell Mode, is told he has no talent - all E ranks - because nobody can read the word Summoner.",
+ "tags": [
+  "hellmode",
+  "allen",
+  "summoner",
+  "isekai",
+  "animestory"
+ ],
+ "thumbnail": {
+  "panels": [
+   {
+    "ep": 2,
+    "t": 391.0,
+    "x": 0.3,
+    "y": 0.45
+   },
+   {
+    "ep": 2,
+    "t": 468.6,
+    "x": 0.6,
+    "y": 0.4
+   }
+  ],
+  "labels": [
+   {
+    "text": "SWORD LORD",
+    "at": [
+     0.5,
+     0.07
+    ],
+    "size": 140
+   },
+   {
+    "text": "NO TALENT?!",
+    "at": [
+     0.5,
+     0.93
+    ],
+    "size": 150
+   },
+   {
+    "text": "SAME VILLAGE",
+    "at": [
+     0.5,
+     0.5
+    ],
+    "size": 120,
+    "color": [
+     255,
+     255,
+     255
+    ]
+   }
+  ]
+ }
+}
