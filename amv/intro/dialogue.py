@@ -5,6 +5,9 @@ than by how the picture moves.
 Text tracks only (ASS/SRT) - cheap, no OCR, no torch. Of an episode's English
 text tracks the one with the most lines is taken: releases ship a signs-only
 track beside the dialogue (Re:Zero's first English track is "Signs & Songs").
+Typesetters animate a line as one event per frame (No Game No Life: 60 copies
+of one line in a second); runs of the same text that touch are merged into one
+line before the tracks are counted.
 A series without text subtitles falls back to the OCR'd scene index when it is
 the configured series (workspace/tmp/subs/scene_index.json), else has none.
 
@@ -38,6 +41,20 @@ def text_tracks(path: Path) -> list[int]:
             if s.get("codec_name") in TEXT_CODECS and s.get("tags", {}).get("language", "eng") in ("eng", "en")]
 
 
+def merge_runs(lines: list[dict], gap: float = 0.1) -> list[dict]:
+    """One line per run of identical text whose events touch or overlap."""
+    out: list[dict] = []
+    open_: dict[str, dict] = {}
+    for ln in sorted(lines, key=lambda ln: ln["start"]):
+        prev = open_.get(ln["text"])
+        if prev and ln["start"] <= prev["end"] + gap:
+            prev["end"] = max(prev["end"], ln["end"])
+            continue
+        open_[ln["text"]] = dict(ln)
+        out.append(open_[ln["text"]])
+    return out
+
+
 def extract(e: Episode) -> list[dict]:
     cache = CACHE / e.series / f"{e.number:03d}.json"
     if cache.exists():
@@ -50,8 +67,8 @@ def extract(e: Episode) -> list[dict]:
                                   capture_output=True)
             if done.returncode != 0 or not ass.exists():
                 continue
-            lines = [{"start": round(ev.start, 3), "end": round(ev.end, 3), "text": ev.text}
-                     for ev in parse_ass(ass, e.number) if ev.text.strip()]
+            lines = merge_runs([{"start": round(ev.start, 3), "end": round(ev.end, 3), "text": ev.text}
+                                for ev in parse_ass(ass, e.number) if ev.text.strip()])
             if len(lines) > len(best):
                 best = lines
     if not best and e.series == config.load().source_dir.name and paths.SCENE_INDEX.exists():

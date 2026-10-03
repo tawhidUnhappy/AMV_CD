@@ -247,6 +247,14 @@ Traps (all fixed in code; keep the rules):
   and a catalog shot from the 13 s hole (burned-in OP lyrics) got into a
   Short: repeat runs <= 20 s apart are merged (`library.REPEAT_MERGE_GAP`),
   and `short` refuses a spec shot inside a show's repeats.
+- A show folder with extras ("Show Special - 01", a movie "... [Dual Audio 2.0]")
+  was skipped whole ("episode numbers could not be told apart"): on a
+  collision the biggest same-prefix group keeps its numbers, every other
+  group k becomes 100k + n (a lone file 100k + 1); discover prints the mapping.
+- Typeset subtitles (one event per frame) flooded `dialogue --find` with 60
+  copies of a line: touching runs of the same text are merged (dialogue.merge_runs).
+- A config "project" whose folder is gone killed every command, Shorts too:
+  project.optional() now notes it and returns {}; only required() exits.
 - Song credits come from the file name "Title - Artist"; no " - " means an
   explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
 

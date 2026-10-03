@@ -59,12 +59,41 @@ REPEAT_PAD = 2.0
 REPEAT_MERGE_GAP = 20.0
 
 
-def episode_number(name: str) -> int | None:
+def _match(name: str) -> re.Match[str] | None:
     for pattern in EPISODE_PATTERNS:
         match = re.search(pattern, name)
         if match:
-            return int(match.group(1))
+            return match
     return None
+
+
+def episode_number(name: str) -> int | None:
+    match = _match(name)
+    return int(match.group(1)) if match else None
+
+
+# Extras beside the main run ("Show Special - 01", a movie "Show Zero [Dual
+# Audio 2.0]") collide with its numbers. When they do, the files are grouped by
+# the name before their number; the biggest group keeps its numbers and every
+# other group k (sorted by name) becomes EXTRAS_BASE * k + its number.
+EXTRAS_BASE = 100
+
+
+def number_files(paths: list[Path]) -> dict[Path, int]:
+    """Episode number per file; colliding extras moved to 101+, 201+, ..."""
+    found = {p: m for p in paths if (m := _match(p.name))}
+    numbers = {p: int(m.group(1)) for p, m in found.items()}
+    if len(set(numbers.values())) == len(numbers):
+        return numbers
+    groups: dict[str, list[Path]] = {}
+    for p, m in found.items():
+        groups.setdefault(p.name[:m.start(1)].strip(" -_.[").lower(), []).append(p)
+    main = max(groups, key=lambda g: (len(groups[g]), -len(g)))
+    extras = sorted(g for g in groups if g != main)
+    for k, g in enumerate(extras, 1):
+        for p in groups[g]:  # a lone file (a movie) is 1: its "number" is noise like "Audio 2.0"
+            numbers[p] = EXTRAS_BASE * k + (numbers[p] % EXTRAS_BASE if len(groups[g]) > 1 else 1)
+    return numbers
 
 
 @dataclass
@@ -91,12 +120,12 @@ class Episode:
 def discover(root: Path) -> dict[str, list[Episode]]:
     series: dict[str, list[Episode]] = {}
     for folder in sorted(p for p in root.iterdir() if p.is_dir()):
-        episodes = []
-        for path in sorted(folder.iterdir()):
-            if path.suffix.lower() in VIDEO_SUFFIXES:
-                number = episode_number(path.name)
-                if number is not None:
-                    episodes.append(Episode(folder.name, number, path))
+        videos = sorted(p for p in folder.iterdir() if p.suffix.lower() in VIDEO_SUFFIXES)
+        numbered = number_files(videos)
+        episodes = [Episode(folder.name, n, p) for p, n in numbered.items()]
+        for p, n in numbered.items():
+            if n > EXTRAS_BASE and n != episode_number(p.name):
+                print(f"{folder.name}: extra {p.name} -> episode {n}", flush=True)
         numbers = [e.number for e in episodes]
         if episodes and len(set(numbers)) == len(numbers):
             series[folder.name] = sorted(episodes, key=lambda e: e.number)

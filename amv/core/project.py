@@ -22,6 +22,7 @@ examples/project.example.json is a complete small one to copy.
 from __future__ import annotations
 
 import json
+import sys
 from functools import lru_cache
 from pathlib import Path
 
@@ -35,14 +36,16 @@ def folder(name: str | None = None) -> Path:
 
 @lru_cache(maxsize=1)
 def optional() -> dict:
-    """The active project's data; {} when none is configured."""
+    """The active project's data; {} when none is configured or its folder is
+    gone (commands that need one fail in required(); Shorts and intros don't)."""
     name = load().project
     if not name:
         return {}
     path = folder(name) / "project.json"
     if not path.is_file():
-        raise SystemExit(f"project {name!r}: {path} not found (config.json \"project\"; "
-                         "examples/project.example.json to start one)")
+        print(f"note: project {name!r}: {path} not found (config.json \"project\"; "
+              "examples/project.example.json to start one)", file=sys.stderr, flush=True)
+        return {}
     return json.loads(path.read_text(encoding="utf-8"))
 
 
