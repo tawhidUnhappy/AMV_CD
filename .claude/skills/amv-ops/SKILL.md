@@ -132,17 +132,27 @@ night scenes at luma < 0.1 read as gaps, replace rather than lift.
 
 ## YouTube Shorts (vertical, one show, one track) - `amv/shorts/`
 
-**Start here: `./amv.sh short-catalog`** - what earlier sessions already know
-(songs + drops, vetted/rejected shots per show with why/mood/crop, Shorts built).
-`short-catalog SHOW --mood dark [--sheet]` lists/draws the good shots to reuse.
+**Start here: index the show once, then choose parts by id** (2026-10-03,
+remanga-style; the owner asked for selection-only work, no hand-cutting):
 
 ```bash
-./amv.sh short-song SONG                         # drops (bass rise), window, hit grid, accents
-./amv.sh short-find SHOW --find REGEX [--motion N] [--episodes 11-12] --tag T
-#   -> workspace/tmp/shorts/pool/SHOW-T-NN.jpg: start/mid/end per shot, 9:16 crop drawn; LOOK at them
-./amv.sh short workspace/global/shorts/specs/NAME.json        # plan+render 1080x1920, review.jpg, title/description
-#   -> workspace/tmp/shorts/NAME/ and delivered to <shorts_dir>/SNNN_NAME/ (short.mp4, title.txt, description.txt)
+./amv.sh short-parts SHOW [--episodes 1-12]     # once per show: lines + shots per episode (~7 min/ep, cached)
+./amv.sh short-parts SHOW --find "hypernova|flugel"   # lines by what the DUB says, with ids
+./amv.sh short-parts SHOW --show 06L270-06L290        # read a stretch in order
+./amv.sh short-parts SHOW --sheet 06 --range 900-1200 # shot sheets with ids (used footage left out)
+./amv.sh short-song SONG                              # drops (bass rise), window, hit grid, accents
+./amv.sh short workspace/global/shorts/specs/NAME.json  # plan+render 1080x1920, review.jpg, title/description
 ```
+
+A spec lists ids: `"story": ["06L098-06L099", "06L280-06L283"]`, `"outro": ["06L289"]`,
+`"drop_shot": "06S113"`, `"shots": ["06S120", ...]` (old "EP-SECONDS" ids still work).
+Lines are sentence-sized, cut at the voice (not whisper's early word ends) and keep
+up to `line_tail` (config, 1.5 s) of the pause after them, so no word is clipped;
+a range plays as one continuous clip. `--find`/`--show` mark a line `[mid]` or
+`[runs-on]` when a scene may not END on it - `short` refuses those edges (and
+footage shown twice, in one Short or by another existing Short:
+parts/SHOW/used.json, ranges only - no build history is kept).
+The build separates only the chosen lines with the best separator (ensemble).
 
 Layout (default): the WHOLE 16:9 picture centred on a
 blurred, dimmed copy of itself (`build.LAYOUT`, renderer `remake.blur_fill`),
@@ -154,15 +164,10 @@ traps below only matter for "crop" or zoomed-in punches.
 played as-is with the ENGLISH dub + burned captions, then the beat-cut montage
 from the drop, then an outro line. Spec keys `story`, `outro`, `hook_text`,
 `thumbnail`, `"seconds": "auto"` (build.py docstring). Workflow per Short:
-1. `./amv.sh dialogue ROOT --series S --find REGEX` -> the lines that tell the
-   story (episode 1 usually holds the premise); print the stretch around them
-   to get from/to.
-2. `short-find SHOW --episodes a-b --find ... --motion N` -> montage shot ids;
-   read the sheets; FOCUSED regexes (a show's own name word can match 700+ shots).
-3. `short SPEC` - read the printed `dub:` line per scene. The dub is a
-   different script from the subtitles (whisper large-v3 transcribes it,
-   cached): when a scene starts/ends mid-sentence, read the words in
-   workspace/tmp/shorts/cache/dub.json and pin the scene with `"exact": true`.
+1. `short-parts SHOW --find ...` / `--show` -> the line ids that tell the story.
+2. `short-parts SHOW --sheet EP` -> montage shot ids (unused footage only).
+3. `short SPEC` - it refuses unclean scene edges and reused footage with the
+   reason; take the neighbouring line / another shot.
 4. `short-thumb SPEC --candidates EP:T:X,...` -> bare frames with a 0.1 grid;
    choose, then write labels (`at`/`to` read off the grid) or `panels` (a
    two-frame comparison: SAME GIRL?!, BEFORE / AFTER) and render.
@@ -265,6 +270,27 @@ Traps (all fixed in code; keep the rules):
   height and "y" does nothing: add "zoom" (1.3-1.5) to move it.
 - A wait loop `until ! pgrep -f "X"` matches its own command line and never ends;
   wait on a log line instead.
+- "Sentences don't finish" (2026-10-03): scenes ended on whisper's word end
+  times, which run early (the tail of "lose", "me" was cut), and hand-pinned
+  ends cut lines in two. Now: refine walks to whole sentences (punctuation, or
+  a >= 0.7 s pause - whisper often drops punctuation; "..." is a hesitation,
+  not an end); every cut is placed from the separated voice's envelope (first
+  silence, else the quietest instant before the next word); `short` REFUSES a
+  scene that starts/ends mid-sentence ("mid_sentence": true overrides) or
+  whose cut still falls in a loud voice ("cut_in_voice": true overrides).
+  Never split a scene inside a sentence to fix a caption - whisper may drop
+  the word next time and the split then cuts it out of the audio.
+- "Inconsistent vocal volume" (2026-10-03): one-pass loudnorm is dynamic and
+  never settles on clips of a few seconds (2.4 dB spread measured on S025).
+  Now each clip: measure (EBU R128) -> fixed gain -> light compressor ->
+  measure -> fixed gain = every clip exactly at -14 LUFS (build.level_chain).
+- Separator benchmark (2026-10-03, workspace/tmp/bench/): music-only metrics on
+  real clips can't rank separators (gaps hold uncaptioned voice); use
+  synthetic mixes (clean dub voice + INSTRUMENTAL music at 0 dB - songs with
+  singing are kept as "vocals" by every model) scored against each
+  separator's own output on the clean clip. Result: Demucs ft 8.63 dB mean,
+  RoFormers ~9.7, ensemble RoFormer x3 + Demucs 9.90 mean / best worst case.
+  Default separator is now "ensemble" (amv/plugins/ensemble, roformer).
 - Song credits come from the file name "Title - Artist"; no " - " means an
   explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
 

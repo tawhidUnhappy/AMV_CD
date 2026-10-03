@@ -21,6 +21,7 @@ Story Shorts (English dub + captions) add scenes played as they are:
      "hook_text": "She was *sold* to him",     # top line for the whole Short, *yellow*
      "anime_label": "Iruma-kun",               # the anime name above it (default: "anime"; "" hides)
      "spell": {"Shufie": "Schwi"},             # whisper's spelling of the show's names, fixed in captions
+                                               # (a scene may carry its own "spell" too: "3." -> "One.")
      "seconds": "auto",                        # story + a cut per N hits for each shot + outro
      "thumbnail": {"ep": 3, "t": 615.0, "lines": ["SHE WAS SOLD", "TO HIM"]}
 
@@ -77,8 +78,8 @@ import numpy as np
 from amv.intro.library import INDEX_FPS
 from amv.intro.montage import build as montage_plan
 from amv.intro.remake import render
-from amv.shorts import catalog, find
-from amv.shorts.song import analyse, find_drops, window
+from amv.shorts import catalog, find, parts
+from amv.shorts.song import window
 
 WIDTH, HEIGHT, FPS = 1080, 1920, 24
 # The picture sits centred on a blurred, dimmed copy of itself: the whole
@@ -101,14 +102,22 @@ RAMP = [[0, 1.7], [0.3, 0.7], [1, 1.0]]
 
 
 def respell(words: list[list], spell: dict[str, str]) -> list[list]:
-    """Spec "spell": {"Shufie": "Schwi"} - whisper's spelling of a show's own
-    names, corrected in the captions (punctuation and case around it kept)."""
+    """Spec/scene "spell": {"Shufie": "Schwi"} - whisper's spelling of a show's
+    own names, corrected in the captions (punctuation and case around it
+    kept). "word#n" targets only its nth occurrence ({"3.#2": "One."} when
+    whisper wrote both "Three" and "One" as "3.")."""
     if not spell:
         return words
     fix = {k.lower(): v for k, v in spell.items()}
+    seen: dict[str, int] = {}
     out = []
     for a, b, w in words:
         m = re.match(r"^(\W*)(.*?)(\W*)$", w)
+        n = seen[w.lower()] = seen.get(w.lower(), 0) + 1
+        whole = fix.get(f"{w.lower()}#{n}")
+        if whole is not None:
+            out.append([a, b, whole])
+            continue
         core = m.group(2)
         out.append([a, b, m.group(1) + fix.get(core.lower(), core) + m.group(3)])
     return out
@@ -209,17 +218,44 @@ def dub_segments(spec: dict, segs: list[dict]) -> list[dict]:
     eps = {x.number: x for x in load_show(spec["series"])}
     tracks = [story.audio_track(str(eps[g["ep"]].file)) for g in segs]
     # English dub: transcribe it (the dub is a different script from the subtitles).
-    jobs = [(str(eps[g["ep"]].file), stream, max(0.0, g["from"] - dub.PAD), g["to"] + dub.PAD)
-            for g, (stream, english) in zip(segs, tracks, strict=True) if english]
     voices = spec.get("dialogue_only", True)  # transcribe the separated voices: SFX masked words in the full mix
-    words = dub.transcribe(jobs, voices) if jobs else {}
+    pads = [[dub.PAD, dub.PAD] for _ in segs]
+
+    def window(i: int, g: dict, stream: int) -> tuple[str, int, float, float]:
+        return str(eps[g["ep"]].file), stream, max(0.0, g["from"] - pads[i][0]), g["to"] + pads[i][1]
+
     out = []
-    for g, (stream, english) in zip(segs, tracks, strict=True):
+    for i, (g, (stream, english)) in enumerate(zip(segs, tracks, strict=True)):
+        if g.get("parts"):  # from the parts index: whole lines, bounds and words already measured
+            out.append(g)
+            continue
         if english:
-            w = words[dub._key(str(eps[g["ep"]].file), stream, max(0.0, g["from"] - dub.PAD), g["to"] + dub.PAD,
-                               voices)]
-            start, end, kept = (g["from"], g["to"], [x for x in w if g["from"] <= (x[0] + x[1]) / 2 <= g["to"]]) \
-                if g.get("exact") else dub.refine(w, g["from"], g["to"])
+            # A sentence running past the transcribed window looks finished at
+            # its edge ("...materialization word" | the echo cut): widen and retry.
+            for _ in range(4):
+                file, _, t0, t1 = window(i, g, stream)
+                w = dub.transcribe([window(i, g, stream)], voices)[dub._key(file, stream, t0, t1, voices)]
+                start, end, kept = (g["from"], g["to"], [x for x in w if g["from"] <= (x[0] + x[1]) / 2 <= g["to"]]) \
+                    if g.get("exact") else dub.refine(w, g["from"], g["to"])
+                if not kept or not w:
+                    break
+                open_end = kept[-1] is w[-1] and not re.search(dub.SENTENCE_END, w[-1][2]) and t1 - w[-1][1] < 1.0
+                open_start = kept[0] is w[0] and t0 > 0 and w[0][0] - t0 < 1.0
+                if not (open_end or open_start):
+                    break
+                pads[i][1] += 4.0 if open_end else 0.0
+                pads[i][0] += 4.0 if open_start else 0.0
+            # A sentence cut in two plays as a mistake: refused unless the spec says so.
+            why = dub.mid_sentence(w, kept)
+            if why and not g.get("mid_sentence"):
+                raise SystemExit(f"ep{g['ep']} {g['from']:.2f}-{g['to']:.2f} {why}\n"
+                                 "  widen the scene (or drop \"exact\"), or set \"mid_sentence\": true on it")
+            if kept:  # the cut points from the voice itself, not whisper's (early) word ends
+                stem = dub.separate([{"file": file, "stream": stream, "src": t0, "dur": t1 - t0}])[0]
+                start, end, loud = dub.voice_bounds(dub.envelope(stem["file"]), t0 - stem["src"], w, kept)
+                if loud and not g.get("cut_in_voice"):
+                    raise SystemExit(f"ep{g['ep']} {g['from']:.2f}-{g['to']:.2f}: {loud}\n"
+                                     "  widen the scene, or set \"cut_in_voice\": true on it")
             out.append({**g, "from": start, "to": end, "words": kept, "stream": stream, "english": True})
             continue
         # No dub: the original voices, and the English SUBTITLES are both the
@@ -410,9 +446,39 @@ MUSIC_FULL = 0.55
 # left separated voices 4-10 LU under the montage, and a per-clip gain still
 # left a quick shout ("Wyvern Slash!") ~8 dB under the speech around it.
 DIALOGUE_LUFS = -14.0
-DIALOGUE_LRA = 5.0
+# How: ffmpeg's one-pass loudnorm is dynamic - its gain wanders over a clip
+# and it never settles on clips of a few seconds, so voices came out several
+# dB apart clip to clip. Now each clip is measured (EBU R128 integrated),
+# gained to the target, lightly compressed (even words within it: a quick
+# shout no longer sits under the speech around it), measured again and given
+# the last few dB - fixed gains, the same level for every clip.
+DIALOGUE_COMPRESS = "acompressor=threshold=0.079:ratio=2.5:attack=8:release=180:knee=4"
 # Music after the outro line, so the end fade (0.6 s) never cuts the last word.
 OUTRO_TAIL = 1.2
+
+
+def lufs(file: str, src: float, dur: float, af: str = "") -> float:
+    """Integrated loudness (EBU R128) of file[src:src+dur] after filter `af`;
+    a clip too short for the gated measure falls back to its mean level."""
+    chain = (af + "," if af else "") + "ebur128=framelog=quiet"
+    err = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-ss", f"{src:.3f}", "-t", f"{dur:.3f}", "-i", file,
+                          "-af", chain, "-f", "null", "-"], capture_output=True, text=True).stderr
+    found = re.findall(r"I:\s+(-?[\d.]+) LUFS", err)
+    if found and float(found[-1]) > -60:
+        return float(found[-1])
+    err = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-ss", f"{src:.3f}", "-t", f"{dur:.3f}", "-i", file,
+                          "-af", (af + "," if af else "") + "volumedetect", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    found = re.findall(r"mean_volume:\s+(-?[\d.]+) dB", err)
+    return float(found[-1]) if found else -30.0
+
+
+def level_chain(clip: dict, target: float) -> str:
+    """The filter that puts one dialogue clip at `target` LUFS: gain, compress, gain."""
+    g1 = max(-30.0, min(40.0, target - lufs(clip["file"], clip["src"], clip["dur"])))
+    pre = f"volume={g1:.2f}dB,{DIALOGUE_COMPRESS}"
+    g2 = max(-12.0, min(12.0, target - lufs(clip["file"], clip["src"], clip["dur"], pre)))
+    return f"{pre},volume={g2:.2f}dB"
 
 
 def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, story_len: float,
@@ -435,7 +501,8 @@ def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, s
             clips.append({"file": file, "stream": g["stream"], "src": g["from"], "at": round(t, 3),
                           "dur": round(dur, 3), **({"gain": g["gain"]} if "gain" in g else {})})
             if g.get("words"):  # what the dub says (subtitle tracks are a different script)
-                captions += dub.captions(respell(g["words"], spec.get("spell", {})), g["from"], t)
+                captions += dub.captions(respell(g["words"], {**spec.get("spell", {}), **g.get("spell", {})}),
+                                         g["from"], t)
             else:
                 for ln in story.lines(spec["series"], g["ep"], g["from"], g["to"]):
                     captions.append({"start": t + ln["start"] - g["from"], "end": t + ln["end"] - g["from"],
@@ -443,8 +510,8 @@ def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, s
             t += dur
     if spec.get("dialogue_only", True):  # voices only: the episode's own music/effects removed
         clips = dub.separate(clips)
-    level = {"I": float(spec.get("dialogue_lufs", DIALOGUE_LUFS)), "LRA": DIALOGUE_LRA}
-    clips = [c if "gain" in c else {**c, "level": level} for c in clips]  # an explicit gain opts out
+    target = float(spec.get("dialogue_lufs", DIALOGUE_LUFS))
+    clips = [c if "gain" in c else {**c, "af": level_chain(c, target)} for c in clips]  # an explicit gain opts out
     gain = [[0.0, UNDER_DIALOGUE]]
     if story_segs:
         gain += [[max(0.0, story_len - 0.2), UNDER_DIALOGUE]]
@@ -526,7 +593,7 @@ def main() -> None:
                              "shorts_dir; see amv.shorts.deliver)")
     parser.add_argument("--no-deliver", action="store_true", help="render into workspace/tmp/shorts/NAME/ only")
     args = parser.parse_args()
-    spec = json.loads(args.spec.read_text(encoding="utf-8"))
+    spec = parts.expand(json.loads(args.spec.read_text(encoding="utf-8")))  # part ids -> scenes / moments
     if spec.get("song_fx"):  # slowed+reverb / nightcore: the processed song IS the song from here on
         from amv.shorts.fx import song_fx
 
@@ -545,13 +612,10 @@ def main() -> None:
         print(f"  {a:6.2f}-{b:6.2f} {it['role']:5s} {it['id']:10s} at {it['at']:8.2f} x{it['need']:.2f}s "
               f"speed {it['speed']:.2f} crop {s['center']} {'ACCENT' if it['accent'] else ''} "
               f"{json.dumps(s.get('in', {}))} {json.dumps(s.get('out', {}))}")
+    # No footage twice: within this Short, or across the Shorts that exist.
+    used_here = parts.ranges(spec["series"], segs, items)
+    parts.check_unique(spec["series"], spec["name"], used_here)
     catalog.record_short(spec, args.spec, items, w)
-    for g in segs:
-        catalog.update_shot(spec["series"], catalog.moment_id(g["ep"], g["from"]), episode=g["ep"], at=g["from"],
-                            until=g["to"], why=g.get("why"), role="story", verdict="good",
-                            moods=[spec.get("mood", "power")], used_in=[spec["name"]])
-    a = analyse(Path(spec["song"]))
-    catalog.record_song(Path(spec["song"]), find_drops(Path(spec["song"])), a["tempo"], a["duration"])
     out_dir = find.SHORTS / spec["name"]
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "montage.json").write_text(json.dumps(montage, indent=1), encoding="utf-8")
@@ -579,6 +643,7 @@ def main() -> None:
         from amv.shorts.thumb import thumbnail
 
         print(f"Wrote {thumbnail(spec, out_dir / 'thumbnail.jpg')}")
+    parts.mark_used(spec["series"], spec["name"], used_here)
     if not args.no_deliver:
         from amv.shorts.deliver import deliver
 

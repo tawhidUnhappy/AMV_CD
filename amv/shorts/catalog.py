@@ -129,26 +129,16 @@ def spec_path(ref: str) -> Path:
 
 
 def record_short(spec: dict, spec_path: Path, items: list[dict], w) -> None:
-    """Called by `short` after planning: the song window and every shot used."""
-    mood = spec.get("mood", "power")
-    for it in items:
-        shot = it["shot"]
-        update_shot(spec["series"], it["id"], episode=shot.episode, file_name=Path(shot.file).name,
-                    at=it["at"], crop_x=round(it["focus"][0], 3), x=it.get("x"), why=it.get("why"),
-                    moods=[mood], used_in=[spec["name"]], verdict="good", role=it["role"])
+    """Called by `short`: the Short's entry in shorts.json - its permanent
+    number, series, spec, song, date. Nothing else is kept per build (a
+    growing history of every shot ever used became the bottleneck); which
+    footage a Short shows lives in parts/<Show>/used.json as time ranges."""
     with _LOCK:
-        songs = _read(CATALOG / "songs.json")
-        name = Path(spec["song"]).name
-        entry = songs.setdefault(name, {})
-        entry.update({"period": w.period, "path": spec["song"]})
-        used = [u for u in entry.get("windows", []) if u["short"] != spec["name"]]
-        entry["windows"] = [*used, {"short": spec["name"], "start": w.start, "drop": w.drop, "end": w.end,
-                                    "accents": w.accents}]
-        _write(CATALOG / "songs.json", songs)
         built = _read(CATALOG / "shorts.json")
-        built[spec["name"]] = {**built.get(spec["name"], {}), "spec": spec_ref(spec_path), "series": spec["series"], "song": name, "mood": mood,
-                               "window": [w.start, w.end], "drop": w.drop, "shots": [it["id"] for it in items],
-                               "built": dt.date.today().isoformat()}
+        old = built.get(spec["name"], {})
+        built[spec["name"]] = {**({"number": old["number"]} if old.get("number") else {}),
+                               "spec": spec_ref(spec_path), "series": spec["series"],
+                               "song": Path(spec["song"]).name, "built": dt.date.today().isoformat()}
         _write(CATALOG / "shorts.json", built)
 
 

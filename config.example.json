@@ -1,26 +1,37 @@
 {
   "_comment": "Copy this file to config.json and edit. Paths may be absolute or relative to the repo root; ~ and environment variables are expanded. config.json and everything in workspace/ (your projects, specs, catalog, outputs, caches) are yours and never committed.",
-
   "workspace_dir": "workspace",
   "project": "my_edit",
-
   "source_dir": "~/Videos/My Series Season 1",
   "episode_pattern": "(?:Ep[-_ ]?|E|Episode[ _])(\\d{1,3})",
   "song": "workspace/projects/my_edit/song.mp3",
-
   "library_dir": "~/Videos/anime",
   "shorts_dir": "",
-
   "lyric_font_file": "assets/lyric.ttf",
   "lyric_font_family": "Georgia",
   "lyric_font_bold": true,
-
   "width": 1920,
   "height": 1080,
   "fps": "24000/1001",
-
-  "separator": "demucs",
-  "separators": {"demucs": {"model": "htdemucs_ft"}},
+  "separator": "ensemble",
+  "separators": {
+    "ensemble": {
+      "members": {
+        "roformer": 3,
+        "demucs": 1
+      }
+    },
+    "roformer": {
+      "overlap": 8
+    },
+    "demucs": {
+      "model": "htdemucs_ft"
+    }
+  },
   "transcriber": "faster_whisper",
-  "transcribers": {"faster_whisper": {"model": "large-v3"}}
+  "transcribers": {
+    "faster_whisper": {
+      "model": "large-v3"
+    }
+  }
 }

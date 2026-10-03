@@ -136,15 +136,17 @@ Vertical 1080x1920 beat-cut edits of one show to one track, with title.txt and
 description.txt:
 
 ```bash
-./amv.sh short-catalog                       # what is already known (songs, vetted shots, Shorts built)
+./amv.sh short-parts Re_Zero                 # index once: every dub line + every shot, with ids
+./amv.sh short-parts Re_Zero --find "kill|why"        # line ids by what is said
+./amv.sh short-parts Re_Zero --sheet 08               # shot sheets with ids
 ./amv.sh short-song "path/to/track.mp3"      # the drop, the window, the bass-hit grid
-./amv.sh short-find Re_Zero --find "kill|why" --motion 30 --tag dark   # candidate sheets, crop drawn
 ./amv.sh short workspace/global/shorts/specs/NAME.json  # render -> workspace/tmp/shorts/NAME/, copy to <shorts_dir>/SNNN_NAME/
 ```
 
-The spec only lists shot ids; slots, crop, speed and effects are derived.
-`workspace/global/shorts/catalog/` (yours, not committed): every build records the song window and each
-shot it used, so the next edit starts from vetted footage.
+A spec only lists part ids (`"story": ["08L040-08L044"]`, `"shots": ["08S113", ...]`);
+cut points, slots, crop, speed, effects, separation and loudness are derived. The
+build refuses a scene that would cut a sentence or a voice, and footage used twice
+(in the Short, or by another Short that exists).
 
 ### Channel intro
 

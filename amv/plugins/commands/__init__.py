@@ -33,6 +33,7 @@ _COMMANDS = (
     ('extras', 'dialogue', 'amv.intro.dialogue', False, "every show's subtitle lines, cached; --find REGEX to search them"),
     ('extras', 'flow', 'amv.intro.flow', False, 'which way each shot of a pool moves at its start and end (for flowing cuts)'),
     ('extras', 'montage', 'amv.intro.montage', False, 'render an editor-style montage from a shot list (dissolves, punches)'),
+    ('shorts', 'short-parts', 'amv.shorts.parts', False, "a show's lines + shots indexed once; --find/--show/--sheet to pick ids"),
     ('shorts', 'short-song', 'amv.shorts.song', False, "where a track drops, the Short's window and its bass-hit grid"),
     ('shorts', 'short-find', 'amv.shorts.find', False, 'candidate shots of a show (dialogue + motion) and sheets with the 9:16 crop'),
     ('shorts', 'short', 'amv.shorts.build', False, 'a vertical Short from a spec: plan, crop, effects, render, title/description'),

@@ -42,7 +42,18 @@ add it here with the date and commit it with the code.
   captions -> beat-cut montage from the song's drop -> an outro line.
   **No music-only Shorts** (2026-09-28) - every Short has the anime's own voices.
 - **Voices only** (2026-10-02): the episode's background music/effects are
-  stripped from dialogue (Demucs separator, htdemucs_ft). Keep it on.
+  stripped from dialogue. Keep it on. **Best separator regardless of compute**
+  (2026-10-03): the "ensemble" separator (3 RoFormers + Demucs, ~4x Demucs time).
+- **Every line finishes** (2026-10-03): no scene may cut a sentence or a word;
+  all dialogue clips at the same loudness (fixed per-clip gain, not loudnorm).
+- **Automate, then only choose** (2026-10-03): index a show once
+  (`short-parts`), then a Short is ids picked from the JSON (remanga-style) -
+  no hand-pinned times, no frame-by-frame review; the tool refuses bad cuts.
+  Lines keep 1-3 s after their end (`line_tail`, 1.5) so nothing is clipped.
+- **No footage twice** (2026-10-03): never the same clip twice in a Short or
+  across Shorts (enforced by `short`).
+- **No long build history** (2026-10-03): it becomes a bottleneck - keep only
+  what is needed now (Short numbers, used time ranges), not per-build logs.
 - Layout (2026-09-26): the whole 16:9 picture centred on a blurred, dimmed
   copy of itself - never a full-screen 9:16 crop.
 - The anime's name is written at the top of every Short (2026-10-02), above

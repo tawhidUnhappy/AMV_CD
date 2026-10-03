@@ -17,7 +17,7 @@ Plan:
                # optional: the music's volume envelope, and episode audio laid on it
                "music_gain": [[0, 0.2], [9.5, 0.2], [10.0, 1.0]],
                "clips": [{"file": "...mkv", "stream": 1, "src": 612.4, "at": 0.0, "dur": 6.5,
-                          "gain": 1.0, "level": {"I": -14, "LRA": 5}}]},   # level: optional loudnorm
+                          "gain": 1.0, "level": {"I": -14, "LRA": 5}, "af": "..."}]},   # level: optional loudnorm; af: extra filters
      "subtitles": "path/to/captions.ass"}       # optional: burned in (its folder is the fontsdir)
 
 `n` is the episode's frame number (0 = its first frame at 24000/1001). A
@@ -331,7 +331,7 @@ def render(plan: dict, out: Path) -> Path:
             ms = round(clip["at"] * 1000)
             graph += (f";[{idx}:a:{clip['stream']}]atrim=0:{clip['dur']:.3f},asetpts=PTS-STARTPTS,"
                       + (f"loudnorm=I={clip['level']['I']}:LRA={clip['level']['LRA']}:TP=-1.5,"
-                         if clip.get("level") else "") +
+                         if clip.get("level") else "") + (f"{clip['af']}," if clip.get("af") else "") +
                       f"aformat=sample_rates=48000:channel_layouts=stereo,volume={clip.get('gain', 1.0)},"
                       f"afade=t=in:d=0.04,afade=t=out:st={max(0.0, clip['dur'] - 0.08):.3f}:d=0.08,"
                       f"adelay={ms}|{ms}[c{k}]")
