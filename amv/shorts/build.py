@@ -20,6 +20,7 @@ Story Shorts (English dub + captions) add scenes played as they are:
      "outro": [{"ep": 12, "from": 1500.2, "to": 1503.0}],                  # after the montage
      "hook_text": "She was *sold* to him",     # top line for the whole Short, *yellow*
      "anime_label": "Iruma-kun",               # the anime name above it (default: "anime"; "" hides)
+     "spell": {"Shufie": "Schwi"},             # whisper's spelling of the show's names, fixed in captions
      "seconds": "auto",                        # story + a cut per N hits for each shot + outro
      "thumbnail": {"ep": 3, "t": 615.0, "lines": ["SHE WAS SOLD", "TO HIM"]}
 
@@ -66,6 +67,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -96,6 +98,20 @@ LOOKS = {
 FORCE = {"power": (1.35, 1.16, 0.02, 14), "dark": (1.3, 1.14, 0.018, 12), "soft": (1.18, 1.07, 0.008, 6)}
 IMPACT = [[0, 0.15], [0.12, 0.15], [0.3, 1.0], [1, 1.0]]
 RAMP = [[0, 1.7], [0.3, 0.7], [1, 1.0]]
+
+
+def respell(words: list[list], spell: dict[str, str]) -> list[list]:
+    """Spec "spell": {"Shufie": "Schwi"} - whisper's spelling of a show's own
+    names, corrected in the captions (punctuation and case around it kept)."""
+    if not spell:
+        return words
+    fix = {k.lower(): v for k, v in spell.items()}
+    out = []
+    for a, b, w in words:
+        m = re.match(r"^(\W*)(.*?)(\W*)$", w)
+        core = m.group(2)
+        out.append([a, b, m.group(1) + fix.get(core.lower(), core) + m.group(3)])
+    return out
 
 
 def mean_speed(keys: list[list[float]] | None, steps: int = 200) -> float:
@@ -419,7 +435,7 @@ def story_audio(spec: dict, story_segs: list[dict], outro_segs: list[dict], w, s
             clips.append({"file": file, "stream": g["stream"], "src": g["from"], "at": round(t, 3),
                           "dur": round(dur, 3), **({"gain": g["gain"]} if "gain" in g else {})})
             if g.get("words"):  # what the dub says (subtitle tracks are a different script)
-                captions += dub.captions(g["words"], g["from"], t)
+                captions += dub.captions(respell(g["words"], spec.get("spell", {})), g["from"], t)
             else:
                 for ln in story.lines(spec["series"], g["ep"], g["from"], g["to"]):
                     captions.append({"start": t + ln["start"] - g["from"], "end": t + ln["end"] - g["from"],

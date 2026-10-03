@@ -255,6 +255,16 @@ Traps (all fixed in code; keep the rules):
   copies of a line: touching runs of the same text are merged (dialogue.merge_runs).
 - A config "project" whose folder is gone killed every command, Shorts too:
   project.optional() now notes it and returns {}; only required() exits.
+- Whisper misspells a show's own names ("Shufie"/"Shuby" for Schwi) and
+  hears a number word as a digit; hotwords (initial bias) were tried and made
+  the rest of the line worse: spec "spell" {"Shufie": "Schwi"} fixes captions;
+  a wrong digit is cut out by splitting the scene around it.
+- A dub may not voice what the subtitles show (NGNL's emails and "Disboard!"
+  are on-screen text / differently worded): read the `dub:` line, pin `exact`.
+- Thumbnail panels are ~1:1 bands, so a panel crop already uses the full frame
+  height and "y" does nothing: add "zoom" (1.3-1.5) to move it.
+- A wait loop `until ! pgrep -f "X"` matches its own command line and never ends;
+  wait on a log line instead.
 - Song credits come from the file name "Title - Artist"; no " - " means an
   explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
 

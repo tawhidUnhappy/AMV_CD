@@ -76,6 +76,11 @@ add it here with the date and commit it with the code.
   characters: look at every pick (strip), blacklist on sight.
 - **Re:Zero** (Director's Cut) ep08 2140-2690 s: Petelgeuse + Subaru's
   breakdown (dark/evil intros).
+- **No Game No Life** (`NoGameNoLife`): episodes 1-12, the Zero movie is
+  episode 101 (dual audio), specials 201-206 are Japanese-only. Subtitles are
+  typeset per frame (merged by dialogue). Fanservice involving Shiro (11) and
+  others: ep 7 bath (07-22 to 07-60), ep 6 1031.8 (circular-breathing kiss),
+  ep 6 1175.4, Zero 4640.5/4676.9/5359.0 - never use. Built: S025-S028.
 - **Rich_Girl_Caretaker**: Japanese audio only - keeps original voices with
   English subtitles as captions.
 - **Smoking_Behind_the_Supermarket**: "smok" matches 705 shots - use focused
