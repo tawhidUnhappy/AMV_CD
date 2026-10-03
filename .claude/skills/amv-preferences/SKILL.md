@@ -24,7 +24,10 @@ add it here with the date and commit it with the code.
 
 - Anime library: `/mnt/datadisk/anime/<Show_Name>/`, one folder per show
   (regroup any download dir that way). `config.json` "library_dir".
-- Songs: `/mnt/datadisk/song/`; royalty-free tracks: `/mnt/datadisk/background_music/`.
+- Songs: `/mnt/datadisk/song/` holds only royalty-free / no-copyright tracks;
+  label/commercial songs, covers, nightcore and phonk edits (Content ID claims) are in
+  `/mnt/datadisk/song/copyright_risk_short_clip_only/` (2026-10-03) - use a short part only.
+  Royalty-free tracks also in `/mnt/datadisk/background_music/`.
 - Everything I make in AMV_CD is in `AMV_CD/workspace/` (one folder, like remanga):
   projects, Short specs + catalog (`global/`), delivered Shorts (`output/shorts/`), caches (`tmp/`).
 - Whisper weights: `/mnt/datadisk/remanga/checkpoints/faster_whisper_large_v3`
