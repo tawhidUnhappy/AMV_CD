@@ -29,6 +29,14 @@
     }
   },
   "blender": "",
+  "song_generator": "ace_step",
+  "song_generators": {
+    "ace_step": {
+      "lm": "auto",
+      "format": "wav"
+    }
+  },
+  "tools": {},
   "transcriber": "faster_whisper",
   "transcribers": {
     "faster_whisper": {

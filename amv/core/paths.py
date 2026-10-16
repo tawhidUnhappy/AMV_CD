@@ -56,6 +56,10 @@ QA = TMP / "qa"
 # The channel intro (amv.intro), kept apart from the full AMV's files
 INTRO = TMP / "intro"
 
+# Tools that set themselves up (their own repo + environment + models), and new songs
+TOOLS = load().workspace / "tools"
+SONGS = load().workspace / "output" / "songs"
+
 # Blender (amv.blender): the downloaded MCP add-on and song analyses for keyframing
 BLENDER = TMP / "blender"
 

@@ -4,6 +4,7 @@ nothing heavy.
 
     command      Command     - a `./amv.sh <name>` command
     tool         Tool        - an isolated uv environment a worker runs in
+    song_generator SongGenerator - makes a new song from a prompt (+ lyrics)
     separator    Separator   - pulls the voices out of a dialogue clip
     transcriber  Transcriber - word timings of spoken audio
     song_fx      SongFx      - a whole-song effect (slowed, nightcore, ...)
@@ -35,13 +36,23 @@ class Command:
 class Tool:
     """An isolated environment: `uv run --no-project --python <python>
     --with <each package>` - built on first use, cached by uv, never touching
-    the project's own environment. `worker` is the path of the script it runs."""
+    the project's own environment. `worker` is the path of the script it runs.
+
+    A tool that cannot be a package list (its own repo, lock file, weights)
+    sets itself up instead, like remanga's tools: `install` is (settings,
+    force) -> None and builds its environment, `weights` is (settings) -> None
+    and fetches its models, `interpreter` is (settings) -> Path of the python
+    the worker runs on. Each is quick when already done. Settings come from
+    config.json "tools": {name: {...}}; `./amv.sh tool-setup` runs both."""
 
     name: str
     packages: tuple[str, ...]
     worker: str
     python: str = "3.12"
     order: int = 100
+    install: Ref = None
+    weights: Ref = None
+    interpreter: Ref = None
 
 
 @dataclass(frozen=True)
@@ -90,4 +101,18 @@ class VideoFx:
     summary: str
     apply: Ref
     defaults: dict = field(default_factory=dict)
+    order: int = 100
+
+
+@dataclass(frozen=True)
+class SongGenerator:
+    """A new song from a description. `generate` is (request, settings) ->
+    {"files": [paths], ...}; request holds prompt, lyrics, instrumental,
+    duration, bpm, key, language, count, seed and out_dir (amv.audio.song_gen).
+    config.json "song_generator" picks one; settings come from
+    config.json "song_generators": {name: {...}}."""
+
+    name: str
+    summary: str
+    generate: Ref
     order: int = 100

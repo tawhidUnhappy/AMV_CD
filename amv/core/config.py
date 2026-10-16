@@ -56,6 +56,9 @@ DEFAULTS: dict = {
     "separators": {},
     "transcriber": "",
     "transcribers": {},
+    "song_generator": "",
+    "song_generators": {},
+    "tools": {},
     # the Blender executable for amv.blender (default: found on PATH / the usual install places)
     "blender": "",
 }

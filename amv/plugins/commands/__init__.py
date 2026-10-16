@@ -11,6 +11,7 @@ _COMMANDS = (
     ('song', 'vocals', 'amv.audio.isolate_vocals', True, 'Demucs -> workspace/tmp/song/vocals.wav'),
     ('song', 'transcribe', 'amv.audio.transcribe_song', True, 'WhisperX word timings of the vocal stem'),
     ('song', 'beats', 'amv.audio.beats', False, 'librosa beat grid -> workspace/tmp/song/beats.json'),
+    ('song', 'song-gen', 'amv.audio.song_gen', False, 'a NEW song from a prompt (+ lyrics): ACE-Step 1.5 -> workspace/output/songs/'),
     ('song', 'words', 'amv.subs.dump_words', False, 'numbered transcript words, for writing amv/audio/lyrics.py'),
     ('source', 'subs', 'amv.subs.extract_subs', True, 'episode subtitles (OCR for bitmap tracks) -> scene index'),
     ('the edit', 'timeline', 'amv.render.timeline', False, 'print the cut schedule'),
@@ -44,6 +45,7 @@ _COMMANDS = (
     ('blender', 'blender-beats', 'amv.blender.beats', False, "a song's beats, hits, sections + bass/mid/high per frame, for keyframing"),
     ('upkeep', 'config', 'amv.core.config', False, 'print the resolved config.json'),
     ('upkeep', 'regress', 'amv.core.regress', False, 'snapshot / check pipeline outputs around a refactor'),
+    ('upkeep', 'tool-setup', 'amv.core.tool_setup', False, 'build tool environments + fetch their models ahead of first use'),
     ("upkeep", "plugins", "amv.plugins.cli", False, "every installed plug-in, by kind, and any that failed to load"),
 )
 

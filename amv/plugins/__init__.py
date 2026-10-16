@@ -7,6 +7,7 @@ in the pipeline names a particular engine or effect.
     tool         an isolated uv environment (Tool)             demucs, faster_whisper
     separator    voices out of a dialogue clip (Separator)     demucs
     transcriber  word timings of speech (Transcriber)          faster_whisper
+    song_generator  a new song from a prompt (SongGenerator)   ace_step
     song_fx      a whole-song effect (SongFx)                  song_fx: slowed_reverb, slowed, nightcore, sped_up
     video_fx     a picture effect (VideoFx)                    video_fx: outline, glow, grain
 
@@ -18,9 +19,9 @@ see _loader.py and plugins/README.md. `./amv.sh plugins` lists them all."""
 
 from __future__ import annotations
 
-from amv.plugins._kinds import Command, Separator, SongFx, Tool, Transcriber, VideoFx
+from amv.plugins._kinds import Command, Separator, SongFx, SongGenerator, Tool, Transcriber, VideoFx
 from amv.plugins._loader import failures, load
 from amv.plugins._registry import KINDS, call, find, get, items, names, origin, register, resolve
 
-__all__ = ["KINDS", "Command", "Separator", "SongFx", "Tool", "Transcriber", "VideoFx", "call", "failures",
+__all__ = ["KINDS", "Command", "Separator", "SongFx", "SongGenerator", "Tool", "Transcriber", "VideoFx", "call", "failures",
            "find", "get", "items", "load", "names", "origin", "register", "resolve"]

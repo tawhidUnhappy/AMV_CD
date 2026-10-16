@@ -22,6 +22,7 @@ The kinds, and what each one describes (full field list in
 | `tool`        | `Tool`        | an isolated uv env per worker: `demucs`, `faster_whisper` |
 | `separator`   | `Separator`   | `amv/plugins/demucs/` - voices out of dialogue     |
 | `transcriber` | `Transcriber` | `amv/plugins/faster_whisper/` - dub word timings   |
+| `song_generator` | `SongGenerator` | `amv/plugins/ace_step/` - new songs from a prompt |
 | `song_fx`     | `SongFx`      | `amv/plugins/song_fx/` - slowed_reverb, nightcore  |
 | `video_fx`    | `VideoFx`     | `amv/plugins/video_fx/` - outline, glow, grain     |
 

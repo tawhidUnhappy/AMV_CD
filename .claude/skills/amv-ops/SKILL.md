@@ -39,14 +39,18 @@ The repo is code only. Everything a user makes is in ONE gitignored folder,
   songs, Shorts built), `intro/{picks,montages,remakes,blacklist.json}`.
 - `workspace/output/shorts/` - delivered Shorts.
 - `workspace/tmp/` - every generated file and cache (`amv.core.paths`).
+- `workspace/tools/<name>/` - a tool that sets itself up (its repo, venv, models; ace_step ~20 GB).
+  Not a cache: deleting tmp/ leaves it. `workspace/output/songs/` - songs made by `song-gen`.
 - `examples/` (tracked) - `project.example.json`, `short.example.json`.
 
 **Plug-ins** (`amv/plugins/`, copied from remanga's design): `_registry.py`,
 `_loader.py`, `_kinds.py`; built-ins are folders (`commands`, `demucs`,
 `faster_whisper`, `song_fx`, `video_fx`); drop-ins in top-level `plugins/`
 (see its README); entry-point group `amv.plugins`. Kinds: command, tool,
-separator, transcriber, song_fx, video_fx. `./amv.sh plugins` lists them.
-A `tool` runs its worker via `amv.core.tools.run` (offline first).
+separator, transcriber, song_generator, song_fx, video_fx. `./amv.sh plugins` lists them.
+A `tool` runs its worker via `amv.core.tools.run` (offline first). A tool that cannot be a
+package list sets itself up, remanga-style: `install`/`weights`/`interpreter` hooks on `Tool`,
+`tools.ensure` before use, `./amv.sh tool-setup` ahead of time (ace_step; see amv-song-gen).
 Never hard-code a show, song or `/mnt/...` path in code - it goes in the
 project, global/ or config.json.
 
@@ -55,7 +59,7 @@ project, global/ or config.json.
 `amv/core/` config (config.json -> Config), **paths (every workspace/tmp/ path +
 load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 (run, encoders, concat, subtitles_filter), regress.
-`amv/audio/` isolate_vocals, transcribe_song, beats, lyrics (the lyric plan).
+`amv/audio/` isolate_vocals, transcribe_song, beats, lyrics (the lyric plan), song_gen (`song-gen`).
 `amv/subs/` extract_subs (+ pgs/pgs_ocr for bitmap tracks) -> workspace/tmp/subs/scene_index.json.
 `amv/render/` timeline (slots), select_clips/ (candidates, scoring, themes = the project's themes/blacklist, cli: score_all/pick/order_breaks), grade, pipeline (render), lyric_overlay/.
 `amv/vision/` **decode (decode_tiny: the one way to read footage small)**, contact_sheet (grab_all/tile), strip, compare, skin, checks.

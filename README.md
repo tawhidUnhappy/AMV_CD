@@ -30,7 +30,7 @@ in more than one flavour is a plug-in.
 `./amv.sh` command), `tool` (an isolated uv environment for a heavy worker),
 `separator` (voices out of dialogue - Demucs), `transcriber` (dub word timings
 - faster-whisper), `song_fx` (slowed + reverb, nightcore, ...), `video_fx`
-(outline, glow, grain). Add your own as a file in `plugins/` or a package
+(outline, glow, grain), `song_generator` (new songs - ACE-Step 1.5). Add your own as a file in `plugins/` or a package
 with an `amv.plugins` entry point - see `plugins/README.md`.
 
 ## Quick start
@@ -124,6 +124,11 @@ Each of these caught a real defect; run them after changes:
 | `amv.render.font_compare` | outline fonts that wash out over footage |
 
 ## Extras
+
+- **New songs**: `./amv.sh song-gen "dark synthwave, female vocals" --duration 60` makes
+  original songs with vocals (or `--instrumental`) locally with ACE-Step 1.5 (MIT), so a
+  Short's music is yours. One-time setup (~20 GB, its own environment):
+  `./amv.sh tool-setup ace_step`. Songs land in `workspace/output/songs/`.
 
 - **Blender + Claude**: Claude builds scenes and beat-synced animation in your
   own Blender (`./amv.sh blender-setup`, `./amv.sh blender-beats SONG`). Step-by-step

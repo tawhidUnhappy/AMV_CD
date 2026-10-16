@@ -11,7 +11,7 @@ from __future__ import annotations
 import importlib
 from typing import Any
 
-KINDS = ("command", "tool", "separator", "transcriber", "song_fx", "video_fx")
+KINDS = ("command", "tool", "separator", "transcriber", "song_generator", "song_fx", "video_fx")
 
 _registry: dict[str, dict[str, Any]] = {kind: {} for kind in KINDS}
 # Where each plug-in came from, for `./amv.sh plugins`.
