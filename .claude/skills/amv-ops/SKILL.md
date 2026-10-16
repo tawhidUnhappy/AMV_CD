@@ -66,6 +66,7 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 `amv/shorts/` song (drop/window), find (candidate shots + crop), build (spec -> Short), catalog (global/ knowledge + tmp cache), dub, fx, deliver.
 `amv/intro/` plan+select+render (`intro`: new intro from a song), reference (`reference`: which episode frame is behind each frame of a video), remake (`remake`: plan/spec renderer; specs in workspace/global/intro/remakes/).
 `amv/blender/` setup (`blender-setup`: MCP add-on + extensions + keys) and beats (`blender-beats`: song -> frames JSON for keyframing); the amv-blender skill.
+`amv/edit/` effect edits (`edit`): build (spec -> montage plan -> Blender segments -> fx/text pass -> mp4), audio (song window, instrumental tail), text (kinetic text), blender/ (headless scripts: voxel_heart, shatter). Glitch effects are `video_fx` plug-ins in `amv/plugins/glitch_fx/`.
 `amv/plugins/` registry + built-ins; `amv/core/project.py` the active project; `amv/core/tools.py` isolated tool envs.
 
 ## Checking your work - use these, don't hand-roll them
@@ -298,6 +299,45 @@ Traps (all fixed in code; keep the rules):
   Default separator is now "ensemble" (amv/plugins/ensemble, roformer).
 - Song credits come from the file name "Title - Artist"; no " - " means an
   explicit `<ARTIST ...>` placeholder in description.txt, never a guess.
+
+## Effect edits (vertical, loopable, effect-heavy) - `amv/edit/`
+
+```bash
+./amv.sh edit workspace/global/edits/NAME.json --sheet          # each shot's start/mid/end as framed
+./amv.sh edit SPEC --frames 9.4,14.9                            # finished stills (Blender included)
+./amv.sh edit SPEC --from 12 --to 16                            # a quick part
+./amv.sh edit SPEC                                              # -> workspace/output/edits/NAME.mp4
+```
+
+The spec is a montage shot list (amv.intro.montage format) plus `stutter`,
+`fx` events (any video_fx, with `shape` decay/rise/pulse/flicker), `always`
+(every frame), `bass_zoom`, `text` and `blender` segments (build.py docstring).
+Write specs with a small generator next to them (`NAME.gen.py`): beat times
+from the bar grid, an rgb hit on every cut, a tear on every vocal chop.
+Workflow that worked (Glitch in My Heart, 2026-10-16):
+1. Window = whole 8-bar phrases (a multiple of 4 bars loops harmonically);
+   `blender-beats` for the grid, a band plot + the separated vocals'
+   envelope for hits, silences and chop onsets.
+2. Footage: dense one-frame-per-shot sheets of the 2 fps decode
+   (`ffmpeg -vf fps=2,scale=320:180` once, ~7 min for a movie), then `--sheet`.
+3. Loop seam: the last shot is the source frames just before the first
+   shot's, zooming in to the zoom the first one pulls out from, glitch
+   rising into the seam and decaying out of it; `tail` makes the last
+   ~0.8 s instrumental so a vocal starting at the loop point is not cut.
+4. Blender segments render headless with EEVEE (~1 s/frame at 1080x1920) and
+   are cached by their frames' plan + script + params.
+Traps met:
+- A long index shot can hold another scene at its start (S508 = lava for 5 s,
+  then the eye the 2 fps mid-frame showed): always read `--sheet`.
+- crop_x lands on hair in extreme eye close-ups: pin `x` from a 16:9 frame
+  with a 0.1 grid.
+- Whisper on chopped/pitched vocals hears nonsense ("pushin' out" for
+  "glitch in my"): time chops from the vocal stem's envelope, words from the
+  user's lyrics.
+- chroma shrinking a channel (scale < 1) crashed PIL ("box offset can't be
+  negative"): the channel is edge-padded first.
+- Blender text emission at strength 3 under the Standard view turned red to
+  pink (red clips, green/blue lift): keep emission ~1 for exact colours.
 
 ## Remaking an intro someone else cut
 

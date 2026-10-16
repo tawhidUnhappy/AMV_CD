@@ -111,6 +111,16 @@ Pizza (poly.pizza/settings/api) are free accounts. Poly Haven needs none.
 5. Check with `look(mode="frames", frames=[a downbeat, a peak+3, an off-beat])`
    before saying it works. Tell them to press Space to watch with sound.
 
+## Rendering without the GUI (effect edits)
+
+`./amv.sh edit` runs `amv/edit/blender/*.py` with `blender -b --factory-startup
+--python SCRIPT -- job.json` - no MCP connection needed. EEVEE works headless
+on Linux (5.2: engine id `BLENDER_EEVEE`, ~1 s per 1080x1920 frame); footage
+goes in as an image SEQUENCE on emission materials with the Standard view
+transform, so the picture's colours stay 1:1. A new script gets the job dict
+(in_dir, out_dir, fps, width, height, frames, at, params) and writes
+out_dir/#####.png for frames 1..N.
+
 ## Traps that cost time before
 
 - Extension sync says "Online access required" → Blender ships with it off → set

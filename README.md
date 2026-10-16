@@ -30,7 +30,8 @@ in more than one flavour is a plug-in.
 `./amv.sh` command), `tool` (an isolated uv environment for a heavy worker),
 `separator` (voices out of dialogue - Demucs), `transcriber` (dub word timings
 - faster-whisper), `song_fx` (slowed + reverb, nightcore, ...), `video_fx`
-(outline, glow, grain), `song_generator` (new songs - ACE-Step 1.5). Add your own as a file in `plugins/` or a package
+(outline, glow, grain, and the glitch set: rgb_split, slice, blocks, chroma,
+pixelate, posterize, invert, scanlines), `song_generator` (new songs - ACE-Step 1.5). Add your own as a file in `plugins/` or a package
 with an `amv.plugins` entry point - see `plugins/README.md`.
 
 ## Quick start
@@ -133,6 +134,14 @@ Each of these caught a real defect; run them after changes:
 - **Blender + Claude**: Claude builds scenes and beat-synced animation in your
   own Blender (`./amv.sh blender-setup`, `./amv.sh blender-beats SONG`). Step-by-step
   guide: [BLENDER.md](BLENDER.md).
+
+- **Effect edits**: `./amv.sh edit SPEC` renders a vertical, loopable edit from a
+  spec (`workspace/global/edits/NAME.json`): a montage shot list, glitch effects
+  timed to beats and vocal chops, stutters, kinetic text, and 3D shots rendered
+  headless in Blender (`amv/edit/blender/`: `voxel_heart` - the footage as cubes
+  that punch out in a heart on each beat; `shatter` - 3D text on the picture,
+  cracks, then the glass bursts at the camera on the drop). `--sheet` shows each
+  shot as framed, `--frames T,...` finished stills, `--from/--to` a quick part.
 
 - `amv/thumbnail/` composes YouTube thumbnails from real frames (three
   layouts: label-arrow, speech bubble, split). No image generation. Run with

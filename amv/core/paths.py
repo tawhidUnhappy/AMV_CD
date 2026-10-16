@@ -63,6 +63,11 @@ SONGS = load().workspace / "output" / "songs"
 # Blender (amv.blender): the downloaded MCP add-on and song analyses for keyframing
 BLENDER = TMP / "blender"
 
+# Effect edits (amv.edit): specs, their caches (base frames, Blender renders, audio), delivered edits
+EDIT_SPECS = GLOBAL / "edits"
+EDIT = TMP / "edit"
+EDITS_OUT = load().workspace / "output" / "edits"
+
 
 def load_slots(path: Path | None = None) -> list[dict]:
     """The slots of an EDL (workspace/tmp/edl.json unless told otherwise)."""

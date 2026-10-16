@@ -83,6 +83,14 @@ add it here with the date and commit it with the code.
 - Rejected: voice cloning, per-panel emoting (remanga), wizard-style
   settings - keep settings a flat list.
 
+## Effect edits (2026-10-16)
+
+- "Make a good AMV edit with lots of effects, you can ignore rules, something
+  that can go viral and feels good on repeat": a music-only, effect-heavy
+  vertical edit is fine here (the story-Shorts rules are for Shorts), one show,
+  one 8-bar-phrase window of the song, seamless loop, Blender 3D shots in it.
+  `./amv.sh edit` (amv-ops "Effect edits"); delivered to workspace/output/edits/.
+
 ## Per-show notes
 
 - **Mushoku Tensei**: subtitles are OCR'd bitmaps (typos, no punctuation) -
@@ -95,6 +103,11 @@ add it here with the date and commit it with the code.
   typeset per frame (merged by dialogue). Fanservice involving Shiro (11) and
   others: ep 7 bath (07-22 to 07-60), ep 6 1031.8 (circular-breathing kiss),
   ep 6 1175.4, Zero 4640.5/4676.9/5359.0 - never use. Built: S025-S028.
+  Zero (101) also: 1000-1080 s Schwi's first scene (unclothed machine body),
+  1876-1971 s the bath scene (only face/ear close-ups would be safe - skipped),
+  5316 s (S836) a nude-looking glowing figure; full-body shots of Schwi's battle
+  form (4612) skipped too. Safe Schwi material: eye/face close-ups, the hooded
+  cloak scenes, HUD/machine shots. Edit: glitch_in_my_heart (2026-10-16).
 - **Rich_Girl_Caretaker**: Japanese audio only - keeps original voices with
   English subtitles as captions.
 - **Smoking_Behind_the_Supermarket**: "smok" matches 705 shots - use focused
