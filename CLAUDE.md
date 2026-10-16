@@ -14,4 +14,6 @@ the ones it links) hold the details for each stage.
   `workspace/` (+ `config.json`; see amv-ops "Where things live"); never hard-code a show, song
   or machine path in code. Anything with several flavours is a plug-in
   (`amv/plugins/`, drop-ins in `plugins/`).
+- Blender (install it, connect Claude, 3D scenes, song-synced animation): load the
+  `amv-blender` skill; the user guide is `BLENDER.md`.
 - Commit and push to main after changes.

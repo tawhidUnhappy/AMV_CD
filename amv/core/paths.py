@@ -56,6 +56,9 @@ QA = TMP / "qa"
 # The channel intro (amv.intro), kept apart from the full AMV's files
 INTRO = TMP / "intro"
 
+# Blender (amv.blender): the downloaded MCP add-on and song analyses for keyframing
+BLENDER = TMP / "blender"
+
 
 def load_slots(path: Path | None = None) -> list[dict]:
     """The slots of an EDL (workspace/tmp/edl.json unless told otherwise)."""

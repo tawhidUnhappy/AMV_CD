@@ -125,6 +125,10 @@ Each of these caught a real defect; run them after changes:
 
 ## Extras
 
+- **Blender + Claude**: Claude builds scenes and beat-synced animation in your
+  own Blender (`./amv.sh blender-setup`, `./amv.sh blender-beats SONG`). Step-by-step
+  guide: [BLENDER.md](BLENDER.md).
+
 - `amv/thumbnail/` composes YouTube thumbnails from real frames (three
   layouts: label-arrow, speech bubble, split). No image generation. Run with
   `./amv.sh thumbs`.

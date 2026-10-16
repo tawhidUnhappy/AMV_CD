@@ -61,6 +61,7 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 `amv/vision/` **decode (decode_tiny: the one way to read footage small)**, contact_sheet (grab_all/tile), strip, compare, skin, checks.
 `amv/shorts/` song (drop/window), find (candidate shots + crop), build (spec -> Short), catalog (global/ knowledge + tmp cache), dub, fx, deliver.
 `amv/intro/` plan+select+render (`intro`: new intro from a song), reference (`reference`: which episode frame is behind each frame of a video), remake (`remake`: plan/spec renderer; specs in workspace/global/intro/remakes/).
+`amv/blender/` setup (`blender-setup`: MCP add-on + extensions + keys) and beats (`blender-beats`: song -> frames JSON for keyframing); the amv-blender skill.
 `amv/plugins/` registry + built-ins; `amv/core/project.py` the active project; `amv/core/tools.py` isolated tool envs.
 
 ## Checking your work - use these, don't hand-roll them
