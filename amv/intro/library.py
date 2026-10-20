@@ -185,7 +185,7 @@ def _unit(frames: np.ndarray) -> np.ndarray:
     return np.where(norm > 30 * np.sqrt(x.shape[1] / 144), x / (norm + 1e-3), 0.0)
 
 
-def find_repeats(episodes: list[Episode]) -> None:
+def find_repeats(episodes: list[Episode], corr: float = REPEAT_CORR) -> None:
     step = INDEX_FPS // REPEAT_FPS
 
     def thumb(frames: np.ndarray) -> np.ndarray:  # 48x27 -> 16x9 block means
@@ -204,7 +204,7 @@ def find_repeats(episodes: list[Episode]) -> None:
             best = np.zeros(len(samples[i]), np.float32)
             for lo in range(0, len(other), 4096):
                 best = np.maximum(best, (samples[i] @ other[lo:lo + 4096].T).max(axis=1))
-            hits += best >= REPEAT_CORR
+            hits += best >= corr
         repeated = hits >= REPEAT_MIN_EPISODES
         runs: list[tuple[float, float]] = []
         k = 0

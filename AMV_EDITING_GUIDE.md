@@ -37,8 +37,8 @@ Lessons from AMV_CD's own edits:
 
 | Style | What it is | Tier | AMV_CD |
 |---|---|---|---|
-| **Flow** | Clips whose movement connects shot to shot. Teaches syncing, pacing, clip selection, transitions, shakes, effects and sound | S | partial: `./amv.sh flow` measures motion at the head and tail of each shot; `align`, `whip`. No link finder |
-| **Velocity** | Twixtor or time remap: slow the clip, speed it up on the beat, plus scaling and colour correction | S (best first edit) | have: `velocity` keyframes, `trail` motion blur. No optical-flow interpolation (gap) |
+| **Flow** | Clips whose movement connects shot to shot. Teaches syncing, pacing, clip selection, transitions, shakes, effects and sound | S | have: `edit-pool` (shots by motion) → `flow` (head/tail motion) → `amv.edit.links` (orders shots by motion continuity + eye trace, mirrors to match, picks whip/punch per cut) |
+| **Velocity** | Twixtor or time remap: slow the clip, speed it up on the beat, plus scaling and colour correction | S (best first edit) | have: `velocity` keyframes, `trail` motion blur, RIFE in-betweens (`interp` / `interp_auto`) |
 | **Vibe** | Chill and clean, slower songs, opacity and small scale transitions | A | have: `dissolve`, `zoom` |
 | **Typography** | Animated lyrics or words that are part of the frame | B | partial: `text` (pop, glitch, tracking, flicker). No per-letter animation or masking behind characters |
 | **Mograph** | Custom shape and solid elements, a consistent colour theme | C | gap |
@@ -72,9 +72,9 @@ Channels the owner pointed at (2026-10-20):
   that connects them. Find the links, put them on the beats, and test. [Molob, Flow]
 - Almost-links can be fixed:
   - **Reverse / ping-pong:** time-remap the end of clip A so a hand moving right returns
-    left into clip B. [Molob, Flow] → gap (`reverse` / `pingpong` on a shot)
+    left into clip B. [Molob, Flow] → have: shot `reverse: true`, `pingpong: s`
   - **Flip horizontally** when facing directions don't match: "helps a lot more than
-    people think." [Molob, Flow] → gap (`flip: true`)
+    people think." [Molob, Flow] → have: shot `flip: true` (links.sequence flips automatically)
 - Eye trace: keep the focal point where it was across the cut. → have: `align` +
   `focus_head/tail`.
 - Transition **into** the motion: if the next clip is tighter on the face, zoom into the
@@ -116,11 +116,11 @@ Channels the owner pointed at (2026-10-20):
 | Velocity on the beat | Speed **200%** on the beat marker, **20%** between, back to 200% on the next. Easy Ease, then refine in the graph editor [AEJuice]. TikTok variant: 150 on the beat, then 50 right after | have: `velocity: [[0, 2.0], [0.25, 0.2], [1, 0.2]]` |
 | Zoom pulse with velocity | Scale **100 → 130 → 100** between beat markers, eased [AEJuice] | have: `zoom`, `ease`, `bass_zoom` |
 | Speed ramp | 100% → **25–40%** just before peak action → back to 100%, Bezier. Slow the anticipation, not the impact [AnimeWorld Twixtor] | have: `velocity` keyframes |
-| Slow motion (Twixtor) | **25–50%**, never below 20% without pre-processing. Motion-weighted blend (optical flow ghosts on flat anime colour), motion sensitivity ~0.7, input FPS = source (24, animation on twos) [AnimeWorld Twixtor] | partial: `speed` < 1 repeats frames. **gap: frame interpolation** (RIFE/optical flow) for smooth slow motion |
+| Slow motion (Twixtor) | **25–50%**, never below 20% without pre-processing. Motion-weighted blend (optical flow ghosts on flat anime colour), motion sensitivity ~0.7, input FPS = source (24, animation on twos) [AnimeWorld Twixtor] | have: shot `interp: 4` or spec `interp_auto: 4` - RIFE v4.6 (rife-ncnn-vulkan), held anime frames dropped first, holds > 4 frames never morphed, cuts never blended |
 | Twixtor artifacts | Lower motion sensitivity to reduce warping, raise it to reduce blending, keyframe it if needed. Track points on the subject (Pro) [Boris FX] | — |
 | Motion blur | Turn on for speed transitions [AEJuice, Pixflow] | have: `trail` (automatic above 1.4×), `whoosh` zoom blur, `whip` smear |
 | Freeze frame | Hold a frame (copy-paste a time-remap keyframe) [Pixflow] | have: `velocity` dip to ~0.12 (impact freeze), `stutter` with `freeze` |
-| Reverse | Time > Time Reverse Layer [Pixflow] | gap |
+| Reverse | Time > Time Reverse Layer [Pixflow] | have: `reverse`, `pingpong` |
 | Posterize time (stutter) | **8–12 fps** on glitch moments [Glitchology] | have: `stutter` with `hold` |
 | Colour after retiming | Retimed output looks flatter: saturation **+10–15**, contrast **+8–12**, a slight S-curve [AnimeWorld Twixtor] | have: `look` (contrast, saturation, lift, tint) |
 
@@ -135,8 +135,8 @@ Channels the owner pointed at (2026-10-20):
 - **Motion tile / mirror edges:** lets shakes and zooms move past the frame edge.
   [Adobe, Filmora "Surround Image"] → gap (AMV_CD crops inside the frame instead)
 
-AMV_CD: `in: {shake}` (an impact jolt), `pan`, `zoom`, `ease`, `bass_zoom`, `punch`.
-**gap:** continuous shake with posterize-time feel, rotation shake, motion-tile edges.
+AMV_CD: `in: {shake}` (an impact jolt), `pan`, `zoom`, `ease`, `bass_zoom`, `punch`, and the
+`camera_fx` **shake** fx (posterized wiggle `hold`, rotation `rot`, mirrored edges = motion tile).
 
 ## 7. Transitions
 
@@ -149,7 +149,7 @@ AMV_CD: `in: {shake}` (an impact jolt), `pan`, `zoom`, `ease`, `bass_zoom`, `pun
 | Flash | exposure keyframes on an adjustment layer [Filmora] | have: `in: flash` (+ `flash_color`) |
 | Dip to black | | have: `in: dip` |
 | Dissolve / opacity | | have: `in: dissolve` |
-| Lens-blur transition | blur amount + iris scale peaking at the cut [Filmora] | gap |
+| Lens-blur transition | blur amount + iris scale peaking at the cut [Filmora] | have: `blur` fx with `shape: pulse` across the cut |
 | Glitch transition | Adjustment layer **6–10 frames** centred on the cut. Displacement peaks at **80–200 px** on the cut frame. RGB offset **0→20→40 px→0**. Posterize time 8–12 fps. Optional 1 frame of invert. Linear or hold keys, not ease. "8 frames at 24 fps is plenty, >12 stops reading as a transition" [Glitchology] | have: `fx` rgb_split/slice/blocks/invert with `shape`. Keep bursts ≤ 10 frames |
 | Mask transition | see §3 | gap |
 | Eye transition | see §3 | gap |
@@ -178,7 +178,7 @@ AMV_CD: `in: {shake}` (an impact jolt), `pan`, `zoom`, `ease`, `bass_zoom`, `pun
   have: `glow`
 - Lens flares (Optical Flares, S_LensFlare) → gap
 - Light leaks / "light effect" overlay with opacity keyframes [Filmora] → gap
-- Lens / box / square blur as an accent [Filmora] → gap
+- Lens / box / square blur as an accent [Filmora] → have: `blur`; exposure flash + bloom → `exposure`
 - Vignette, grain, contrast, saturation, tint, lift → have: `look`, `grain`
 - Outline / edge glow → have: `outline`
 - Edge detect / depth map over the whole edit → overused, skip [Molob, Styles]
@@ -230,11 +230,14 @@ Rules with numbers:
 - Free sources: Pixabay (risers, whooshes), MixClap CC0 pack (28 transition SFX), Selekt
   Audio CC0 risers. [search]
 
-AMV_CD status: **gap**. Nothing here adds SFX or edits the song inside an edit. `song_fx`
-(slowed, reverb, nightcore, sped up) works only on the whole song. Needed:
-- an `sfx` spec list (file, at, gain dB, fade), aligned by peak or attack, plus an SFX library folder in workspace
-- automatic whoosh-on-cut / riser-into-drop / impact-on-hit from the beat analysis
-- song automation: volume dip before the drop, low-pass muffle, stutter on the music
+AMV_CD status: **have** (2026-10-21, `amv/edit/sound.py`): spec `sfx` (synthesised whoosh,
+swish, riser, reverse cymbal, impact, boom, hit, glitch, or a `file` from
+workspace/assets/sfx/), anchored by the rules above (whoosh peak / riser end / impact
+attack on `at`); `sfx_auto` places them from the picture (whip → whoosh, flash →
+impact/boom, punch/shake → hit, glitch burst → glitch, strongest wins within 0.18 s);
+`sfx_level` (-4 dB vs the music around each effect); `music` automation: `duck`,
+`muffle` (+ `open` sweep), `cut`, `stutter`, `tapestop`, `reverse`; a true-peak
+limiter. `./amv.sh edit SPEC --audio` renders the sound alone.
 
 ## 11. Song choice
 - Toxic AMV's tracks: phonk, hardtekk, jumpstyle, montagem, dubstep, "slowed" / "sped up"
@@ -243,14 +246,12 @@ AMV_CD status: **gap**. Nothing here adds SFX or edits the song inside an edit. 
   writes audio codes and the DiT renders them as a "cover". With `lm: none` (config.json,
   2026-10-20) it renders from caption + lyrics only, but then it may skip lyric lines.
 
-## 12. What to build next in AMV_CD (from the gaps above, most impact first)
-1. **Sound design layer** (§10): SFX placement + music automation (dip, muffle).
-2. **Flow link finder** (§3): pair shots whose tail motion matches the next shot's head
-   (direction, speed, position), plus `flip` and `reverse` / `pingpong`.
-3. **Frame interpolation** for slow motion and velocity (RIFE or similar, its own tool env).
-4. **Continuous shake** with posterize-time feel, rotation, motion-tile edges.
-5. **Segmentation masks** for mask and eye transitions and text behind characters.
-6. Lens-blur transition, light leaks, lens flares.
+## 12. What to build next in AMV_CD
+Done 2026-10-21: sound design layer, flow link finder + flip/reverse/pingpong, RIFE frame
+interpolation, continuous shake / blur / exposure.
+1. **Segmentation masks** for mask and eye transitions and text behind characters.
+2. Rotation (roto) transitions, light leaks, lens flares.
+3. A credits/text detector for the shot pool (OP/ED without subtitled lyrics).
 
 ---
 

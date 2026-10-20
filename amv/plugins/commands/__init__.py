@@ -27,6 +27,7 @@ _COMMANDS = (
     ('look at it', 'check-timing', 'amv.subs.check_lyric_timing', False, 'does the lyric text sit over singing'),
     ('look at it', 'check-sync', 'amv.subs.check_sync', False, 'A/V offset of a render against the song'),
     ('extras', 'thumbs', 'amv.thumbnail', False, 'YouTube thumbnails from real frames'),
+    ('blender', 'edit-pool', 'amv.edit.pool', False, "candidate shots of a series by how they move (library index), numbered sheets"),
     ('extras', 'amv-cover', 'amv.package.cover', False, "a full AMV's cinematic thumbnail (graded frame + metallic words), or --candidates"),
     ('extras', 'amv-meta', 'amv.package.meta', False, "a full AMV's title candidates, description and tags"),
     ('extras', 'thumb-candidates', 'amv.vision.thumb_candidates', False, 'strong frames to build thumbnails from'),
