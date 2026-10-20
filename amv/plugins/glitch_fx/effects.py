@@ -116,3 +116,35 @@ def scanlines(f: np.ndarray, frame: np.ndarray, o: dict, n: int) -> np.ndarray:
     bar_y = (n * 9) % (h + 300) - 150  # a soft bright bar rolling down
     bar = 1.0 + 0.10 * a * np.exp(-((y - bar_y) / 70.0) ** 2)
     return f * (lines * bar)[:, None, None]
+
+
+def smear(f: np.ndarray, frame: np.ndarray, o: dict, n: int) -> np.ndarray:
+    a = float(o["amount"])
+    if a <= 0:
+        return f
+    rng = _rng(o, n, 3)
+    h, w = f.shape[:2]
+    out = f.copy()
+    for _ in range(max(1, int(round(int(o["bands"]) * a)))):
+        y0 = int(rng.integers(0, h))
+        lo = max(4, h // 40)
+        bh = int(rng.integers(lo, max(lo + 1, int(h * 0.3 * a) + 8)))  # a small amount gave an empty range
+        x = int(rng.integers(w // 8, w - w // 8))
+        col = f[y0:y0 + bh, x:x + 1]
+        if rng.random() < 0.5:  # bleed right of x, else left
+            out[y0:y0 + bh, x:] = col
+        else:
+            out[y0:y0 + bh, :x] = col
+    return out
+
+
+def letterbox(f: np.ndarray, frame: np.ndarray, o: dict, n: int) -> np.ndarray:
+    a = float(o["amount"])
+    h, w = f.shape[:2]
+    bar = int(round(max(0.0, h - w / float(o["ratio"])) / 2 * a))
+    if bar <= 0:
+        return f
+    out = f.copy()
+    out[:bar] = 0
+    out[h - bar:] = 0
+    return out

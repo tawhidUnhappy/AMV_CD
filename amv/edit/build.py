@@ -10,7 +10,7 @@ stutters, glitch effects on beats, kinetic text and 3D shots made in Blender.
 Spec (times are output seconds; frames = round(t * fps)):
 
     {"name", "song", "song_start", "seconds", "fps": 60, "width": 1080, "height": 1920,
-     "look": {"contrast", "saturation", "vignette", "tint", "lift"},
+     "look": {"contrast", "saturation", "vignette", "tint", "lift"}, "fade_in": 0, "fade_out": 0,  # seconds
      "tail": {"from": 28.7, "xfade": 0.06},         # end on the instrumental (a clean loop)
      "shots": [...],                                 # amv.intro.montage shots ("file", "at", "until", ...)
      "stutter": [{"at", "until", "hold": 4}],        # repeat each `hold` frames: a stuck, skipping picture
@@ -59,7 +59,7 @@ def frame_of(t: float, fps: float) -> int:
 
 def plan_of(spec: dict) -> dict:
     """The montage plan (one entry per output frame) with stutters applied."""
-    plan = montage_plan({**spec, "fade_in": 0.0, "fade_out": 0.0}, Path(spec["song"]))
+    plan = montage_plan({"fade_in": 0.0, "fade_out": 0.0, **spec}, Path(spec["song"]))
     fps, frames = spec["fps"], plan["frames"]
     for st in spec.get("stutter", []):
         a, b, hold = frame_of(st["at"], fps), frame_of(st["until"], fps), int(st.get("hold", 4))

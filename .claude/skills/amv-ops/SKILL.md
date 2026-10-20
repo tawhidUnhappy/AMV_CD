@@ -264,6 +264,9 @@ Traps (all fixed in code; keep the rules):
   group k becomes 100k + n (a lone file 100k + 1); discover prints the mapping.
 - Typeset subtitles (one event per frame) flooded `dialogue --find` with 60
   copies of a line: touching runs of the same text are merged (dialogue.merge_runs).
+- A show folder holding several seasons from different release groups (Re_Zero: "[S01] [E05]",
+  "[S02-E01]", "S-04 E-05", "S4 - 01") was skipped whole: when numbers collide across 2+
+  seasons, season s episode n becomes 100*s + n (library.SEASON_PATTERN); extras go after.
 - A config "project" whose folder is gone killed every command, Shorts too:
   project.optional() now notes it and returns {}; only required() exits.
 - Whisper misspells a show's own names ("Shufie"/"Shuby" for Schwi) and
@@ -336,6 +339,12 @@ Traps met:
   user's lyrics.
 - chroma shrinking a channel (scale < 1) crashed PIL ("box offset can't be
   negative"): the channel is edge-padded first.
+- 16:9 full-song edits in a reference's style (Re:Zero x "Changing", 2026-10-20): letterbox
+  and datamosh are `always: {"letterbox": {"ratio": 2.2}}` and `smear` fx (glitch_fx); spec
+  `fade_out` now reaches the montage. Lyric-keyword shot picking gave banal talking heads;
+  what worked: an emotional-dialogue pool (one candidate per 20 s, clean-window check,
+  numbered sheets of 48), picked by eye into "calm"/"intense" lists, the generator fills
+  verses from calm and choruses from intense (rezero_changing.gen.py).
 - Blender text emission at strength 3 under the Standard view turned red to
   pink (red clips, green/blue lift): keep emission ~1 for exact colours.
 

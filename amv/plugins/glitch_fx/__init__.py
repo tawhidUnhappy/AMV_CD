@@ -14,6 +14,8 @@ stutter, not noise).
     invert     colour negative
     pixelate   mosaic, {"size": block px at amount 1}
     posterize  colour banding, {"levels" at amount 1}
+    smear      datamosh-style melt: bands whose pixels bleed sideways from one column, {"bands", "hold"}
+    letterbox  cinema bars to {"ratio"} (2.35 = scope); amount 1 = full bars, use it in "always"
 """
 
 from amv.plugins import VideoFx, register
@@ -27,6 +29,8 @@ _FX = (
     ("posterize", "colour banding", {"levels": 3}, 25),
     ("invert", "colour negative", {}, 26),
     ("scanlines", "CRT lines + rolling bar", {"period": 4}, 27),
+    ("smear", "datamosh-style pixel smear", {"bands": 9, "hold": 2}, 19),
+    ("letterbox", "cinema bars (last, over text)", {"ratio": 2.35}, 99),
 )
 for _name, _summary, _defaults, _order in _FX:
     register("video_fx", VideoFx(_name, _summary, f"amv.plugins.glitch_fx.effects:{_name}",

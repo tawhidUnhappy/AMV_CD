@@ -108,6 +108,10 @@ add it here with the date and commit it with the code.
   5316 s (S836) a nude-looking glowing figure; full-body shots of Schwi's battle
   form (4612) skipped too. Safe Schwi material: eye/face close-ups, the hooded
   cloak scenes, HUD/machine shots. Edit: glitch_in_my_heart (2026-10-16).
+- **Re_Zero**: S1-S4 in one folder; episodes are 100*season + n (S1 = 101-113 director's
+  cut ~49 min, 513-518 = S1 cour 2 eps 13-18, S2 201-225, S3 301-316, S4 401-412). OVAs
+  (Memory Snow, Frozen Bond) have no number and are not indexed. Edit: rezero_changing
+  (2026-10-20, ACE-Step song "changing", style of the XXXTENTACION Changes remix edit).
 - **Rich_Girl_Caretaker**: Japanese audio only - keeps original voices with
   English subtitles as captions.
 - **Smoking_Behind_the_Supermarket**: "smok" matches 705 shots - use focused

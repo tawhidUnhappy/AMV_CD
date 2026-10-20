@@ -31,9 +31,13 @@ VIDEO_SUFFIXES = {".mkv", ".mp4", ".avi", ".webm", ".m4v"}
 # Tried in order; the first that matches names the episode. Covers
 # "[S01 E06] Title", "..._S01_Ep20_...", "[S01] [E12] ...", "[SO] [06 - Title]",
 # "08. Title", "Title_13_1080p", "[SA] Title - 01 - 1080p".
+# A season ("S01", "[S02-E01]", "S-04", "S4 -") is read only when plain episode
+# numbers collide across seasons: Re_Zero mixed four seasons from five release
+# groups and the whole show was skipped.
 EPISODE_PATTERNS = (
     r" - E(\d{1,3})\.\w+$",  # the house naming: "Show_Name - E05.mkv"
-    r"\bS\d{1,2}\s*E(\d{1,3})(?!\d)",
+    r"\bS-?\d{1,2}[\s_-]*E-?(\d{1,3})(?!\d)",  # "S01 E06", "S-04 E-05", "S04-E12"
+    r"\bS\d{1,2} - (\d{1,3})(?!\d)",  # "Show S4 - 01"
     r"[Ee]p(?:isode)?[ _.-]?(\d{1,3})(?!\d)",
     r"\[E(\d{1,3})\]",
     r"\[(\d{1,3}) - ",
@@ -77,6 +81,12 @@ def episode_number(name: str) -> int | None:
 # the name before their number; the biggest group keeps its numbers and every
 # other group k (sorted by name) becomes EXTRAS_BASE * k + its number.
 EXTRAS_BASE = 100
+SEASON_PATTERN = r"\bS-?(\d{1,2})(?=[\s\]_-]|E)"
+
+
+def season_number(name: str) -> int | None:
+    match = re.search(SEASON_PATTERN, name)
+    return int(match.group(1)) if match else None
 
 
 def number_files(paths: list[Path]) -> dict[Path, int]:
@@ -85,12 +95,22 @@ def number_files(paths: list[Path]) -> dict[Path, int]:
     numbers = {p: int(m.group(1)) for p, m in found.items()}
     if len(set(numbers.values())) == len(numbers):
         return numbers
+    seasons = {p: season_number(p.name) for p in found}
+    first = 0  # several seasons: season s is EXTRAS_BASE * s + n, extras go after the last
+    if len({v for v in seasons.values() if v}) > 1:
+        for p, s in seasons.items():
+            if s:
+                numbers[p] = EXTRAS_BASE * s + numbers[p]
+        first = max(v for v in seasons.values() if v)
+        found = {p: m for p, m in found.items() if not seasons[p]}
     groups: dict[str, list[Path]] = {}
     for p, m in found.items():
         groups.setdefault(p.name[:m.start(1)].strip(" -_.[").lower(), []).append(p)
+    if not groups:
+        return numbers
     main = max(groups, key=lambda g: (len(groups[g]), -len(g)))
-    extras = sorted(g for g in groups if g != main)
-    for k, g in enumerate(extras, 1):
+    extras = sorted(g for g in groups if g != main or first)
+    for k, g in enumerate(extras, first + 1):
         for p in groups[g]:  # a lone file (a movie) is 1: its "number" is noise like "Audio 2.0"
             numbers[p] = EXTRAS_BASE * k + (numbers[p] % EXTRAS_BASE if len(groups[g]) > 1 else 1)
     return numbers
