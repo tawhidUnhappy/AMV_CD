@@ -16,5 +16,7 @@ the ones it links) hold the details for each stage.
   (`amv/plugins/`, drop-ins in `plugins/`).
 - Blender (install it, connect Claude, 3D scenes, song-synced animation): load the
   `amv-blender` skill; the user guide is `BLENDER.md`.
+- Editing craft (flow, velocity, shakes, transitions, effects, sound design) and what AMV_CD
+  still lacks: `AMV_EDITING_GUIDE.md`.
 - New songs (ACE-Step 1.5, `./amv.sh song-gen`): load the `amv-song-gen` skill.
 - Commit and push to main after changes.

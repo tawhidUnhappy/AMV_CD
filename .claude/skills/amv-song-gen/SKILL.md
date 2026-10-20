@@ -115,6 +115,12 @@ versions in one call (`--count`) rather than one run per version.
   torch cu128 from PyTorch's index, which an unpinned resolve can swap for a
   CPU wheel.
 
+- "The song is bad" (2026-10-20) → with the planner LM on, the 0.6B LM writes audio codes
+  and the DiT renders them as a cover ("cover task: no src_audio but audio codes provided")
+  → the owner wants no reference or sample: config.json song_generators.ace_step.lm = "none".
+  Without the LM a 132 s song with 26 lines skipped verse 2 in both takes (ending in
+  "oh, oh") → fewer lines, or more seconds per line, and check the transcript.
+
 ## Maintenance
 
 When a session hits something new here, add a symptom → cause → rule line
