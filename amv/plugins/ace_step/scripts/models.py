@@ -26,6 +26,27 @@ def lm_name(job: dict, cfg) -> str:
     return want
 
 
+def complete(folder: Path) -> bool:
+    """Every weight file its index names is there. ACE-Step's own check only looks for
+    the folder, so a download killed half-way (XL: 4 x 5 GB shards) passed it and the
+    load failed on a missing shard."""
+    import json
+
+    index = folder / "model.safetensors.index.json"
+    if not index.exists():
+        return True
+    shards = set(json.loads(index.read_text())["weight_map"].values())
+    return all((folder / s).exists() for s in shards)
+
+
+def resume(model: str, ckpt: Path) -> tuple[bool, str]:
+    """Finish a half-downloaded model; huggingface_hub resumes its .incomplete files."""
+    from huggingface_hub import snapshot_download
+
+    snapshot_download(repo_id=f"ACE-Step/{model}", local_dir=str(ckpt / model))
+    return complete(ckpt / model), "resumed"
+
+
 def ensure(job: dict, cfg) -> str:
     """Download the main model, the chosen DiT and LM if missing. Returns the LM name."""
     from acestep.model_downloader import (SUBMODEL_REGISTRY, check_main_model_exists, check_model_exists,
@@ -39,6 +60,8 @@ def ensure(job: dict, cfg) -> str:
     model = job.get("model") or "acestep-v15-turbo"
     if not check_model_exists(model, ckpt) and model in SUBMODEL_REGISTRY:
         steps.append((model, lambda: ensure_dit_model(model, ckpt)))
+    elif not complete(ckpt / model):  # ensure_dit_model would return early on the folder alone
+        steps.append((f"{model} (missing shards)", lambda: resume(model, ckpt)))
     lm = lm_name(job, cfg)
     if lm and not check_model_exists(lm, ckpt):
         steps.append((lm, lambda: ensure_lm_model(lm, checkpoints_dir=ckpt)))

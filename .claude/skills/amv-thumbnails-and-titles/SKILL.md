@@ -5,7 +5,9 @@ description: Compose YouTube thumbnails from real frames with libass text/arrows
 
 # AMV pipeline: thumbnails and titles
 
-Part of the [amv-lyric-video](../amv-lyric-video/SKILL.md) pipeline.
+Part of the [amv-lyric-video](../amv-lyric-video/SKILL.md) pipeline. For a full AMV /
+anime edit (cinematic cover, metallic words, research on titles and descriptions) use
+[amv-packaging](../amv-packaging/SKILL.md) - this skill is the Shorts/lyric-video label style.
 
 ## Thumbnails
 

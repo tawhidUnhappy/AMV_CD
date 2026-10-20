@@ -18,7 +18,9 @@ Spec (times are output seconds; frames = round(t * fps)):
      "always": {"scanlines": {"amount": 0.2}, "grain": {"amount": 5}},   # every frame
      "bass_zoom": {"from": 14.8, "until": 29.7, "amount": 0.05},       # zoom pulses with the bass
      "text": [{"text", "at", "until", ...}],          # amv.edit.text
-     "blender": [{"script": "shatter", "at", "until", "params": {...}}]}
+     "blender": [{"script": "shatter", "at", "until", "params": {...}}],
+     "sfx": [...], "sfx_auto": true, "sfx_level": -4, "music": [...],   # amv.edit.sound
+     "interp_auto": 4}                               # RIFE slow motion for slowed shots (or per shot "interp")
 
 "kind" is any video_fx plug-in (./amv.sh plugins: the glitch_fx set - rgb_split,
 slice, blocks, chroma, pixelate, posterize, invert, scanlines - and glow, grain,
@@ -46,7 +48,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from amv import plugins
 from amv.core import paths
-from amv.edit import audio, text
+from amv.edit import audio, sound, text
 from amv.intro.montage import build as montage_plan
 from amv.intro.remake import compose, fetch_frames, fetch_size, look_filter
 
@@ -57,8 +59,35 @@ def frame_of(t: float, fps: float) -> int:
     return int(round(t * fps))
 
 
+def interp_shots(spec: dict) -> list[dict]:
+    """Slowed shots swapped for RIFE in-betweens (amv.plugins.rife): a shot's "interp"
+    factor, or spec "interp_auto" for every shot slowed below 0.9x anywhere. The clip
+    is `factor` x slower, so the shot plays it at speed x factor from 0."""
+    auto = int(spec.get("interp_auto", 0))
+    shots, out = spec["shots"], []
+    starts = [0.0] + [s["until"] for s in shots[:-1]]
+    for shot, start in zip(shots, starts, strict=True):
+        speeds = [shot.get("speed", 1.0) * v for _, v in shot.get("velocity", [[0, 1.0]])]
+        factor = int(shot.get("interp", auto if min(speeds) < 0.9 else 0))
+        if factor < 2:
+            out.append(shot)
+            continue
+        from amv.plugins.rife.interp import slow_clip
+
+        need = min(8.0, (shot["until"] - start) * max(speeds) + 0.25)
+        clip, usable = slow_clip(shot["file"], shot["at"], need, factor, bool(shot.get("reverse")))
+        if usable < need - 0.3:
+            print(f"  shot {shot.get('id', '')}: a cut {usable:.2f}s in (needs {need:.2f}s) - it will hold", flush=True)
+        new = {**shot, "file": str(clip), "speed": shot.get("speed", 1.0) * factor,
+               "at": round(usable * factor - 0.05, 3) if shot.get("reverse") else 0.0, "src": [shot["file"], shot["at"]]}
+        new.pop("interp", None)
+        out.append(new)
+    return out
+
+
 def plan_of(spec: dict) -> dict:
     """The montage plan (one entry per output frame) with stutters applied."""
+    spec = {**spec, "shots": interp_shots(spec)}
     plan = montage_plan({"fade_in": 0.0, "fade_out": 0.0, **spec}, Path(spec["song"]))
     fps, frames = spec["fps"], plan["frames"]
     for st in spec.get("stutter", []):
@@ -243,6 +272,7 @@ def main() -> None:
     parser.add_argument("--frames", default="", help="comma-separated output times: finished frames as PNG")
     parser.add_argument("--from", dest="t0", type=float, default=None)
     parser.add_argument("--to", dest="t1", type=float, default=None)
+    parser.add_argument("--audio", action="store_true", help="only the designed sound (song + sfx) as a wav")
     parser.add_argument("--no-blender", action="store_true", help="skip the 3D segments (base frames instead)")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
@@ -251,6 +281,10 @@ def main() -> None:
     work = paths.EDIT / name
     work.mkdir(parents=True, exist_ok=True)
     wav = audio.window(spec, spec["song"], work)
+    designed = sound.design(spec, wav, work)  # song automation + sfx (the picture's envelopes use the plain song)
+    if args.audio:
+        print(f"Wrote {designed}", flush=True)
+        return
     plan = plan_of(spec)
     r = Renderer(spec, plan, wav)
     total = len(plan["frames"])
@@ -271,7 +305,7 @@ def main() -> None:
     b = frame_of(args.t1, r.fps) if args.t1 is not None else total
     full = a == 0 and b == total
     out = args.out or (paths.EDITS_OUT / f"{name}.mp4" if full else work / f"part_{a}_{b}.mp4")
-    encode(spec, r, wav, out, a, b)
+    encode(spec, r, designed, out, a, b)
 
 
 if __name__ == "__main__":

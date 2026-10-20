@@ -97,10 +97,13 @@ def fetch_frames(frames: list[dict], width: int, height: int) -> dict[tuple[str 
                  "-vf", f"scale={width}:{height}:flags=lanczos,format=rgb24", "-f", "rawvideo", "-"],
                 capture_output=True, check=True)
             data = proc.stdout
+            last = None
             for n in run:
                 k = n - first
                 if (k + 1) * size <= len(data):
-                    out[(src, n)] = np.frombuffer(data[k * size:(k + 1) * size], np.uint8).reshape(height, width, 3)
+                    last = out[(src, n)] = np.frombuffer(data[k * size:(k + 1) * size], np.uint8).reshape(height, width, 3)
+                elif last is not None:  # past the source's end (a clip cut short at a scene change): hold
+                    out[(src, n)] = last
     return out
 
 
@@ -153,7 +156,9 @@ def compose_one(entry: dict, source: np.ndarray, trail: list[np.ndarray] | None 
                 out: tuple[int, int] | None = None) -> np.ndarray:
     if trail:  # motion blur: this frame averaged with the ones before it
         source = np.mean([source.astype(np.float32), *(t.astype(np.float32) for t in trail)], axis=0).astype(np.uint8)
-    img = Image.fromarray(source)
+    if entry.get("flip"):
+        source = source[:, ::-1]
+    img = Image.fromarray(np.ascontiguousarray(source))
     crop = out is not None and out != img.size  # a source decoded larger than the output (vertical)
     if entry.get("fx") == "zoom_blur":
         if entry.get("punch", 1.0) != 1.0 or crop:

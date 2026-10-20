@@ -32,6 +32,9 @@ Spec (times are output seconds; "at" is where a shot starts in its file;
 - "in": {"shake": {"amount": 0.02, "frames": 6}} jolts the frame on impact;
 - "pan": [[x0, y0], [x1, y1]] moves the frame centre across the shot (zoom
   in first so there is room), "ease": true eases zoom and pan in and out;
+- "flip": true mirrors the shot (match facing directions across a cut); "reverse": true
+  plays it backwards from "at"; "pingpong": s plays s source seconds forward, then back
+  (bend an almost-link: a hand that moves right returns left into the next shot);
 - "speed" below 1 is slow motion (a shorter clean window can fill a longer slot);
   "velocity": [[fraction, speed], ...] ramps it within the shot (eased) - e.g.
   [[0, 2.2], [0.3, 0.25], [1, 0.5]] hits fast on the beat and drifts slow, or a
@@ -107,11 +110,16 @@ def build(spec: dict, song: Path) -> dict:
         k = min(max((t - start) / length, 0.0), 1.0)
         ease = k * k * (3 - 2 * k) if shot.get("ease") else k
         consumed, speed = velocity_offset(shot, t - start, length)
-        src_t = shot["at"] + consumed
+        turn = shot.get("pingpong")  # plays forward for `turn` source seconds, then back
+        if turn and consumed > turn:
+            consumed = max(0.0, 2 * turn - consumed)
+        src_t = shot["at"] - consumed if shot.get("reverse") else shot["at"] + consumed
         c0, c1 = placements[shots.index(shot)]
         center = [round(c0[0] + (c1[0] - c0[0]) * ease, 4), round(c0[1] + (c1[1] - c0[1]) * ease, 4)]
         entry = {"file": shot["file"], "n": round(src_t * SOURCE_FPS), "punch": round(z0 + (z1 - z0) * ease, 4),
                  "center": center}
+        if shot.get("flip"):  # mirrored: matches a facing direction across the cut
+            entry["flip"] = True
         if shot.get("plain"):  # no video_fx on this shot (a Short's story scenes)
             entry["plain"] = True
         # Fast stretches smear: the previous source frames blended in, the

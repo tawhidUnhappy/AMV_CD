@@ -77,6 +77,10 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 - **Any picked footage?** `./amv.sh strip --edl ...` - start/middle/end of
   every slot. One mid-frame per shot (contact sheet) missed credit text fading
   in at a shot's start and a pan onto a child's legs; the strip caught both.
+- **`regress` needs the lyric project** (config "project"); with its folder gone it
+  can't snapshot. For edit/montage/remake changes compare frame plans instead: hash
+  `amv.edit.build.plan_of(spec)["frames"]` for the existing edit specs with the code
+  stashed and unstashed - identical hashes = no behaviour change (2026-10-21).
 - **Two videos?** `./amv.sh compare A B [--watermark tr] [--frames 200-215]
   [--video]` - per-frame likeness, weak frames listed, labelled A-over-B sheet.
 
