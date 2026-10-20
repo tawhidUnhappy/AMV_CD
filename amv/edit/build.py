@@ -66,6 +66,20 @@ def interp_shots(spec: dict) -> list[dict]:
     auto = int(spec.get("interp_auto", 0))
     shots, out = spec["shots"], []
     starts = [0.0] + [s["until"] for s in shots[:-1]]
+    jobs = []
+    for shot, start in zip(shots, starts, strict=True):
+        speeds = [shot.get("speed", 1.0) * v for _, v in shot.get("velocity", [[0, 1.0]])]
+        factor = int(shot.get("interp", auto if min(speeds) < 0.9 else 0))
+        if factor >= 2:
+            jobs.append((shot["file"], shot["at"], min(8.0, (shot["until"] - start) * max(speeds) + 0.25), factor,
+                         bool(shot.get("reverse"))))
+    if jobs:  # cached clips are instant; new ones run 3 at a time (one GPU, ~25 s each)
+        from concurrent.futures import ThreadPoolExecutor
+
+        from amv.plugins.rife.interp import slow_clip
+
+        with ThreadPoolExecutor(max_workers=3) as ex:
+            list(ex.map(lambda j: slow_clip(*j), jobs))
     for shot, start in zip(shots, starts, strict=True):
         speeds = [shot.get("speed", 1.0) * v for _, v in shot.get("velocity", [[0, 1.0]])]
         factor = int(shot.get("interp", auto if min(speeds) < 0.9 else 0))
@@ -241,18 +255,20 @@ def sheet(spec: dict, r: Renderer, out: Path) -> None:
     print(f"Wrote {out}", flush=True)
 
 
-def encode(spec: dict, r: Renderer, wav: Path, out: Path, a: int, b: int) -> None:
+def encode(spec: dict, r: Renderer, wav: Path | None, out: Path, a: int, b: int) -> None:
+    """Frames [a, b) as H.264 (+ the sound from `wav`; None = video only, a --jobs part)."""
     out.parent.mkdir(parents=True, exist_ok=True)
     seconds = (b - a) / r.fps
+    sound = ["-ss", f"{a / r.fps:.4f}", "-t", f"{seconds:.4f}", "-i", str(wav)] if wav else []
     proc = subprocess.Popen(
         ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{r.w}x{r.h}",
-         "-r", str(r.fps), "-i", "-", "-ss", f"{a / r.fps:.4f}", "-t", f"{seconds:.4f}", "-i", str(wav),
-         "-map", "0:v", "-map", "1:a", "-map_metadata", "-1",
+         "-r", str(r.fps), "-i", "-", *sound,
+         "-map", "0:v", *(["-map", "1:a"] if wav else []), "-map_metadata", "-1",
          # capped: per-frame grain + scanlines made CRF 14 alone 155 Mbit/s (579 MB for 30 s)
          "-c:v", "libx264", "-preset", "slow", "-crf", "16", "-maxrate", "50M", "-bufsize", "100M",
          "-pix_fmt", "yuv420p", "-profile:v", "high",
-         "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-t", f"{seconds:.4f}", "-movflags", "+faststart",
-         str(out)], stdin=subprocess.PIPE)
+         *(["-c:a", "aac", "-b:a", "320k", "-ar", "48000"] if wav else []), "-t", f"{seconds:.4f}",
+         "-movflags", "+faststart", str(out)], stdin=subprocess.PIPE)
     for i in range(a, b):
         if (i - a) % 120 == 0:
             print(f"  frame {i}/{b}", flush=True)
@@ -273,6 +289,8 @@ def main() -> None:
     parser.add_argument("--from", dest="t0", type=float, default=None)
     parser.add_argument("--to", dest="t1", type=float, default=None)
     parser.add_argument("--audio", action="store_true", help="only the designed sound (song + sfx) as a wav")
+    parser.add_argument("--jobs", type=int, default=1, help="render N frame ranges in parallel, then join (full render)")
+    parser.add_argument("--range", default=None, help=argparse.SUPPRESS)  # a:b frames, video only (a --jobs part)
     parser.add_argument("--no-blender", action="store_true", help="skip the 3D segments (base frames instead)")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
@@ -301,11 +319,55 @@ def main() -> None:
             Image.fromarray(r.frame(i)).save(p)
             print(f"Wrote {p}", flush=True)
         return
+    if args.range:
+        a, b = (int(x) for x in args.range.split(":"))
+        encode(spec, r, None, args.out, a, b)
+        return
     a = frame_of(args.t0, r.fps) if args.t0 is not None else 0
     b = frame_of(args.t1, r.fps) if args.t1 is not None else total
     full = a == 0 and b == total
     out = args.out or (paths.EDITS_OUT / f"{name}.mp4" if full else work / f"part_{a}_{b}.mp4")
-    encode(spec, r, designed, out, a, b)
+    if args.jobs > 1:
+        parallel(args, spec, r, designed, out, a, b, work)
+    else:
+        encode(spec, r, designed, out, a, b)
+
+
+def parallel(args, spec: dict, r: Renderer, wav: Path, out: Path, a: int, b: int, work: Path) -> None:
+    """--jobs: N video-only parts rendered side by side (Blender, RIFE and the sound are
+    already cached by now), joined by stream copy, the sound muxed once over the whole
+    - no AAC seams at the joins."""
+    import sys
+
+    n = args.jobs
+    edges = [a + (b - a) * k // n for k in range(n + 1)]
+    parts = [work / f"job_{k}.mp4" for k in range(n)]
+    procs = []
+    for k in range(n):
+        cmd = [sys.executable, "-m", "amv.edit.build", str(args.spec), "--range", f"{edges[k]}:{edges[k + 1]}",
+               "--out", str(parts[k])]
+        if args.no_blender:
+            cmd.append("--no-blender")
+        log = open(work / f"job_{k}.log", "w")
+        procs.append((subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT), log))
+    print(f"rendering {b - a} frames in {n} parallel parts...", flush=True)
+    failed = [k for k, (p, log) in enumerate(procs) if p.wait() != 0 or log.close()]
+    if failed:
+        raise SystemExit(f"part(s) {failed} failed; logs in {work}/job_N.log")
+    lst = work / "jobs.txt"
+    lst.write_text("".join(f"file '{p}'\n" for p in parts))
+    joined = work / "joined.mp4"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(lst), "-c", "copy", str(joined)],
+                   check=True)
+    seconds = (b - a) / r.fps
+    out.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(joined), "-ss", f"{a / r.fps:.4f}", "-t", f"{seconds:.4f}",
+                    "-i", str(wav), "-map", "0:v", "-map", "1:a", "-map_metadata", "-1", "-c:v", "copy",
+                    "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-t", f"{seconds:.4f}", "-movflags", "+faststart",
+                    str(out)], check=True)
+    probe = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=codec_type,duration", "-of", "csv=p=0",
+                            str(out)], capture_output=True, text=True).stdout.split()
+    print(f"Wrote {out}  streams: {' '.join(probe)}", flush=True)
 
 
 if __name__ == "__main__":
