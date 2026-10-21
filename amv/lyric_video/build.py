@@ -24,6 +24,9 @@ Spec keys (paths absolute or relative to the repo):
     flash                                  white veil at the strongest hits, 0-1 (0.1; 0 = off)
     size [w, h] (2560x1440), fps (30), sparkles (45), flashes (true), jobs (4; hyperframes: workers)
     title_seconds                          longest the opening title stays (3.0)
+    meta {feat, subscribe_url, spotify_url, stream, follow {name: [links]}, about, links,
+          submissions, hashtags}           the description's links and lines (missing links: <...>;
+                                           spotify_url "" leaves the Spotify line out)
 
 The lines shown, the ones left out (barely heard) and their cover are in
 workspace/tmp/lyric_video/NAME/lines.json - check them before delivering."""
@@ -34,6 +37,7 @@ import argparse
 import json
 import math
 import os
+import re
 import subprocess
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
@@ -113,7 +117,7 @@ def plan(spec: dict) -> dict:
             dropped.append({**line, "why": "no room on screen"})
             continue
         lines.append({"text": line["text"], "a": round(a, 3), "b": round(b, 3), "filled": line.get("filled", False)})
-    return {"duration": duration, "title_end": title_end, "lines": lines, "dropped": dropped,
+    return {"duration": duration, "title_end": title_end, "lines": lines, "dropped": dropped, "lyrics_text": text,
             "flashes": flashes(song, duration, spec.get("fps", 30)) if spec.get("flashes", True) else {},
             "card_at": (spec.get("channel") or {}).get("at", 15.0) if spec.get("channel") else None}
 
@@ -363,16 +367,110 @@ def thumbnail(spec: dict, out: Path, size=(1280, 720)) -> None:
     Image.fromarray(np.clip(f + 0.5, 0, 255).astype(np.uint8)).save(out, quality=95)
 
 
-def meta(spec: dict, p: dict, out: Path) -> None:
-    title = spec.get("title", "")
-    artist = spec.get("artist", "")
-    head = f"{artist} - {title} (Lyrics)" if artist else f"{title} (Lyrics)"
-    lyrics = "\n".join(ln["text"] for ln in p["lines"])
-    text = (f"TITLE\n{head[:100]}\n\nDESCRIPTION\n{head}\n\n"
-            + (f"Song: {title}\nArtist: {artist}\n" if artist else f"Song: {title}\n")
-            + (f"Channel: {spec['channel']['name']}\n" if spec.get("channel") else "")
-            + f"\nLyrics:\n{lyrics}\n")
-    out.write_text(text, encoding="utf-8")
+PLACEHOLDER = "<{}>"  # never a guessed link: the owner fills these in (spec "meta")
+
+
+def _camel(text: str) -> str:
+    words = re.sub(r"[^A-Za-z0-9 ]", "", text).split()
+    return words[0] if len(words) == 1 else "".join(w[:1].upper() + w[1:] for w in words)
+
+
+def lyric_sections(text: str, skip: set[str]) -> str:
+    """The lyrics for a description: "[Verse 1 — Melodic, dark]" -> "Verse 1:",
+    lines the video left out as unsung (stage directions, unheard ad-libs)
+    dropped, and a section left empty by that dropped too."""
+    sections: list[tuple[str | None, list[str]]] = [(None, [])]
+    for raw in text.replace("\r", "").split("\n"):
+        line = raw.strip()
+        head = re.fullmatch(r"\[(.*)\]", line)
+        if head:
+            sections.append((re.split(r"\s+[—–-]\s+", head.group(1))[0].strip(), []))
+        elif line and line.strip("()").strip() not in skip:
+            sections[-1][1].append(line)
+    blocks = [([f"{name}:"] if name else []) + body for name, body in sections if body]
+    return "\n\n".join("\n".join(b) for b in blocks)
+
+
+def tags_for(song: str, artists: list[str], feat: list[str]) -> list[str]:
+    """YouTube tags in the lyrics-channel pattern (song, song lyrics, song + artists, ...)."""
+    s = song.lower().replace("'", "").replace("’", "")
+    a = [x.lower() for x in artists]
+    f = [x.lower() for x in feat]
+    names = " ".join(a)
+    out = [s, f"{s} lyrics"]
+    for k in range(1, len(a) + 1):
+        out.append(f"{s} lyrics {' '.join(a[:k])}")
+    for k in range(1, len(a) + 1):
+        out += [f"{s} {' '.join(a[:k])}", f"{s} {' '.join(a[:k])} lyrics"]
+    if f:
+        out += [f"{s} {names} {' '.join(f)}", f"{s} {names} {' '.join(f)} lyrics"]
+    out += a + f
+    if len(a) > 1:
+        out += [names, " ".join(reversed(a))]
+    out += [f"{names} {s}", f"{names} {s} lyrics"]
+    if f:
+        out += [f"{names} {' '.join(f)} {s}", f"{names} {' '.join(f)} {s} lyrics"]
+    seen, uniq = set(), []
+    for t in out:
+        if t not in seen:
+            seen.add(t)
+            uniq.append(t)
+    # YouTube's tag field holds 500 characters
+    keep, total = [], 0
+    for t in uniq:
+        if total + len(t) + 1 > 500:
+            break
+        keep.append(t)
+        total += len(t) + 1
+    return keep
+
+
+def meta(spec: dict, p: dict, out_dir: Path) -> dict[str, Path]:
+    """Title, description and tags in the lyrics-channel layout (the Vibe Guide
+    "Headlights (Lyrics)" upload): title lines, subscribe / Spotify /
+    notifications, stream, follow blocks, sectioned lyrics, channel blurb,
+    hashtags, tags. Links come only from spec "meta"; missing ones are <...>."""
+    song = spec.get("title", "")
+    artists = [x.strip() for x in re.split(r",\s*", spec.get("artist", "")) if x.strip()]
+    m = spec.get("meta", {})
+    feat = m.get("feat", [])
+    by = ", ".join(artists)
+    ft = f" ft. {', '.join(feat)}" if feat else ""
+    title = (f"{by} - {song} (Lyrics){ft}" if by else f"{song} (Lyrics){ft}")[:100]
+    second = f"{song} (Lyrics) - {by}{ft}" if by else ""
+    ch = spec.get("channel") or {}
+    channel = ch.get("name", by)
+    follow = m.get("follow") or {name: [] for name in artists + feat}
+    skip = {d["text"] for d in p["dropped"] if d.get("cover", 0) == 0}
+    lines = [title, second, "", "",
+             f"For more quality music subscribe here ➡ {m.get('subscribe_url') or PLACEHOLDER.format('YOUR CHANNEL SUBSCRIBE LINK')}"]
+    if m.get("spotify_url") != "":  # absent: placeholder; "" (no Spotify): line left out
+        lines.append(f"We're on Spotify ➡ {m.get('spotify_url') or PLACEHOLDER.format('SPOTIFY LINK')}")
+    lines += ["🔔 Turn on notifications to stay updated with new uploads!", "",
+              "✖ Stream / Download:", m.get("stream", "Soon"), ""]
+    for name, links in follow.items():
+        lines.append(f"✖ Follow {name}")
+        lines += [f"  {x}" for x in links] or [f"  {PLACEHOLDER.format(name + ' SOCIAL LINKS')}"]
+        lines.append("")
+    lines += ["🎤  Lyrics:", lyric_sections(p["lyrics_text"], skip), ""]
+    about = m.get("about")
+    lines.append(f"{channel.upper()} - {about}" if about else f"{channel.upper()} - {PLACEHOLDER.format('CHANNEL TAGLINE')}")
+    lines += [f"➡ {x}" for x in m.get("links", [])] or [f"➡ {PLACEHOLDER.format('CHANNEL LINKS')}"]
+    if m.get("submissions"):
+        lines += ["", f"Send your submissions: {m['submissions']}"]
+    tags = tags_for(song, artists, feat)
+    hashtags = [f"#{_camel(x)}" for x in artists + [song] + feat] + ["#Lyrics"] + [f"#{h.lstrip('#')}" for h in m.get("hashtags", [])]
+    lines += ["", " ".join(dict.fromkeys(hashtags)), "", "Tags:", *tags]
+    name = spec["name"]
+    files = {"title": out_dir / f"{name}_title.txt", "description": out_dir / f"{name}_description.txt",
+             "tags": out_dir / f"{name}_tags.txt"}
+    files["title"].write_text(title + "\n", encoding="utf-8")
+    files["description"].write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+    files["tags"].write_text(", ".join(tags) + "\n", encoding="utf-8")
+    old = out_dir / f"{name}_title_description.txt"
+    if old.exists():
+        old.unlink()
+    return files
 
 
 def main() -> None:
@@ -383,6 +481,7 @@ def main() -> None:
     ap.add_argument("--from", dest="t0", type=float, default=0.0)
     ap.add_argument("--to", dest="t1", type=float, default=None)
     ap.add_argument("--thumb", action="store_true", help="only the thumbnail")
+    ap.add_argument("--meta", action="store_true", help="only the title, description and tags files")
     ap.add_argument("--jobs", type=int, default=None)
     args = ap.parse_args()
     spec = load_spec(args.spec)
@@ -393,6 +492,10 @@ def main() -> None:
         print(out_dir / f"{spec['name']}_thumbnail.jpg")
         return
     p = plan(spec)
+    if args.meta:
+        for path in meta(spec, p, out_dir).values():
+            print(path)
+        return
     if args.lines or args.frames:
         for ln in p["lines"]:
             print(f"{ln['a']:7.2f} {ln['b']:7.2f}  {ln['text']}" + ("   [filled: not heard, placed on the sung gap]" if ln["filled"] else ""))
@@ -428,7 +531,7 @@ def main() -> None:
         render(spec, p, out, args.t0, t1, args.jobs or spec.get("jobs", 4))
     if whole:
         thumbnail(spec, out_dir / f"{spec['name']}_thumbnail.jpg")
-        meta(spec, p, out_dir / f"{spec['name']}_title_description.txt")
+        meta(spec, p, out_dir)
     print(out)
 
 

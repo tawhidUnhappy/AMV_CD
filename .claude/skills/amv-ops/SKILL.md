@@ -390,7 +390,9 @@ tool plug-in (pinned CLI + Chrome Headless Shell + local GSAP in workspace/tools
 `hyperframes preview <that dir>` opens it in the Studio). `python` = the numpy compositor (no wiggle).
 `--frames` uses `hyperframes snapshot` (contact sheet included). All measured off "Alok, Alan Walker - Headlights (Lyrics)" (The
 Vibe Guide): cap 111 px @1080, pitch 126, block centred, wrap past 0.78 W. Outputs: mp4 (AAC 320k),
-thumbnail (title + artist, 1280x720), title/description txt.
+thumbnail (title + artist, 1280x720), NAME_title/_description/_tags.txt in the Vibe Guide upload
+layout (`--meta` rewrites only those): links only from spec "meta", missing ones stay <...>
+placeholders - never guess a channel/Spotify/social URL.
 Lyrics: the spec's "lyrics" or the song's lyrics tag (Suno writes "lyrics-eng"); [sections] dropped;
 "(...)" lines kept only when heard (they are ad-libs OR stage directions like "(Beat cuts out)").
 Timing = configured separator on the whole song (ensemble: ~30 min for 4:20 on the 3060 - cached
