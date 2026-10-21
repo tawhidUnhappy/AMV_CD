@@ -402,6 +402,13 @@ ones is transcribed ALONE (whispered build-ups and a chorus ad-lib were missed b
 pass and heard in isolation) -> still unheard: spread over the sung part of the gap, marked
 "[filled]" in `--lines`. Stage directions stay out (nothing heard). Read `--lines` before rendering.
 Full render 1440p30 4:20: python engine ~3.5 min (--jobs 4, NVENC).
+Backgrounds: `./amv.sh bg-gen [--palette dusk|sunset|night|dawn|mint|all] [--seed N --count K]
+[--size 3840x2160] [--sheet]` paints the lyrics-channel sky procedurally (amv/lyric_video/background.py:
+gradient + side glow + faint diagonal cloud streaks + 2 hazy fractal ranges with valley mist + a dark
+two-humped near range + grain) -> workspace/output/backgrounds/; "dusk" is sampled from the reference
+background. ~6 s per 4K image. Traps: folded |noise| crests gave flat mesas (plain fractal noise
+reads as hills); mist measured from the raw ridge made vertical stripes (use a smoothed skyline);
+mirroring only the glow left the sky pink on the wrong side (build left-handed, flip the image).
 Fonts: `./amv.sh font-trace workspace/global/lyric_videos/fonts/NAME.json` TRACES a font from a
 reference video's burned-in text (known lines at fully-faded-in moments -> glyphs cut per frame,
 sparkles rejected by their missing dark rim, 15 frames x every occurrence averaged after centroid
