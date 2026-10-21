@@ -39,6 +39,8 @@ def main() -> None:
     parser.add_argument("--name", help="output folder name (default: from the prompt + time)")
     parser.add_argument("--out", type=Path, help="output folder (default workspace/output/songs/<name>)")
     parser.add_argument("--engine", help="song_generator plug-in (default: config.json, else the first)")
+    parser.add_argument("--opt", action="append", default=[], metavar="KEY=VALUE",
+                        help="override one engine setting for this run (e.g. --opt steps=50 --opt adg=false)")
     args = parser.parse_args()
 
     cfg = config.load()
@@ -53,7 +55,11 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     (out / "request.json").write_text(json.dumps({**request, "engine": engine.name}, indent=1), encoding="utf-8")
 
-    result = plugins.call(engine.generate, request, cfg.plugin_settings("song_generator", engine.name))
+    settings = cfg.plugin_settings("song_generator", engine.name)
+    for kv in args.opt:
+        key, _, value = kv.partition("=")
+        settings[key] = json.loads(value) if value[:1] in "-0123456789tfn[{\"" and value not in ("",) else value
+    result = plugins.call(engine.generate, request, settings)
     print(f"\n{engine.name}: {len(result['files'])} song(s) in {result.get('seconds')}s "
           f"(models loaded in {result.get('load_seconds')}s; peak VRAM {result.get('peak_vram_gb')} GB, "
           f"RAM {result.get('peak_ram_gb')} GB)")

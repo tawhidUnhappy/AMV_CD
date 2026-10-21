@@ -46,12 +46,12 @@ def layout_block(rows: list[str], font, cap: float, pitch: float, cx: float, cy:
     return letters
 
 
-def lyric_layout(text: str, font_path: Path, w: int, h: int) -> tuple[list[dict], float]:
+def lyric_layout(text: str, font_path: Path, w: int, h: int, case: str = "upper") -> tuple[list[dict], float]:
     """(letters, font px) for one lyric line - the same wrap/size/pitch rules
     as the Python renderer (look.lyric_sprite)."""
     cap = look.CAP * h
     font = look.font_for_cap(font_path, cap)
-    rows = look.wrap(look.displayable(text.upper(), font), font, look.WRAP_W * w)
+    rows = look.wrap(look.displayable(look.cased(text, case), font), font, look.WRAP_W * w)
     widest = max(font.getlength(r) for r in rows)
     if widest > look.MAX_W * w:
         cap *= look.MAX_W * w / widest
@@ -62,11 +62,11 @@ def lyric_layout(text: str, font_path: Path, w: int, h: int) -> tuple[list[dict]
     return layout_block(rows, font, cap, pitch, w / 2, h / 2), font.font.size
 
 
-def title_layout(title: str, artist: str, font_path: Path, w: int, h: int,
+def title_layout(title: str, artist: str, font_path: Path, w: int, h: int, case: str = "upper",
                  title_cap: float = 0.27, artist_cap: float = 0.072, max_w: float = 0.86, cy: float = 0.45):
     cap = title_cap * h
     font = look.font_for_cap(font_path, cap)
-    title = look.displayable(title.upper(), font)
+    title = look.displayable(look.cased(title, case), font)
     if font.getlength(title) > max_w * w:
         cap *= max_w * w / font.getlength(title)
         font = look.font_for_cap(font_path, cap)
@@ -78,7 +78,7 @@ def title_layout(title: str, artist: str, font_path: Path, w: int, h: int,
     blocks.append((layout_block([title], font, cap, cap, w / 2, top + cap / 2), font.font.size))
     if artist:
         afont = look.font_for_cap(font_path, acap)
-        a = look.displayable(artist.upper(), afont)
+        a = look.displayable(look.cased(artist, case), afont)
         if afont.getlength(a) > max_w * w:
             acap *= max_w * w / afont.getlength(a)
             afont = look.font_for_cap(font_path, acap)
@@ -105,8 +105,8 @@ def build(spec: dict, plan: dict, out_dir: Path, resolve) -> Path:
     dur = plan["duration"]
     font_path = resolve(spec["font"])
     out_dir.mkdir(parents=True, exist_ok=True)
-    assets = {"bg": resolve(spec["background"]), "font": font_path, "song": resolve(spec["song"])}
-    from amv.lyric_video.build import ui_font
+    from amv.lyric_video.build import song_file, ui_font
+    assets = {"bg": resolve(spec["background"]), "font": font_path, "song": song_file(spec)}
     assets["ui"] = ui_font(spec)
     ch = dict(spec.get("channel") or {})
     if ch:
@@ -119,17 +119,23 @@ def build(spec: dict, plan: dict, out_dir: Path, resolve) -> Path:
     from amv.plugins.hyperframes.setup import gsap_file
     shutil.copyfile(gsap_file(), out_dir / "gsap.min.js")
 
+    style = spec.get("style", {})
+    fill = style.get("fill", "#ffffff")
+    rim = style.get("rim", "rgba(22,12,38,0.92)")
+    shadow = style.get("shadow", "rgba(24,12,40,0.85)")
+    glow = f" drop-shadow(0 0 {14 * u:.1f}px {style['glow']})" if style.get("glow") else ""
     rng = np.random.default_rng(spec.get("seed", 11))
     clips, lines_js = [], []
     for k, ln in enumerate(plan["lines"]):
-        letters, size = lyric_layout(ln["text"], font_path, w, h)
+        letters, size = lyric_layout(ln["text"], font_path, w, h, style.get("case", "upper"))
         svg, seeds = _svg_text(letters, size, f"l{k}", w, h, True, rng)
         a, b = ln["a"], ln["b"]
         clips.append(f'<div id="c{k}" class="clip layer" data-start="{a:.3f}" data-duration="{b - a:.3f}" '
                      f'data-track-index="3">{svg}</div>')
         lines_js.append({"g": f"l{k}", "a": a, "b": b, "s": seeds})
     title_svgs = []
-    for j, (letters, size) in enumerate(title_layout(spec.get("title", ""), spec.get("artist", ""), font_path, w, h)):
+    for j, (letters, size) in enumerate(title_layout(spec.get("title", ""), spec.get("artist", ""), font_path, w, h,
+                                                             style.get("case", "upper"))):
         svg, _ = _svg_text(letters, size, f"t{j}", w, h, False, rng)
         title_svgs.append(svg)
     title_clip = (f'<div id="title" class="clip layer" data-start="0" data-duration="{plan["title_end"]:.3f}" '
@@ -164,8 +170,8 @@ body {{ margin: 0; background: #000; }}
 .sp {{ position: absolute; left: 0; top: 0; border-radius: 50%; background: #fff;
       box-shadow: 0 0 {3 * u:.1f}px rgba(255,255,255,0.6); opacity: 0; }}
 svg.txt {{ position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;
-          filter: drop-shadow(0 0 {1.6 * u:.1f}px rgba(22,12,38,0.9)) drop-shadow({3 * u:.1f}px {4 * u:.1f}px {4.5 * u:.1f}px rgba(24,12,40,0.85)); }}
-svg.txt text {{ font-family: "LyricFont"; fill: #fff; stroke: rgba(22,12,38,0.92); stroke-width: {3.2 * u:.1f}px;
+          filter: drop-shadow(0 0 {1.6 * u:.1f}px {rim}) drop-shadow({3 * u:.1f}px {4 * u:.1f}px {4.5 * u:.1f}px {shadow}){glow}; }}
+svg.txt text {{ font-family: "LyricFont"; fill: {fill}; stroke: {rim}; stroke-width: {3.2 * u:.1f}px;
                stroke-linejoin: round; paint-order: stroke fill; }}
 {_card_css(u) if card_html else ''}
 </style>

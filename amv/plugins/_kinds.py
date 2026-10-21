@@ -53,6 +53,7 @@ class Tool:
     install: Ref = None
     weights: Ref = None
     interpreter: Ref = None
+    index: str = ""          # an extra package index (e.g. PyTorch's CUDA wheels), searched with PyPI
 
 
 @dataclass(frozen=True)

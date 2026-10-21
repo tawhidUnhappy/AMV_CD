@@ -27,6 +27,8 @@ def command(name: str, *args: str) -> list[str]:
     if tool.interpreter:
         return [str(plugins.call(tool.interpreter, settings(name))), str(tool.worker), *args]
     cmd = ["uv", "run", "-q", "--no-project", "--python", tool.python]
+    if tool.index:
+        cmd += ["--index", tool.index, "--index-strategy", "unsafe-best-match"]
     for package in tool.packages:
         cmd += ["--with", package]
     return [*cmd, "python", str(tool.worker), *args]

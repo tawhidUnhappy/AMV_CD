@@ -127,6 +127,10 @@ add it here with the date and commit it with the code.
   (amv-lyric-channel skill).
 - 2026-10-22: descriptions = just the lyrics, tags and related keywords - no links, no
   subscribe/Spotify/channel lines (spec meta.layout "plain"); a thumbnail and title always.
+- 2026-10-22: style may change per song (font, case, colours) to fit its theme; a pasted
+  YouTube link = research that song and make an ORIGINAL one in its style (nightcore etc. as
+  song_fx); lyrics must not come in late (forced alignment); song quality matters (ACE-Step
+  best-quality settings + mastering).
 - Spec + lyrics: `workspace/global/lyric_videos/goddamn_devil.*`; output in
   `workspace/output/lyric_videos/NAME/`.
 

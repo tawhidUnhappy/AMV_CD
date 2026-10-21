@@ -17,7 +17,8 @@ def generate(request: dict, settings: dict) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     job = {"checkpoints": str(setup.checkpoints(where)), "src": str(setup.home(where) / "src"),
            "result": str(out_dir / "result.json"), "request": {**request, "out_dir": str(out_dir)},
-           **{k: settings[k] for k in ("model", "lm", "backend", "steps", "format") if settings.get(k)}}
+           **{k: settings[k] for k in ("model", "lm", "backend", "steps", "format", "guidance", "adg", "shift", "dcw")
+              if settings.get(k) is not None and settings.get(k) != ""}}
     job_file = out_dir / "job.json"
     job_file.write_text(json.dumps(job, indent=1), encoding="utf-8")
     done = tools.run("ace_step", "generate", str(job_file), live=True)

@@ -134,7 +134,7 @@ def roughen(mask: np.ndarray, amount: float, wave: float, bold: float = 0.0, see
 
 
 def text_block(lines: list[str], font: Face, cap_px: float, pitch_px: float, h: int,
-               fill=(255, 255, 255), rough: float = 0.0, bold: float = 0.0) -> Sprite:
+               fill=(255, 255, 255), rough: float = 0.0, bold: float = 0.0, shadow=SHADOW_COLOR) -> Sprite:
     """Centred lines with the rim + soft shadow, as one premultiplied sprite
     (x/y = its top-left when the block's centre is at 0, 0). rough: hand-drawn
     edge wobble and bold: stroke thickening, both px @1080 (0 = the font as drawn)."""
@@ -156,7 +156,7 @@ def text_block(lines: list[str], font: Face, cap_px: float, pitch_px: float, h: 
     sh = ndimage.gaussian_filter(sh, SHADOW_BLUR * unit) * SHADOW_OPACITY
     dark = np.maximum(sh, rim * 0.9)
     color = np.array(fill, np.float32)[None, None, :]
-    shade = np.array(SHADOW_COLOR, np.float32)[None, None, :]
+    shade = np.array(shadow, np.float32)[None, None, :]
     a = fillm + dark * (1 - fillm)
     rgb = color * fillm[..., None] + shade * (dark * (1 - fillm))[..., None]
     # The block's centre is the middle of the caps of the lines, not of the padded patch.
@@ -179,12 +179,25 @@ def _trim(s: Sprite) -> Sprite:
     return Sprite(s.rgb[y0:y1, x0:x1].copy(), s.a[y0:y1, x0:x1].copy(), s.x + x0, s.y + y0)
 
 
+def cased(text: str, case: str = "upper") -> str:
+    """The text as the style sets it: upper (the lyrics-channel default), lower
+    (emo / nightcore uploads), or as written."""
+    return text.upper() if case == "upper" else text.lower() if case == "lower" else text
+
+
+def rgb(colour, default) -> tuple[int, int, int]:
+    if not colour:
+        return default
+    c = colour.lstrip("#")
+    return tuple(int(c[i:i + 2], 16) for i in (0, 2, 4))
+
+
 def lyric_sprite(text: str, font_path: Path, w: int, h: int, rough: float = 0.0, bold: float = 0.0,
-                 track: float = 0.0) -> Sprite:
+                 track: float = 0.0, case: str = "upper") -> Sprite:
     """A lyric line as the reference sets it: upper case, centred, wrapped."""
     cap = CAP * h
     font = font_for_cap(font_path, cap, track)
-    lines = wrap(displayable(text.upper(), font), font, WRAP_W * w)
+    lines = wrap(displayable(cased(text, case), font), font, WRAP_W * w)
     widest = max(font.getlength(t) for t in lines)
     if widest > MAX_W * w:  # a single unbreakable run: shrink
         cap *= MAX_W * w / widest
@@ -198,27 +211,28 @@ def lyric_sprite(text: str, font_path: Path, w: int, h: int, rough: float = 0.0,
 
 def title_sprite(title: str, artist: str, font_path: Path, w: int, h: int,
                  title_cap: float = 0.27, artist_cap: float = 0.072, max_w: float = 0.86, rough: float = 0.0,
-                 bold: float = 0.0, track: float = 0.0) -> Sprite:
+                 bold: float = 0.0, track: float = 0.0, case: str = "upper", fill=(255, 255, 255),
+                 shadow=SHADOW_COLOR) -> Sprite:
     """The opening title card / thumbnail text: the title huge, the artist under it."""
     cap = title_cap * h
     font = font_for_cap(font_path, cap, track)
-    title, artist = displayable(title.upper(), font), displayable(artist.upper(), font)
-    tw = font.getlength(title.upper())
+    title, artist = displayable(cased(title, case), font), displayable(cased(artist, case), font)
+    tw = font.getlength(title)
     if tw > max_w * w:
         cap *= max_w * w / tw
         font = font_for_cap(font_path, cap, track)
     # bigger letters wobble a little more, not proportionally (that read as melting)
-    big = text_block([title.upper()], font, cap, cap, h, rough=rough * math.sqrt(cap / (CAP * h)),
+    big = text_block([title], font, cap, cap, h, fill=fill, shadow=shadow, rough=rough * math.sqrt(cap / (CAP * h)),
                      bold=bold * cap / (CAP * h))
     if not artist:
         return big
     acap = min(artist_cap * h, cap * 0.4)
     afont = font_for_cap(font_path, acap, track)
-    if afont.getlength(artist.upper()) > max_w * w:
-        acap *= max_w * w / afont.getlength(artist.upper())
+    if afont.getlength(artist) > max_w * w:
+        acap *= max_w * w / afont.getlength(artist)
         afont = font_for_cap(font_path, acap, track)
     k = max(0.5, acap / (CAP * h))
-    small = text_block([artist.upper()], afont, acap, acap, h, rough=rough * k, bold=bold * k)
+    small = text_block([artist], afont, acap, acap, h, fill=fill, shadow=shadow, rough=rough * k, bold=bold * k)
     gap = cap * 0.12
     # stack: title caps centred above, artist caps below, the pair centred on 0
     title_cy, artist_cy = -(acap + gap) / 2, (cap + gap) / 2

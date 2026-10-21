@@ -438,6 +438,16 @@ Traps met:
 - A font's comma can drop 0.15 cap below the baseline - the line pitch grows to clear it.
 - Broday has no "…": lines rendered "THREE   TWO   ONE" - characters a font lacks fall back
   (look.FALLBACK, "…" -> "..."). Check a new font's punctuation on `--frames`.
+- "Lyrics appear 1-2 s late" (2026-10-22): whisper's word stamps on sung vocals were off by
+  up to 1.5 s (both ways; spectrograms showed the real onsets). Line times now come from
+  forced alignment (amv/plugins/forced_align: torch 2.8 + torchaudio 2.8 cu128 - 2.9+ dropped
+  the alignment API; Tool `index` = PyTorch's wheel index) inside whisper's window; sung
+  vowels score 0.12-0.2 and are still right, so FA_MIN_SCORE is 0.08. LEAD 0.3 s.
+- Missed leading words started a line at the first HEARD word: line_start steps back per
+  lyric position, not per heard word.
+- Mastering the song (-14 LUFS) made a new file and a new 20-min separation: timing reads
+  song_file(master=False); only the delivered audio is mastered.
+- `pkill -f "lyric-video ..."` killed my own shell (exit 144) - kill by PID.
 - Whisper smears the first word after a pause ("One" 2.2 s, "last" 2.7 s put a line 2 s early):
   a line starts from its first word under 1 s, stepped back 0.35 s per word before it.
   Whisper writes "3, 2, 1" for "Three, two, one" and hyphenated lyrics ("Oh-oh-oh") are

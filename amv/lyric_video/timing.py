@@ -24,6 +24,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+import numpy as np
+
 from amv.core.ffmpeg_tools import probe_duration
 
 # A line is shown when at least this share of its words was heard (ad-libs need more).
@@ -111,7 +113,7 @@ def _sim(a: str, b: str) -> float:
 def align(lines: list[dict], words: list[list]) -> list[dict]:
     """Each line with "start"/"end" (seconds) and "cover" (share of its words
     heard), from a global alignment of lyric words to heard words."""
-    lyr = [(i, t) for i, line in enumerate(lines) for t in tokens(line["text"])]
+    lyr = [(i, t, pos) for i, line in enumerate(lines) for pos, t in enumerate(tokens(line["text"]))]
     heard = [(w, norm(part)) for w in words for part in re.split(r"[-‐–—]+", w[2])]
     heard = [h for h in heard if h[1]]
     n, m = len(lyr), len(heard)
@@ -139,7 +141,7 @@ def align(lines: list[dict], words: list[list]) -> list[dict]:
         mv = move[i][j]
         if mv == 1:
             if _sim(lyr[i - 1][1], heard[j - 1][1]) >= WORD_SIM:
-                hits.setdefault(lyr[i - 1][0], []).append(heard[j - 1][0])
+                hits.setdefault(lyr[i - 1][0], []).append([*heard[j - 1][0][:3], lyr[i - 1][2]])
             i, j = i - 1, j - 1
         elif mv == 2:
             i -= 1
@@ -287,14 +289,75 @@ def hear_gaps(aligned: list[dict], stem: Path, cache: Path) -> None:
     _mark(aligned)
 
 
+MAX_BACK = 1.6   # never reach further back than this for unheard leading words
+
+
 def line_start(got: list[list]) -> float:
-    """The line's start from its first word that is not smeared, stepped back
-    WORD_STEP per matched word before it ("One" 2.2 s + "last" 2.7 s in a
-    whispered build-up put the line 2 s early)."""
-    for i, w in enumerate(got):
+    """The line's start: its first word that is not smeared ("One" 2.2 s + "last"
+    2.7 s in a whispered build-up put a line 2 s early), stepped back WORD_STEP
+    for every lyric word before it - heard or NOT: when whisper missed the first
+    word or two, starting at the first heard one put the text 1-2 s late
+    (2026-10-22). got: [start, end, word, position in the line]."""
+    for w in got:
         if w[1] - w[0] <= SMEAR:
-            return max(got[0][0], w[0] - WORD_STEP * i)
+            back = min(MAX_BACK, WORD_STEP * w[3])
+            heard_before = [g for g in got if g[0] < w[0]]
+            floor = heard_before[0][0] if heard_before else w[0] - back
+            return max(floor, w[0] - back) if heard_before else w[0] - back
     return max(got[0][0], got[-1][1] - SMEAR)
+
+
+FA_BACK = 1.6       # how far before whisper's start a line's real start may be
+FA_MIN_SCORE = 0.08  # mean CTC confidence below this: keep whisper's times. Sung vowels score
+                     # low (0.12-0.2) even when right - checked on spectrograms (Neon Lullaby):
+                     # the aligner was right on all 13 disputed lines, whisper 1.2-1.5 s late on 3
+
+
+def force_align(aligned: list[dict], stem: Path, cache: Path) -> None:
+    """Exact line times: each placed line's known words force-aligned (CTC,
+    forced_align tool) inside a window round whisper's placement - from just
+    after the previous line (at most FA_BACK before) to just past the next
+    line's start. Whisper's word stamps on sung vocals ran up to 1-2 s late.
+    Cached in words.json "fa"; a weak alignment keeps whisper's times."""
+    from amv.core import tools
+
+    placed = [ln for ln in aligned if ln.get("placed")]
+    store_path = cache / "words.json"
+    store = json.loads(store_path.read_text(encoding="utf-8"))
+    done = store.setdefault("fa", {})
+    segs = []
+    for k, ln in enumerate(placed):
+        prev_end = placed[k - 1]["end"] if k else 0.0
+        nxt = placed[k + 1]["start"] if k + 1 < len(placed) else ln["end"] + 2.0
+        t0 = max(min(prev_end, ln["start"]) - 0.1, ln["start"] - FA_BACK, 0.0)
+        t1 = max(min(nxt + 0.4, ln["end"] + 1.2), ln["start"] + 0.6)
+        key = f"{t0:.2f}|{t1:.2f}|{ln['text']}"
+        ln["_fa"] = key
+        if key not in done:
+            segs.append({"key": key, "t0": t0, "t1": t1, "words": tokens(ln["text"])})
+    if segs:
+        with tempfile.TemporaryDirectory() as tmp:
+            job = Path(tmp) / "job.json"
+            out = Path(tmp) / "out.json"
+            job.write_text(json.dumps({"wav": str(stem), "out": str(out), "segments": segs}), encoding="utf-8")
+            print(f"Force-aligning {len(segs)} line(s) to the voices...", flush=True)
+            run = tools.run("forced_align", str(job))
+            if run.returncode != 0 or not out.exists():
+                print(f"  forced alignment failed, keeping whisper's times:\n{(run.stderr or '')[-1500:]}")
+                for ln in placed:
+                    ln.pop("_fa", None)
+                return
+            done.update(json.loads(out.read_text(encoding="utf-8")))
+        store_path.write_text(json.dumps(store), encoding="utf-8")
+    for ln in placed:
+        words = [w for w in (done.get(ln.pop("_fa")) or []) if w]
+        if not words:
+            continue
+        score = float(np.mean([w[2] for w in words]))
+        ln["fa_score"] = round(score, 3)
+        if score >= FA_MIN_SCORE:
+            ln["whisper_start"] = ln["start"]
+            ln["start"], ln["end"] = words[0][0], words[-1][1]
 
 
 def timed_lines(song: Path, text: str, cache: Path) -> tuple[list[dict], list[dict]]:
@@ -306,6 +369,7 @@ def timed_lines(song: Path, text: str, cache: Path) -> tuple[list[dict], list[di
     if stem and Path(stem).exists():
         hear_gaps(aligned, Path(stem), cache)
         fill_unheard(aligned, voiced(Path(stem)))
+        force_align(aligned, Path(stem), cache)
     shown, dropped = [], []
     for line in aligned:
         (shown if line.pop("placed") else dropped).append(line)

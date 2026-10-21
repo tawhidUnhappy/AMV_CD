@@ -15,6 +15,9 @@ config.json "song_generators": {"ace_step": {...}} (how it generates):
               name (acestep-5Hz-lm-0.6B / -1.7B / -4B)
     backend   LM backend: auto (vllm on CUDA), vllm or pt
     steps     diffusion steps (default: 8 turbo, 50 others)
+    guidance, adg, shift, dcw
+              non-turbo quality knobs (default 7.0, false, 1.0, false; all on at once broke the
+              singing, 2026-10-22 - try one at a time: song-gen --opt adg=true ...)
     format    wav (default), flac or mp3
 """
 

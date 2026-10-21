@@ -40,13 +40,60 @@ questions), with a recommended default first. Don't ask what the files already s
 Then ask in plain text only for what is still missing (a path, a mood or style
 for a generated song, their pasted lyrics).
 
+## 1b. A YouTube link as the brief ("make a song like this")
+
+The user may paste any YouTube link. Make an ORIGINAL song in that style - never
+copy its lyrics or name a real singer's voice in the caption.
+1. What it is: `yt-dlp --skip-download --dump-json URL` (title, channel, tags,
+   description). YouTube often answers "Sign in to confirm you're not a bot" -
+   then `curl "https://www.youtube.com/oembed?url=URL&format=json"` still gives
+   the title and channel without signing in.
+2. Research it (WebSearch, cite the pages): the artist, genre, era, tempo, mood,
+   vocal type, typical themes - and the EDIT style in the title: "Nightcore"
+   (x1.25 speed+pitch), "slowed + reverb", "sped up". The edit becomes spec
+   `song_fx` (nightcore / slowed_reverb / slowed / sped_up), applied after
+   generation - that is how those uploads are made.
+3. Write the caption from the research (genre, mood, instruments, vocal, tempo
+   before the edit) and your own lyrics in the same register and themes (keep
+   self-harm out even when the genre goes there). Title in the scene's casing
+   (emo / SoundCloud titles are lower case).
+4. Tell the user in one short block what you found and what you will make.
+Example: "Nightcore - cuttin on me [lil happy lil sad]" -> Swedish SoundCloud
+emo rap, sad synths + trap -> "left on read (nightcore)": 130 BPM emo trap,
+male vocal, nightcore after (2026-10-22).
+
 ## 2. A generated song (ACE-Step)
 
 Follow `amv-song-gen`: ACE-Step 1.5, `lm: "none"`, `acestep-v15-xl-sft` (the
-owner's settings). Write a caption (genre, mood, tempo, vocals) and lyrics with
+owner's settings). Song quality is an OPEN problem ("the song quality is bad",
+2026-10-22): ACE-Step's best-quality knobs all at once (64 steps, ADG, guidance 8,
+shift 3, DCW) made two takes whose vocals sang none of the lyrics. An A/B was
+started (workspace/output/songs/ab_run.sh: same 45 s excerpt + seed 7, old vs new
+vs one knob each; only A_old finished) - resume it, check each take's transcript,
+and only then change the defaults. Also untested: all-lower-case lyrics may hurt
+adherence (capitalise them for generation, lower-case only on screen). Write a caption (genre, mood, tempo, vocals) and lyrics with
 section tags ([Verse], [Chorus], ...). Show both in one short block, generate a
 few takes, and keep the take whose transcript has every lyric line. Songs land in
 `workspace/output/songs/<name>/`; the lyrics you wrote are the lyrics file.
+
+## 2b. Style follows the song
+
+The house look is the default, not a rule: pick the font, case and colours for
+the song's theme (owner, 2026-10-22). Fonts (assets/fonts/theme, OFL/Apache):
+
+| Theme | Fonts | Case / extras |
+| --- | --- | --- |
+| lyrics-channel pop (default) | Vibe Hand (workspace/assets/fonts) | upper |
+| emo, sad rap, nightcore, diary | ShadowsIntoLight, NanumPenScript, PermanentMarker | lower; soft pink/red glow |
+| dreamy, romantic, soft pop | Pacifico, Satisfy | as_written |
+| dark, aggressive, villain | BebasNeue, SedgwickAveDisplay, Creepster (horror only) | upper |
+| synthwave, retro, EDM | Audiowide, Monoton (titles) | upper; cyan/magenta glow |
+| lo-fi, acoustic, storytelling | SpecialElite, Kalam-Bold | as_written |
+
+Spec `"style": {"case": "lower", "fill": "#ffffff", "rim": "...", "shadow": "...",
+"glow": "rgba(255,90,150,0.35)"}`. Render a quick sheet of 3-4 candidate fonts
+with the hook line over the chosen background (look.lyric_sprite) and pick the
+most legible one that fits.
 
 ## 3. The spec
 
@@ -54,8 +101,9 @@ Copy `workspace/global/lyric_videos/goddamn_devil.json` to
 `workspace/global/lyric_videos/<name>.json` and change only:
 `song`, `title`, `artist`, `lyrics_file` (save pasted/written lyrics as
 `<name>.lyrics.txt` beside the spec, sections in [brackets]), `background`, and
-`meta` links if the user gave them. Keep `font` (Vibe Hand), `channel`, `size`,
-`fps`, `engine: hyperframes`, `flash` 0.1, `wiggle` 3.5 - those are house style.
+`meta` (plain layout + keywords), `font` / `style` (2b), `song_fx` for an edit.
+Keep `channel`, `size`, `fps`, `engine: hyperframes`, `flash` 0.1, `wiggle` 3.5.
+The song is mastered to -14 LUFS for the upload automatically (spec `master`).
 
 ## 4. Timing - check before anything renders
 
@@ -70,9 +118,14 @@ Read the output:
   A real sung line left out: look at the stem around it before touching anything.
 - `[filled]` lines were not heard even alone and are spread over the sung gap -
   check one with `--frames` at its time.
-- Lines several seconds early/late: the cause is in timing.py (smeared words,
-  digits, hyphens were the traps) - fix the code for every song, never hand-time
-  one song (preference).
+- Times come from FORCED ALIGNMENT of the known words (forced_align tool, torchaudio
+  MMS_FA) inside whisper's window: whisper's own stamps on sung vocals were 1-2 s
+  late on some lines and early on others ("lyrics appear 1-2 s late", 2026-10-22).
+  `lines.json` keeps `whisper_start` and `fa_score` per line. A doubt about one line:
+  plot the voices stem's spectrogram round it with both starts marked and look
+  where the note begins - don't argue from numbers.
+- Lines still early/late: fix timing.py for every song, never hand-time one
+  song (preference).
 
 ## 5. Background
 

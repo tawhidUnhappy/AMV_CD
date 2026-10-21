@@ -16,6 +16,11 @@ Spec keys (paths absolute or relative to the repo):
     lyrics / lyrics_file                   text, or a .txt beside the spec; default: the song's own lyrics tag
     channel {name, logo, focus [x, y], zoom, tagline, verified, at}
                                            the subscribe card (left out: no card); at = start second
+    song_fx                                nightcore / slowed_reverb / slowed / sped_up (or {"kind", "rate"}):
+                                           the song is processed once and the video is made of that
+    master                                 loudness-normalise to -14 LUFS / -1 dBTP (default true)
+    style {case, fill, rim, shadow, glow}  per-song text look: case upper (default) / lower / as_written;
+                                           CSS colours (fill #fff, rim and shadow dark violet, glow none)
     rough, bold                            hand-drawn edge wobble / stroke thickening for a clean font, px @1080 (0)
     track                                  letter spacing, a fraction of the cap height (0)
     engine                                 hyperframes (default: HTML/SVG/GSAP page rendered by the
@@ -51,7 +56,8 @@ from amv.core.ffmpeg_tools import choose_h264_encoder, h264_encoder_args, probe_
 from amv.lyric_video import look, timing
 
 FADE_IN, FADE_OUT = 0.3, 0.2   # measured: lines fade in ~0.3 s, out ~0.2 s
-LEAD = 0.12                    # text starts fading in this long before the first word
+LEAD = 0.3                     # text starts fading in this long before the first word (fully in as it
+                               # is sung; 0.12 + the 0.3 s fade read as late)
 HOLD = 0.8                     # and stays at most this long after the last word
 MIN_SHOW = 0.7
 FLASH = 0.1                    # white veil at the strongest hit (spec "flash"); the reference's
@@ -62,6 +68,44 @@ CARD_LEN = 5.35                # the subscribe card's whole animation, seconds
 def _path(p: str) -> Path:
     q = Path(os.path.expandvars(p)).expanduser()
     return q if q.is_absolute() else ROOT / q
+
+
+LUFS, TRUE_PEAK = -14.0, -1.0    # YouTube's playback loudness; quiet unmastered AI songs sounded weak
+
+
+def song_file(spec: dict, master: bool = True) -> Path:
+    """The song as the video uses it - spec "song_fx" (nightcore, slowed_reverb, ...)
+    applied, then (master) loudness-normalised to LUFS (two-pass loudnorm, linear
+    gain; spec "master": false skips it). Cached. Timing and flashes read it with
+    master=False: a gain change moves nothing, and a new file meant a new 20-min
+    voice separation (the timing cache is keyed by the file)."""
+    import hashlib
+
+    src = _path(spec["song"])
+    fx = spec.get("song_fx")
+    if fx:
+        from amv.shorts.fx import song_fx
+        src = song_fx(src, fx)
+    if not master or spec.get("master", True) is False:
+        return src
+    key = hashlib.sha1(f"{src.resolve()}|{src.stat().st_size}|{src.stat().st_mtime_ns}|{LUFS}|{TRUE_PEAK}"
+                       .encode()).hexdigest()[:12]
+    out = paths.LYRIC_VIDEO / spec["name"] / f"song_{key}.wav"
+    if out.exists():
+        return out
+    out.parent.mkdir(parents=True, exist_ok=True)
+    probe = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(src), "-af",
+                            f"loudnorm=I={LUFS}:TP={TRUE_PEAK}:LRA=11:print_format=json", "-f", "null", "-"],
+                           capture_output=True, text=True).stderr
+    m = json.loads(probe[probe.rindex("{"):probe.rindex("}") + 1])
+    chain = (f"loudnorm=I={LUFS}:TP={TRUE_PEAK}:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
+             f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}:"
+             f"linear=true,aresample=48000")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-af", chain, "-ar", "48000",
+                    "-c:a", "pcm_s24le", str(out.with_suffix(".part.wav"))], check=True)
+    out.with_suffix(".part.wav").replace(out)
+    print(f"Song: {src.name}{' + ' + str(fx) if fx else ''}, mastered to {LUFS} LUFS -> {out.name}", flush=True)
+    return out
 
 
 def load_spec(path: Path) -> dict:
@@ -92,7 +136,7 @@ def smooth(x: float) -> float:
 # ---- the plan: what is on screen when ------------------------------------------
 
 def plan(spec: dict) -> dict:
-    song = _path(spec["song"])
+    song = song_file(spec, master=False)
     cache = paths.LYRIC_VIDEO / spec["name"]
     if spec.get("lyrics_file"):
         text = _path(spec["lyrics_file"]).read_text(encoding="utf-8")
@@ -157,7 +201,8 @@ class Assets:
         font = _path(spec["font"])
         self.bg = look.background(_path(spec["background"]), self.w, self.h)
         self.lines = [(ln["a"], ln["b"], look.lyric_sprite(ln["text"], font, self.w, self.h, spec.get("rough", 0.0),
-                                          spec.get("bold", 0.0), spec.get("track", 0.0))) for ln in p["lines"]]
+                                          spec.get("bold", 0.0), spec.get("track", 0.0),
+                                          spec.get("style", {}).get("case", "upper"))) for ln in p["lines"]]
         self.title = look.title_sprite(spec.get("title", ""), spec.get("artist", ""), font, self.w, self.h,
                                        rough=spec.get("rough", 0.0), bold=spec.get("bold", 0.0),
                                        track=spec.get("track", 0.0))
@@ -318,7 +363,7 @@ def render(spec: dict, p: dict, out: Path, t0: float, t1: float, jobs: int) -> N
                     str(video)], check=True)
     out.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-ss", f"{t0:.3f}", "-t", f"{t1 - t0:.3f}",
-                    "-i", str(_path(spec["song"])), "-map", "0:v:0", "-map", "1:a:0", "-map_chapters", "-1",
+                    "-i", str(song_file(spec)), "-map", "0:v:0", "-map", "1:a:0", "-map_chapters", "-1",
                     "-map_metadata", "-1", "-c:v", "copy", "-c:a", "aac", "-b:a", "320k", "-ar", "48000",
                     "-movflags", "+faststart", "-shortest", str(out)], check=True)
 
@@ -339,7 +384,7 @@ def hf_render(spec: dict, p: dict, out: Path) -> None:
     cli("render", str(comp), "-o", str(video), "--fps", str(spec.get("fps", 30)), "--quality", "delivery",
         "--workers", str(spec.get("jobs", "auto")))
     out.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-i", str(_path(spec["song"])),
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-i", str(song_file(spec)),
                     "-map", "0:v:0", "-map", "1:a:0", "-map_chapters", "-1", "-map_metadata", "-1",
                     "-c:v", "copy", "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-movflags", "+faststart",
                     "-shortest", str(out)], check=True)
@@ -360,9 +405,13 @@ def thumbnail(spec: dict, out: Path, size=(1280, 720)) -> None:
     """The reference thumbnail: the background, the title huge, the artist under it."""
     w, h = size
     f = look.background(_path(spec["background"]), w, h)
+    style = spec.get("style", {})
     s = look.title_sprite(spec.get("title", ""), spec.get("artist", ""), _path(spec["font"]), w, h,
                           title_cap=0.23, artist_cap=0.072, rough=spec.get("rough", 0.0),
-                          bold=spec.get("bold", 0.0), track=spec.get("track", 0.0))
+                          bold=spec.get("bold", 0.0), track=spec.get("track", 0.0),
+                          case=style.get("case", "upper"), fill=look.rgb(style.get("fill"), (255, 255, 255)),
+                          shadow=look.rgb(style.get("shadow") if str(style.get("shadow", "")).startswith("#") else None,
+                                          look.SHADOW_COLOR))
     look.blend(f, s, w // 2, int(h * 0.5))
     Image.fromarray(np.clip(f + 0.5, 0, 255).astype(np.uint8)).save(out, quality=95)
 
