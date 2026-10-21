@@ -125,6 +125,8 @@ add it here with the date and commit it with the code.
   but stay one family, natural, never random noise - `bg-gen` curated scene x mood pairs.
 - 2026-10-22: for a new lyric video, ask whether the user brings a song or wants one generated
   (amv-lyric-channel skill).
+- 2026-10-22: descriptions = just the lyrics, tags and related keywords - no links, no
+  subscribe/Spotify/channel lines (spec meta.layout "plain"); a thumbnail and title always.
 - Spec + lyrics: `workspace/global/lyric_videos/goddamn_devil.*`; output in
   `workspace/output/lyric_videos/NAME/`.
 

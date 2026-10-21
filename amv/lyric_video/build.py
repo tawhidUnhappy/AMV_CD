@@ -24,8 +24,8 @@ Spec keys (paths absolute or relative to the repo):
     flash                                  white veil at the strongest hits, 0-1 (0.1; 0 = off)
     size [w, h] (2560x1440), fps (30), sparkles (45), flashes (true), jobs (4; hyperframes: workers)
     title_seconds                          longest the opening title stays (3.0)
-    meta {feat, subscribe_url, spotify_url, stream, follow {name: [links]}, about, links,
-          submissions, hashtags}           the description's links and lines (missing links: <...>;
+    meta {layout ("plain": lyrics + tags + keywords only), keywords, feat, subscribe_url, spotify_url,
+          stream, follow {name: [links]}, about, links, submissions, hashtags}           the description's links and lines (missing links: <...>;
                                            spotify_url "" leaves the Spotify line out)
 
 The lines shown, the ones left out (barely heard) and their cover are in
@@ -442,6 +442,14 @@ def meta(spec: dict, p: dict, out_dir: Path) -> dict[str, Path]:
     channel = ch.get("name", by)
     follow = m.get("follow") or {name: [] for name in artists + feat}
     skip = {d["text"] for d in p["dropped"] if d.get("cover", 0) == 0}
+    tags = tags_for(song, artists, feat)
+    hashtags = [f"#{_camel(x)}" for x in artists + [song] + feat] + ["#Lyrics"] + [f"#{h.lstrip('#')}" for h in m.get("hashtags", [])]
+    if m.get("layout") == "plain":
+        # just the lyrics, the tags and related keywords - no links, no channel lines (owner, 2026-10-22)
+        keywords = list(dict.fromkeys([*m.get("keywords", []), *tags]))
+        lines = [title, "", "🎤 Lyrics:", lyric_sections(p["lyrics_text"], skip), "",
+                 " ".join(dict.fromkeys(hashtags)), "", "Tags:", *tags, "", "Keywords:", ", ".join(keywords)]
+        return _write_meta(spec, out_dir, title, lines, tags)
     lines = [title, second, "", "",
              f"For more quality music subscribe here ➡ {m.get('subscribe_url') or PLACEHOLDER.format('YOUR CHANNEL SUBSCRIBE LINK')}"]
     if m.get("spotify_url") != "":  # absent: placeholder; "" (no Spotify): line left out
@@ -458,9 +466,11 @@ def meta(spec: dict, p: dict, out_dir: Path) -> dict[str, Path]:
     lines += [f"➡ {x}" for x in m.get("links", [])] or [f"➡ {PLACEHOLDER.format('CHANNEL LINKS')}"]
     if m.get("submissions"):
         lines += ["", f"Send your submissions: {m['submissions']}"]
-    tags = tags_for(song, artists, feat)
-    hashtags = [f"#{_camel(x)}" for x in artists + [song] + feat] + ["#Lyrics"] + [f"#{h.lstrip('#')}" for h in m.get("hashtags", [])]
     lines += ["", " ".join(dict.fromkeys(hashtags)), "", "Tags:", *tags]
+    return _write_meta(spec, out_dir, title, lines, tags)
+
+
+def _write_meta(spec: dict, out_dir: Path, title: str, lines: list[str], tags: list[str]) -> dict[str, Path]:
     name = spec["name"]
     files = {"title": out_dir / f"{name}_title.txt", "description": out_dir / f"{name}_description.txt",
              "tags": out_dir / f"{name}_tags.txt"}

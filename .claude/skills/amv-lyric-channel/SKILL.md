@@ -112,10 +112,20 @@ Then, before saying it is done:
 ## 8. Package
 
 `--meta` (also written by the full render) makes `<name>_title.txt`,
-`<name>_description.txt`, `<name>_tags.txt` in the Vibe Guide upload layout.
-Links come only from spec `meta`; missing ones stay `<...>` placeholders - list
-them to the user and offer to fill them (never guess a URL). The thumbnail is
-`<name>_thumbnail.jpg` (title + artist over the background).
+`<name>_description.txt`, `<name>_tags.txt`. Default to spec
+`"meta": {"layout": "plain", "keywords": [...]}` - the description is only the
+sectioned lyrics, hashtags, tags and related keywords, no links or channel lines
+(owner, 2026-10-22). Write 10-15 keywords for the genre/mood/use ("night drive
+music", "dreamy synth pop"). The full Vibe Guide layout (links, follow blocks)
+is there only when asked; its missing links stay `<...>`, never guessed. The
+thumbnail is `<name>_thumbnail.jpg` (title + artist over the background).
+
+## Example run (Neon Lullaby, 2026-10-22)
+
+ACE-Step, 24 lines in 160 s at 112 BPM, 2 takes in 7 min; the take with 23/24 lines
+heard in the mix was used and all 24 got timed (the last one by the gap pass);
+timing ~20 min (separation), stills 20 s, render 4:49 for 2:40 at 1440p.
+Spec `workspace/global/lyric_videos/neon_lullaby.json` - copy it for the next one.
 
 Deliver: the four paths, the left-out lines and why, anything that needs the
 user (placeholders, a font gap). Code changes: commit + push (preference).
