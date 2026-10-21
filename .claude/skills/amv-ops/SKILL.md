@@ -67,6 +67,7 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 `amv/intro/` plan+select+render (`intro`: new intro from a song), reference (`reference`: which episode frame is behind each frame of a video), remake (`remake`: plan/spec renderer; specs in workspace/global/intro/remakes/).
 `amv/blender/` setup (`blender-setup`: MCP add-on + extensions + keys) and beats (`blender-beats`: song -> frames JSON for keyframing); the amv-blender skill.
 `amv/edit/` effect edits (`edit`): build (spec -> montage plan -> Blender segments -> fx/text pass -> mp4), audio (song window, instrumental tail), text (kinetic text), blender/ (headless scripts: voxel_heart, shatter). Glitch effects are `video_fx` plug-ins in `amv/plugins/glitch_fx/`.
+`amv/lyric_video/` lyrics-channel videos (`lyric-video`): timing (separated voices + transcript, known lyric lines aligned to heard words), look (text/rim/shadow, sparkles, title, subscribe card), build (plan, per-frame compositor, --jobs NVENC parts).
 `amv/plugins/` registry + built-ins; `amv/core/project.py` the active project; `amv/core/tools.py` isolated tool envs.
 
 ## Checking your work - use these, don't hand-roll them
@@ -366,6 +367,46 @@ Traps met:
   PNG load/save threads (`-j 4:2:4`), not CPU inference.
 - Blender text emission at strength 3 under the Standard view turned red to
   pink (red clips, green/blue lift): keep emission ~1 for exact colours.
+
+## Lyric videos (lyrics-channel style) - `amv/lyric_video/`
+
+```bash
+./amv.sh lyric-video workspace/global/lyric_videos/NAME.json --lines     # timed lines + what was left out
+./amv.sh lyric-video SPEC --frames 1,16.5,60                             # finished stills
+./amv.sh lyric-video SPEC                                                # -> workspace/output/lyric_videos/NAME/
+```
+
+One still background + the song; every lyric line centred, upper case, white with a dark rim and
+soft drop shadow, fading in 0.3 s / out 0.2 s; sparkles drifting up; a one-frame flash on the
+strongest onsets of the loud parts; title card at 0 s; a subscribe card (cursor clicks SUBSCRIBE,
+then the bell) at `channel.at`. All measured off "Alok, Alan Walker - Headlights (Lyrics)" (The
+Vibe Guide): cap 111 px @1080, pitch 126, block centred, wrap past 0.78 W. Outputs: mp4 (AAC 320k),
+thumbnail (title + artist, 1280x720), title/description txt.
+Lyrics: the spec's "lyrics" or the song's lyrics tag (Suno writes "lyrics-eng"); [sections] dropped;
+"(...)" lines kept only when heard (they are ad-libs OR stage directions like "(Beat cuts out)").
+Timing = configured separator on the whole song (ensemble: ~30 min for 4:20 on the 3060 - cached
+in workspace/tmp/lyric_video/NAME/words.json, independent of the lyrics text) -> configured
+transcriber -> global alignment -> second pass: each gap of unplaced lines between two placed
+ones is transcribed ALONE (whispered build-ups and a chorus ad-lib were missed by the whole-song
+pass and heard in isolation) -> still unheard: spread over the sung part of the gap, marked
+"[filled]" in `--lines`. Stage directions stay out (nothing heard). Read `--lines` before rendering.
+Full render 1440p30 4:20: ~3.5 min (--jobs 4, NVENC).
+Traps met:
+- The reference's font could not be identified (Google Fonts, ~5k dafont, ~1.6k 1001fonts matched
+  per glyph by `gmatch`-style IoU); the look is Broday (arch-topped A, ч-like Y family) + spec
+  `rough`/`bold`/`track` (edge wobble, stroke weight, letter spacing). Per-glyph matching (each
+  letter normalised to its own box) beats word-level IoU, which tracking differences wreck.
+- A font's comma can drop 0.15 cap below the baseline - the line pitch grows to clear it.
+- Broday has no "…": lines rendered "THREE   TWO   ONE" - characters a font lacks fall back
+  (look.FALLBACK, "…" -> "..."). Check a new font's punctuation on `--frames`.
+- Whisper smears the first word after a pause ("One" 2.2 s, "last" 2.7 s put a line 2 s early):
+  a line starts from its first word under 1 s, stepped back 0.35 s per word before it.
+  Whisper writes "3, 2, 1" for "Three, two, one" and hyphenated lyrics ("Oh-oh-oh") are
+  separate heard words: tokens normalise digits and split hyphens.
+- ./amv.sh runs build.py as __main__, whose functions can't be pickled for a process pool:
+  hand the pool the imported module's function (render()).
+- `ffmpeg -vf fps=1/4` samples mid-interval: a review sheet's labels ran ~2 s behind the frames
+  (title "missing" at 0:00). Use `select='lt(mod(t,4),0.034)'` with -fps_mode vfr for true times.
 
 ## Remaking an intro someone else cut
 

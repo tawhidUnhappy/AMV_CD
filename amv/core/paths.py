@@ -68,6 +68,11 @@ EDIT_SPECS = GLOBAL / "edits"
 EDIT = TMP / "edit"
 EDITS_OUT = load().workspace / "output" / "edits"
 
+# Lyric videos (amv.lyric_video): specs, caches (voices stem, word timings), delivered videos
+LYRIC_VIDEO_SPECS = GLOBAL / "lyric_videos"
+LYRIC_VIDEO = TMP / "lyric_video"
+LYRIC_VIDEOS_OUT = load().workspace / "output" / "lyric_videos"
+
 
 def load_slots(path: Path | None = None) -> list[dict]:
     """The slots of an EDL (workspace/tmp/edl.json unless told otherwise)."""

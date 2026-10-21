@@ -102,6 +102,20 @@ add it here with the date and commit it with the code.
 - Speed matters too ("can you speed up", "can't you use gpu"): render with `--jobs 5`,
   NVENC (`encoder: auto`), GPU decode; heavy one-time work (index, pool, RIFE) is cached.
 
+## Lyric videos (2026-10-21)
+
+- "Make a lyrics video like <reference>" = a lyrics-channel video (`./amv.sh lyric-video`, amv-ops
+  "Lyric videos"): one still background, the reference's text effect (white, dark rim, soft shadow,
+  fades), sparkles, flashes, title card, subscribe card; thumbnail in the reference's layout.
+- Channel for the subscribe card: **voidHalfDemon**, logo = the Darling in the FranXX (Zero Two)
+  image (`/mnt/datadisk/Darling in the FranXX .jpg`, focus [0.5, 0.34], zoom 1.5), not verified.
+- The lyrics the owner pastes win over the song file's lyrics tag (spec `lyrics_file`).
+- Asked for the reference's exact font ("find it, download it"): not identified after ~13k free
+  fonts; Broday (CC BY-NC-SA, non-commercial) + rough/bold/track stands in - say so, and ask
+  for the font name if the owner knows it.
+- Spec + lyrics: `workspace/global/lyric_videos/goddamn_devil.*`; output in
+  `workspace/output/lyric_videos/NAME/`.
+
 ## Per-show notes
 
 - **Mushoku Tensei**: subtitles are OCR'd bitmaps (typos, no punctuation) -

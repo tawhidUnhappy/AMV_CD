@@ -143,6 +143,14 @@ Each of these caught a real defect; run them after changes:
   cracks, then the glass bursts at the camera on the drop). `--sheet` shows each
   shot as framed, `--frames T,...` finished stills, `--from/--to` a quick part.
 
+- **Lyric videos**: `./amv.sh lyric-video SPEC` makes a "lyrics channel" video
+  (`workspace/global/lyric_videos/NAME.json`): one still background, every lyric
+  line timed to the singing (separated voices + transcript, the known lyrics
+  aligned to the heard words, unheard gaps re-transcribed alone), white text with a
+  dark rim and soft shadow, sparkles, flashes on the hits, a title card and a
+  subscribe card, plus a thumbnail and title/description. `--lines` prints the
+  timing, `--frames T,...` stills, `--thumb` only the thumbnail.
+
 - `amv/thumbnail/` composes YouTube thumbnails from real frames (three
   layouts: label-arrow, speech bubble, split). No image generation. Run with
   `./amv.sh thumbs`.

@@ -44,6 +44,7 @@ _COMMANDS = (
     ('shorts', 'short-thumb', 'amv.shorts.thumb', False, "a Short's thumbnail (labels + arrows), or --candidates frames to pick from"),
     ('shorts', 'short-index', 'amv.shorts.deliver', False, 'numbered Short folders in shorts_dir: INDEX.md, by_anime/'),
     ('shorts', 'short-catalog', 'amv.shorts.catalog', False, 'what earlier sessions learned: songs, vetted/rejected shots, Shorts built'),
+    ('extras', 'lyric-video', 'amv.lyric_video.build', False, 'a lyrics-channel video: still background, timed lyric text, sparkles, flashes, subscribe card'),
     ('blender', 'edit', 'amv.edit.build', False, 'an effect-heavy edit from a spec: glitch fx on beats, stutters, kinetic text, Blender 3D shots'),
     ('blender', 'blender-setup', 'amv.blender.setup', False, 'Blender for Claude: MCP add-on, free extensions, asset keys (--check: status)'),
     ('blender', 'blender-beats', 'amv.blender.beats', False, "a song's beats, hits, sections + bass/mid/high per frame, for keyframing"),
