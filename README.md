@@ -149,7 +149,12 @@ Each of these caught a real defect; run them after changes:
   aligned to the heard words, unheard gaps re-transcribed alone), white text with a
   dark rim and soft shadow, sparkles, flashes on the hits, a title card and a
   subscribe card, plus a thumbnail and title/description. `--lines` prints the
-  timing, `--frames T,...` stills, `--thumb` only the thumbnail.
+  timing, `--frames T,...` stills, `--thumb` only the thumbnail. It renders through
+  [HyperFrames](https://github.com/heygen-com/hyperframes) (HTML/SVG/GSAP -> video,
+  Apache-2.0; set up on first use under `workspace/tools/`), with every letter
+  wiggling on its own; its agent skills are in `.claude/skills/`.
+  `./amv.sh font-trace SPEC` traces a font from a reference video's burned-in text
+  (known lines -> averaged glyphs -> potracer -> `.otf` in `workspace/assets/fonts/`).
 
 - `amv/thumbnail/` composes YouTube thumbnails from real frames (three
   layouts: label-arrow, speech bubble, split). No image generation. Run with

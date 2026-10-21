@@ -111,8 +111,16 @@ add it here with the date and commit it with the code.
   image (`/mnt/datadisk/Darling in the FranXX .jpg`, focus [0.5, 0.34], zoom 1.5), not verified.
 - The lyrics the owner pastes win over the song file's lyrics tag (spec `lyrics_file`).
 - Asked for the reference's exact font ("find it, download it"): not identified after ~13k free
-  fonts; Broday (CC BY-NC-SA, non-commercial) + rough/bold/track stands in - say so, and ask
-  for the font name if the owner knows it.
+  fonts. 2026-10-22: "seems to be a custom font, make a similar one" -> traced from the reference
+  itself (`font-trace`, Vibe Hand) - near identical. Lyrics-channel videos use Vibe Hand.
+- 2026-10-22: the reference's text has a per-letter "giggle"/wiggle - keep it (spec `wiggle`).
+- 2026-10-22: "make the beat flash not that noticeable" - subtle veil (spec `flash` 0.1), never the
+  reference's one-frame +25/255 pop.
+- 2026-10-22: "use a better animation skill like HyperFrames, clone it as a tool" - HyperFrames is
+  the animation/text renderer (amv/plugins/hyperframes, repo in workspace/tools/hyperframes), its
+  skills are installed project-level in .claude/skills (hyperframes, hyperframes-core/-animation/
+  -keyframes/-creative/-cli/-audio/-registry, media-use, music-to-video, motion-graphics,
+  general-video; skills-lock.json). Prefer it for any new motion graphics / kinetic text.
 - Spec + lyrics: `workspace/global/lyric_videos/goddamn_devil.*`; output in
   `workspace/output/lyric_videos/NAME/`.
 

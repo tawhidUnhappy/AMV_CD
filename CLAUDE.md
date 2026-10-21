@@ -19,4 +19,7 @@ the ones it links) hold the details for each stage.
 - Editing craft (flow, velocity, shakes, transitions, effects, sound design) and what AMV_CD
   still lacks: `AMV_EDITING_GUIDE.md`.
 - New songs (ACE-Step 1.5, `./amv.sh song-gen`): load the `amv-song-gen` skill.
+- Motion graphics, kinetic text, lyric videos: HyperFrames (HTML -> video) is the renderer - load the
+  `hyperframes` router skill (+ `hyperframes-core`, `hyperframes-animation`); run its CLI through
+  `amv.plugins.hyperframes.setup.cli()` (pinned version, Node found even when the snap wrapper is mute).
 - Commit and push to main after changes.

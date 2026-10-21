@@ -67,7 +67,8 @@ load_slots/load_scene_index; never join ROOT/"tmp" yourself)**, ffmpeg_tools
 `amv/intro/` plan+select+render (`intro`: new intro from a song), reference (`reference`: which episode frame is behind each frame of a video), remake (`remake`: plan/spec renderer; specs in workspace/global/intro/remakes/).
 `amv/blender/` setup (`blender-setup`: MCP add-on + extensions + keys) and beats (`blender-beats`: song -> frames JSON for keyframing); the amv-blender skill.
 `amv/edit/` effect edits (`edit`): build (spec -> montage plan -> Blender segments -> fx/text pass -> mp4), audio (song window, instrumental tail), text (kinetic text), blender/ (headless scripts: voxel_heart, shatter). Glitch effects are `video_fx` plug-ins in `amv/plugins/glitch_fx/`.
-`amv/lyric_video/` lyrics-channel videos (`lyric-video`): timing (separated voices + transcript, known lyric lines aligned to heard words), look (text/rim/shadow, sparkles, title, subscribe card), build (plan, per-frame compositor, --jobs NVENC parts).
+`amv/lyric_video/` lyrics-channel videos (`lyric-video`): timing (separated voices + transcript, known lyric lines aligned to heard words), look (text/rim/shadow, sparkles, title, subscribe card), hf_comp (the HyperFrames page), build (plan, engines), trace_font (`font-trace`).
+`amv/plugins/hyperframes/` the HyperFrames renderer tool (pinned npm CLI, Chrome, GSAP; `setup.cli()`); `amv/plugins/font_trace/` potracer + fontTools worker.
 `amv/plugins/` registry + built-ins; `amv/core/project.py` the active project; `amv/core/tools.py` isolated tool envs.
 
 ## Checking your work - use these, don't hand-roll them
@@ -377,9 +378,17 @@ Traps met:
 ```
 
 One still background + the song; every lyric line centred, upper case, white with a dark rim and
-soft drop shadow, fading in 0.3 s / out 0.2 s; sparkles drifting up; a one-frame flash on the
-strongest onsets of the loud parts; title card at 0 s; a subscribe card (cursor clicks SUBSCRIBE,
-then the bell) at `channel.at`. All measured off "Alok, Alan Walker - Headlights (Lyrics)" (The
+soft drop shadow, fading in 0.3 s / out 0.2 s, EACH LETTER WIGGLING on its own (measured on the
+reference: ±3-5 px @1080, ~1 Hz, letters independent - per-character wiggle animator); sparkles
+drifting up; a subtle white veil on the strongest onsets of the loud parts (spec `flash`, 0.1);
+title card at 0 s; a subscribe card (cursor clicks SUBSCRIBE, then the bell) at `channel.at`.
+Engine (spec `engine`): `hyperframes` (default) writes an HTML/SVG/GSAP page
+(amv/lyric_video/hf_comp.py: letters laid out in Python from the font file, one SVG <text> each;
+all continuous motion = one function of time run from a driver tween's onUpdate; the card = GSAP
+tweens) into workspace/tmp/lyric_video/NAME/hyperframes/ and renders it with the `hyperframes`
+tool plug-in (pinned CLI + Chrome Headless Shell + local GSAP in workspace/tools/hyperframes-cli;
+`hyperframes preview <that dir>` opens it in the Studio). `python` = the numpy compositor (no wiggle).
+`--frames` uses `hyperframes snapshot` (contact sheet included). All measured off "Alok, Alan Walker - Headlights (Lyrics)" (The
 Vibe Guide): cap 111 px @1080, pitch 126, block centred, wrap past 0.78 W. Outputs: mp4 (AAC 320k),
 thumbnail (title + artist, 1280x720), title/description txt.
 Lyrics: the spec's "lyrics" or the song's lyrics tag (Suno writes "lyrics-eng"); [sections] dropped;
@@ -390,12 +399,25 @@ transcriber -> global alignment -> second pass: each gap of unplaced lines betwe
 ones is transcribed ALONE (whispered build-ups and a chorus ad-lib were missed by the whole-song
 pass and heard in isolation) -> still unheard: spread over the sung part of the gap, marked
 "[filled]" in `--lines`. Stage directions stay out (nothing heard). Read `--lines` before rendering.
-Full render 1440p30 4:20: ~3.5 min (--jobs 4, NVENC).
+Full render 1440p30 4:20: python engine ~3.5 min (--jobs 4, NVENC).
+Fonts: `./amv.sh font-trace workspace/global/lyric_videos/fonts/NAME.json` TRACES a font from a
+reference video's burned-in text (known lines at fully-faded-in moments -> glyphs cut per frame,
+sparkles rejected by their missing dark rim, 15 frames x every occurrence averaged after centroid
+alignment (the wiggle), potracer + fontTools in the `font_trace` tool env) -> workspace/assets/
+fonts/NAME.otf. Missing glyphs: ! " - … : built from traced ones, the rest from `fallback` at the
+traced stroke weight. Vibe Hand (fonts/vibe_hand.json, 23 samples of the Headlights video) is the
+lyrics-channel font; read its `--sheet`.
 Traps met:
 - The reference's font could not be identified (Google Fonts, ~5k dafont, ~1.6k 1001fonts matched
-  per glyph by `gmatch`-style IoU); the look is Broday (arch-topped A, ч-like Y family) + spec
-  `rough`/`bold`/`track` (edge wobble, stroke weight, letter spacing). Per-glyph matching (each
-  letter normalised to its own box) beats word-level IoU, which tracking differences wreck.
+  per glyph): it was traced instead (above). Broday + `rough`/`bold`/`track` was the stand-in
+  before. Per-glyph matching (each letter normalised to its own box) beats word-level IoU.
+- A traced font lacked "_": "TAWHID_UNHAPPY" rendered "TAWHIDUNHAPPY" (look.displayable drops a
+  character the font lacks and has no FALLBACK for). trace_font.CHARSET carries the usual symbols.
+- HyperFrames lint warns nested_structure_needs_subcomposition for every lyric clip (Studio timeline
+  rows only); 0 errors is the bar. GSAP fromTo renders its FROM state at build: a bell ring
+  `fromTo(rotation: -14 ...)` must be immediateRender:false or the bell sits tilted before the click.
+- The snap's /snap/bin/node printed nothing in a sandboxed shell; hyperframes.setup.node_dir()
+  checks `node --version` and falls back to /snap/node/current/bin.
 - A font's comma can drop 0.15 cap below the baseline - the line pitch grows to clear it.
 - Broday has no "…": lines rendered "THREE   TWO   ONE" - characters a font lacks fall back
   (look.FALLBACK, "…" -> "..."). Check a new font's punctuation on `--frames`.

@@ -18,7 +18,11 @@ Spec keys (paths absolute or relative to the repo):
                                            the subscribe card (left out: no card); at = start second
     rough, bold                            hand-drawn edge wobble / stroke thickening for a clean font, px @1080 (0)
     track                                  letter spacing, a fraction of the cap height (0)
-    size [w, h] (2560x1440), fps (30), sparkles (45), flashes (true), jobs (4)
+    engine                                 hyperframes (default: HTML/SVG/GSAP page rendered by the
+                                           hyperframes tool, per-letter wiggle) or python (numpy compositor)
+    wiggle                                 per-letter wiggle amplitude, px @1080 (3.5; hyperframes engine)
+    flash                                  white veil at the strongest hits, 0-1 (0.1; 0 = off)
+    size [w, h] (2560x1440), fps (30), sparkles (45), flashes (true), jobs (4; hyperframes: workers)
     title_seconds                          longest the opening title stays (3.0)
 
 The lines shown, the ones left out (barely heard) and their cover are in
@@ -28,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import subprocess
 from concurrent.futures import ProcessPoolExecutor
@@ -45,7 +50,8 @@ FADE_IN, FADE_OUT = 0.3, 0.2   # measured: lines fade in ~0.3 s, out ~0.2 s
 LEAD = 0.12                    # text starts fading in this long before the first word
 HOLD = 0.8                     # and stays at most this long after the last word
 MIN_SHOW = 0.7
-FLASH_GAIN = 0.17              # the reference's flash: mid-tones +25/255 for one frame
+FLASH = 0.1                    # white veil at the strongest hit (spec "flash"); the reference's
+FLASH_DECAY = 0.16             # +25/255 one-frame pop read as too much (2026-10-22): subtle, decaying
 CARD_LEN = 5.35                # the subscribe card's whole animation, seconds
 
 
@@ -152,7 +158,8 @@ class Assets:
                                        rough=spec.get("rough", 0.0), bold=spec.get("bold", 0.0),
                                        track=spec.get("track", 0.0))
         self.title_end = p["title_end"]
-        self.flashes = p["flashes"]
+        self.flash = spec.get("flash", FLASH)
+        self.flash_list = sorted((n / self.fps, v) for n, v in p["flashes"].items())
         self.parts = look.sparkles(spec.get("sparkles", 45), self.w, self.h)
         self.dots = {pp["r"]: look.dot_sprite(pp["r"]) for pp in self.parts}
         self.card_at = p["card_at"]
@@ -168,10 +175,10 @@ class Assets:
     def frame(self, n: int) -> np.ndarray:
         t = n / self.fps
         f = self.bg.copy()
-        gain = self.flashes.get(n, 0.0)
-        if gain:
-            f *= 1 + FLASH_GAIN * gain
-            np.minimum(f, 255, out=f)
+        veil = flash_at(self.flash_list, t, self.flash)
+        if veil > 1 / 512:
+            f *= 1 - veil
+            f += 255 * veil
         look.sparkle_frame(f, self.parts, self.dots, t)
         cx, cy = self.w // 2, self.h // 2
         if t < self.title_end:
@@ -231,6 +238,18 @@ class Assets:
         if pos:
             press = any(cl <= t < cl + 0.12 for cl in (1.75, 3.6))
             look.blend(f, self.cursor, int(pos[0] + (2 * u if press else 0)), int(pos[1] + (2 * u if press else 0)))
+
+
+def flash_at(flash_list: list[tuple[float, float]], t: float, peak: float) -> float:
+    """The white veil at time t: each hit (time, strength) peaks at peak *
+    strength and decays with FLASH_DECAY (the same model as the HyperFrames page)."""
+    v = 0.0
+    for ft, s in flash_list:
+        if ft > t:
+            break
+        if t - ft < 0.6:
+            v = max(v, peak * s * math.exp(-(t - ft) / FLASH_DECAY))
+    return v
 
 
 def ripple(f: np.ndarray, x: float, y: float, r: float, alpha: float) -> None:
@@ -300,6 +319,39 @@ def render(spec: dict, p: dict, out: Path, t0: float, t1: float, jobs: int) -> N
                     "-movflags", "+faststart", "-shortest", str(out)], check=True)
 
 
+def hf_dir(spec: dict) -> Path:
+    return paths.LYRIC_VIDEO / spec["name"] / "hyperframes"
+
+
+def hf_render(spec: dict, p: dict, out: Path) -> None:
+    """Write the HyperFrames composition and render it; the song is muxed back
+    at AAC 320k (the page's own audio mix is not trusted for the delivery)."""
+    from amv.lyric_video import hf_comp
+    from amv.plugins.hyperframes.setup import cli
+
+    comp = hf_dir(spec)
+    hf_comp.build(spec, p, comp, _path)
+    video = comp.parent / "hyperframes_video.mp4"
+    cli("render", str(comp), "-o", str(video), "--fps", str(spec.get("fps", 30)), "--quality", "delivery",
+        "--workers", str(spec.get("jobs", "auto")))
+    out.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(video), "-i", str(_path(spec["song"])),
+                    "-map", "0:v:0", "-map", "1:a:0", "-map_chapters", "-1", "-map_metadata", "-1",
+                    "-c:v", "copy", "-c:a", "aac", "-b:a", "320k", "-ar", "48000", "-movflags", "+faststart",
+                    "-shortest", str(out)], check=True)
+
+
+def hf_frames(spec: dict, p: dict, times: list[float]) -> Path:
+    from amv.lyric_video import hf_comp
+    from amv.plugins.hyperframes.setup import cli
+
+    comp = hf_dir(spec)
+    hf_comp.build(spec, p, comp, _path)
+    shots = paths.LYRIC_VIDEO / spec["name"] / "frames"
+    cli("snapshot", str(comp), "--at", ",".join(f"{t:g}" for t in times), "--no-end", "-o", str(shots))
+    return shots
+
+
 def thumbnail(spec: dict, out: Path, size=(1280, 720)) -> None:
     """The reference thumbnail: the background, the title huge, the artist under it."""
     w, h = size
@@ -349,6 +401,10 @@ def main() -> None:
         print(f"title until {p['title_end']:.2f}s, {len(p['flashes'])} flashes, card at {p['card_at']}")
     if args.lines:
         return
+    engine = spec.get("engine", "hyperframes")
+    if args.frames and engine == "hyperframes":
+        print(hf_frames(spec, p, [float(x) for x in args.frames.split(",")]))
+        return
     if args.frames:
         global _ASSETS
         _ASSETS = Assets(spec, p)
@@ -363,7 +419,13 @@ def main() -> None:
     t1 = args.t1 if args.t1 is not None else p["duration"]
     whole = args.t0 == 0 and args.t1 is None
     out = out_dir / (f"{spec['name']}.mp4" if whole else f"{spec['name']}_{args.t0:g}-{t1:g}.mp4")
-    render(spec, p, out, args.t0, t1, args.jobs or spec.get("jobs", 4))
+    if engine == "hyperframes":
+        if not whole:
+            raise SystemExit("--from/--to are for the python engine; with hyperframes use --frames, or the "
+                             "studio: hyperframes preview " + str(hf_dir(spec)))
+        hf_render(spec, p, out)
+    else:
+        render(spec, p, out, args.t0, t1, args.jobs or spec.get("jobs", 4))
     if whole:
         thumbnail(spec, out_dir / f"{spec['name']}_thumbnail.jpg")
         meta(spec, p, out_dir / f"{spec['name']}_title_description.txt")
