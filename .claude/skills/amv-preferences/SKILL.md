@@ -91,6 +91,17 @@ add it here with the date and commit it with the code.
   one 8-bar-phrase window of the song, seamless loop, Blender 3D shots in it.
   `./amv.sh edit` (amv-ops "Effect edits"); delivered to workspace/output/edits/.
 
+## Full AMVs (2026-10-20/21)
+
+- "Make an AMV like <reference>": a full-length 16:9 music-only edit is fine. Generate the
+  song with ACE-Step and **no reference/sample**: config `lm: "none"`, `model:
+  acestep-v15-xl-sft` (the planner LM's audio codes made a weak "cover"). Pick the take whose
+  transcript has every lyric line.
+- rezero_changing (keyword-picked talking heads, no sfx, no velocity) was "bad". What the
+  owner points at: Toxic AMV and Molob (AMV_EDITING_GUIDE.md, amv-packaging skill).
+- Speed matters too ("can you speed up", "can't you use gpu"): render with `--jobs 5`,
+  NVENC (`encoder: auto`), GPU decode; heavy one-time work (index, pool, RIFE) is cached.
+
 ## Per-show notes
 
 - **Mushoku Tensei**: subtitles are OCR'd bitmaps (typos, no punctuation) -

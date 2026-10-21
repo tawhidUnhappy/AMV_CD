@@ -91,11 +91,14 @@ def fetch_frames(frames: list[dict], width: int, height: int) -> dict[tuple[str 
             (runs[-1].append(n) if n - runs[-1][-1] <= 48 else runs.append([n]))
         for run in runs:
             first, last = run[0], run[-1]
-            proc = subprocess.run(
-                ["ffmpeg", "-v", "error", "-ss", f"{(first - 0.5) / SOURCE_FPS:.4f}", "-i", str(path),
-                 "-frames:v", str(last - first + 1), "-an", "-sn", "-fps_mode", "passthrough",
-                 "-vf", f"scale={width}:{height}:flags=lanczos,format=rgb24", "-f", "rawvideo", "-"],
-                capture_output=True, check=True)
+            tail = ["-ss", f"{(first - 0.5) / SOURCE_FPS:.4f}", "-i", str(path),
+                    "-frames:v", str(last - first + 1), "-an", "-sn", "-fps_mode", "passthrough",
+                    "-vf", f"scale={width}:{height}:flags=lanczos,format=rgb24", "-f", "rawvideo", "-"]
+            # NVDEC decodes (bit-exact: H.264/HEVC decoding is deterministic), the CPU only
+            # scales; a stream NVDEC refuses falls back to the software decoder.
+            proc = subprocess.run(["ffmpeg", "-v", "error", "-hwaccel", "cuda", *tail], capture_output=True)
+            if proc.returncode != 0 or not proc.stdout:
+                proc = subprocess.run(["ffmpeg", "-v", "error", *tail], capture_output=True, check=True)
             data = proc.stdout
             last = None
             for n in run:

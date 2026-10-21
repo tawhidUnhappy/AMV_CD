@@ -349,6 +349,21 @@ Traps met:
   what worked: an emotional-dialogue pool (one candidate per 20 s, clean-window check,
   numbered sheets of 48), picked by eye into "calm"/"intense" lists, the generator fills
   verses from calm and choruses from intense (rezero_changing.gen.py).
+- Full 16:9 AMV the guide's way (Re:Zero x "Rewind", 2026-10-21, rewind.gen.py): song drops
+  read off per-bar bass/RMS (blender-beats envelopes), never lyric words -> `edit-pool SERIES`
+  (shots by motion, ~6 min for 72 eps once indexed) -> pick ids by eye into calm/intense ->
+  the generator measures `flow`, `links.sequence` per section, velocity + `interp_auto: 4` on
+  drops, `sfx_auto` + risers/duck/muffle -> `--sheet` -> `--jobs 5` (111 s rendered in 7 min
+  with NVENC) -> review at 1 frame/2 s + every drop frame-by-frame + the part joins.
+- Drops whited out for 5+ frames: `in.flash` 0.3 s + an `exposure` push stack -> flash 0.1
+  (3 frames) and exposure 0.55 starting 0.08 s after the cut.
+- edit-pool let a shot with burned-in OP/ED credits (kanji column at the frame edge) through
+  when the credits are over episode footage that isn't repeated and has no subtitled lyrics:
+  read every sheet; reject in the picks file ("rejected": {id: reason}).
+- A generator that read a transcript from the session scratchpad broke after a restart:
+  every input of a spec generator lives in workspace/ (rewind_pool/words.json).
+- RIFE `-g 0` is the RTX 3060 (device 1 = llvmpipe); ~260% CPU in rife-ncnn-vulkan is its
+  PNG load/save threads (`-j 4:2:4`), not CPU inference.
 - Blender text emission at strength 3 under the Standard view turned red to
   pink (red clips, green/blue lift): keep emission ~1 for exact colours.
 

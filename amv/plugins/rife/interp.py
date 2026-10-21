@@ -84,7 +84,7 @@ def slow_clip(file: str, at: float, seconds: float, factor: int, reverse: bool =
         res.mkdir()
         exe = binary(st)
         run = subprocess.run([str(exe), "-i", str(inp), "-o", str(res), "-n", str(n_out), "-m", str(exe.parent / model),
-                              "-g", str(st.get("gpu", 0)), "-j", "2:2:2", "-f", "%06d.png"],
+                              "-g", str(st.get("gpu", 0)), "-j", "4:2:4", "-f", "%06d.png"],
                              capture_output=True, text=True)
         got = sorted(res.glob("*.png"))
         if run.returncode != 0 or len(got) < n_out:

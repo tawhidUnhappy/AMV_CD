@@ -20,7 +20,8 @@ Spec (times are output seconds; frames = round(t * fps)):
      "text": [{"text", "at", "until", ...}],          # amv.edit.text
      "blender": [{"script": "shatter", "at", "until", "params": {...}}],
      "sfx": [...], "sfx_auto": true, "sfx_level": -4, "music": [...],   # amv.edit.sound
-     "interp_auto": 4}                               # RIFE slow motion for slowed shots (or per shot "interp")
+     "interp_auto": 4,                               # RIFE slow motion for slowed shots (or per shot "interp")
+     "encoder": "auto"}                              # NVENC when available, else libx264
 
 "kind" is any video_fx plug-in (./amv.sh plugins: the glitch_fx set - rgb_split,
 slice, blocks, chroma, pixelate, posterize, invert, scanlines - and glow, grain,
@@ -255,6 +256,18 @@ def sheet(spec: dict, r: Renderer, out: Path) -> None:
     print(f"Wrote {out}", flush=True)
 
 
+def video_codec(spec: dict) -> list[str]:
+    """spec "encoder": "auto" (default: NVENC when ffmpeg has it - the GPU encodes, the
+    CPU keeps composing frames), "libx264" (CPU, slow preset), or an encoder name."""
+    from amv.core.ffmpeg_tools import choose_h264_encoder, h264_encoder_args
+
+    enc = choose_h264_encoder(spec.get("encoder", "auto"))
+    if enc == "libx264":
+        return ["-c:v", "libx264", "-preset", "slow", "-crf", "16"]
+    return [*h264_encoder_args(enc, "p7", 17), *(["-multipass", "fullres", "-spatial-aq", "1", "-temporal-aq", "1",
+                                                   "-rc-lookahead", "32", "-bf", "3"] if enc.endswith("nvenc") else [])]
+
+
 def encode(spec: dict, r: Renderer, wav: Path | None, out: Path, a: int, b: int) -> None:
     """Frames [a, b) as H.264 (+ the sound from `wav`; None = video only, a --jobs part)."""
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -265,7 +278,7 @@ def encode(spec: dict, r: Renderer, wav: Path | None, out: Path, a: int, b: int)
          "-r", str(r.fps), "-i", "-", *sound,
          "-map", "0:v", *(["-map", "1:a"] if wav else []), "-map_metadata", "-1",
          # capped: per-frame grain + scanlines made CRF 14 alone 155 Mbit/s (579 MB for 30 s)
-         "-c:v", "libx264", "-preset", "slow", "-crf", "16", "-maxrate", "50M", "-bufsize", "100M",
+         *video_codec(spec), "-maxrate", "50M", "-bufsize", "100M",
          "-pix_fmt", "yuv420p", "-profile:v", "high",
          *(["-c:a", "aac", "-b:a", "320k", "-ar", "48000"] if wav else []), "-t", f"{seconds:.4f}",
          "-movflags", "+faststart", str(out)], stdin=subprocess.PIPE)
