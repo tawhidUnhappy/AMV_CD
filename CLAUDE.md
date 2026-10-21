@@ -19,6 +19,9 @@ the ones it links) hold the details for each stage.
 - Editing craft (flow, velocity, shakes, transitions, effects, sound design) and what AMV_CD
   still lacks: `AMV_EDITING_GUIDE.md`.
 - New songs (ACE-Step 1.5, `./amv.sh song-gen`): load the `amv-song-gen` skill.
+- A lyric video for a song (the user's or a generated one), like goddamn_devil.mp4: load the
+  `amv-lyric-channel` skill - it runs the whole job (intake questions, song, timing, background,
+  render, checks, upload text).
 - Motion graphics, kinetic text, lyric videos: HyperFrames (HTML -> video) is the renderer - load the
   `hyperframes` router skill (+ `hyperframes-core`, `hyperframes-animation`); run its CLI through
   `amv.plugins.hyperframes.setup.cli()` (pinned version, Node found even when the snap wrapper is mute).

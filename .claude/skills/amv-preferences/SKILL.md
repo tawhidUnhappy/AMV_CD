@@ -121,6 +121,10 @@ add it here with the date and commit it with the code.
   skills are installed project-level in .claude/skills (hyperframes, hyperframes-core/-animation/
   -keyframes/-creative/-cli/-audio/-registry, media-use, music-to-video, motion-graphics,
   general-video; skills-lock.json). Prefer it for any new motion graphics / kinetic text.
+- 2026-10-22: backgrounds should vary like 7clouds / other lyric channels (skies of many colours)
+  but stay one family, natural, never random noise - `bg-gen` curated scene x mood pairs.
+- 2026-10-22: for a new lyric video, ask whether the user brings a song or wants one generated
+  (amv-lyric-channel skill).
 - Spec + lyrics: `workspace/global/lyric_videos/goddamn_devil.*`; output in
   `workspace/output/lyric_videos/NAME/`.
 

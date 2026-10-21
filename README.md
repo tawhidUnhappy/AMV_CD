@@ -155,8 +155,10 @@ Each of these caught a real defect; run them after changes:
   wiggling on its own; its agent skills are in `.claude/skills/`.
   `./amv.sh font-trace SPEC` traces a font from a reference video's burned-in text
   (known lines -> averaged glyphs -> potracer -> `.otf` in `workspace/assets/fonts/`).
-  `./amv.sh bg-gen --palette dusk --count 4` paints new backgrounds in that style
-  (twilight sky over hazy mountains, five palettes, any seed and size).
+  `./amv.sh bg-gen --count 12 --sheet` paints new backgrounds in that style: mountain
+  dusks, pastel cloud decks, puffy cumulus, sunset seas, starry nights and aurora,
+  in nine curated moods, any seed and size. The `amv-lyric-channel` skill walks
+  through a whole video (bring a song or generate one with ACE-Step).
 
 - `amv/thumbnail/` composes YouTube thumbnails from real frames (three
   layouts: label-arrow, speech bubble, split). No image generation. Run with

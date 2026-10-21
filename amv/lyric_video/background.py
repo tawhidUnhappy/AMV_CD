@@ -1,18 +1,17 @@
-"""Procedural lyric-video backgrounds: a twilight sky over hazy mountain
-ranges (the lyrics-channel look), any size, any seed, a few palettes.
+"""Procedural lyric-video backgrounds - the 7clouds / lyrics-channel family:
+twilight skies over hazy mountains, pastel cloud decks, puffy cumulus, a sunset
+sea, starry nights, aurora. Varied but curated: each seed picks a scene x mood
+pair that suits (sky.PAIRS), jitters the palette a little and varies the
+composition inside tasteful ranges. The look rules are in sky.py.
 
-    ./amv.sh bg-gen                                  # dusk palette, seed 1, 3840x2160
-    ./amv.sh bg-gen --palette sunset --seed 7 --count 4
-    ./amv.sh bg-gen --palette all --count 3 --sheet  # every palette, a contact sheet
-    -> workspace/output/backgrounds/<palette>_<seed>.png
+    ./amv.sh bg-gen --count 12 --sheet               # 12 curated random skies + a sheet
+    ./amv.sh bg-gen --scene clouds --mood cotton_candy --count 4
+    ./amv.sh bg-gen --scene all --count 2 --sheet    # every scene, its moods in turn
+    ./amv.sh bg-gen --scene ranges --mood dusk       # the reference look (Headlights background)
+    -> workspace/output/backgrounds/<scene>_<mood>_<seed>.png
 
-The picture, back to front: a sky gradient (lerped top->horizon->bottom and
-left->right), a soft glow on one side, diagonal cloud streaks (stretched
-fractal noise), 3-4 mountain ranges from 1-D fractal noise - far ones barely
-darker than the sky, with mist pooling in their valleys, the nearest a dark
-silhouette rising from one corner - and a fine grain that keeps the
-gradients from banding. The "dusk" palette is sampled from the reference
-("Headlights (Lyrics)" background)."""
+Scenes: ranges, clouds, cumulus, sea, night, aurora. Moods: dusk, cotton_candy,
+golden_hour, fire_sunset, blue_hour, dawn, day_blue, mint, night."""
 
 from __future__ import annotations
 
@@ -24,20 +23,7 @@ from PIL import Image
 from scipy import ndimage
 
 from amv.core.config import load
-
-
-def _hex(h: str) -> np.ndarray:
-    return np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)], np.float32)
-
-
-# top-left, top-right, horizon-left, horizon-right, bottom-right, glow, haze, near ridge (top, bottom)
-PALETTES = {
-    "dusk": ["b8a2e6", "9397e5", "ffa3f6", "a493e9", "0a8be0", "ffb4f8", "c49ff0", "0a5aa3", "03447f"],
-    "sunset": ["7d6fc9", "4f5bb5", "ffb37a", "f07ea8", "5a4bb0", "ffd08a", "e892b0", "3b2c6e", "1f1846"],
-    "night": ["1b1f4a", "0f1238", "5a3f99", "2f3a8a", "0b1e5c", "9b6bd6", "4a4590", "0b0f2e", "05071a"],
-    "dawn": ["a9c6f0", "8fb5ec", "ffd2b8", "f6b3c8", "6aa8e8", "ffe4c4", "e6c1d8", "4d6fa8", "2d4a80"],
-    "mint": ["9fd8e6", "86b9ea", "f7c6e8", "b7a8ee", "3f8fdc", "ffd6f0", "b9cdee", "2a5e9a", "173f73"],
-}
+from amv.lyric_video import sky
 
 
 def _smooth(a, b, x):
@@ -80,10 +66,9 @@ def _ridge(rng, n: int, base: float, amp: float, rough: float, cells: int = 5) -
     return base - amp * y
 
 
-def generate(palette: str, seed: int, w: int, h: int) -> Image.Image:
-    p = [_hex(c) for c in PALETTES[palette]]
+def _ranges(p: list[np.ndarray], rng, w: int, h: int) -> np.ndarray:
+    """The mountain scene (tuned against the reference) on sRGB colours."""
     tl, tr, hl, hr, br, glow, haze, near_top, near_bot = p
-    rng = np.random.default_rng(seed)
     yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
     x, y = xx / w, yy / h
     aspect = w / h
@@ -151,12 +136,108 @@ def generate(palette: str, seed: int, w: int, h: int) -> Image.Image:
     img = ndimage.gaussian_filter(img, (0.6 * h / 1080, 0.6 * h / 1080, 0))
     if mirror:
         img = img[:, ::-1]
-    return Image.fromarray(np.clip(img + 0.5, 0, 255).astype(np.uint8))
+    return img
+
+
+SCENE_WEIGHTS = {"clouds": 3, "ranges": 2.5, "cumulus": 2, "sea": 1.2, "night": 1, "aurora": 0.8}
+
+
+def pick(seed: int, scene: str | None, mood_name: str | None) -> tuple[str, str]:
+    """A curated (scene, mood) for this seed: scene by weight, mood among the
+    ones that suit it."""
+    rng = np.random.default_rng(seed * 7919 + 13)
+    if not scene:
+        names = list(SCENE_WEIGHTS)
+        wts = np.array([SCENE_WEIGHTS[n] for n in names], float)
+        scene = names[rng.choice(len(names), p=wts / wts.sum())]
+    if not mood_name:
+        mood_name = sky.PAIRS[scene][rng.integers(len(sky.PAIRS[scene]))]
+    return scene, mood_name
+
+
+def _ground(img, m, x, y, horizon, rng, far: bool = True):
+    """Low hills on the horizon: a hazy far line and a darker near one."""
+    w = img.shape[1]
+    layers = [(0.012, 0.025, 0.35)] if far else []
+    layers.append((-0.015, 0.035, 1.0))
+    for lift, amp, strength in layers:
+        ridge = _ridge(rng, w, horizon - lift, amp, 0.55, cells=4)[None, :]
+        cover = np.clip((y - ridge) * img.shape[0] / 1.5 + 0.5, 0, 1)
+        shade = sky.smooth(0.0, 0.2, y - ridge)
+        col = sky.mix(m["ground_top"], m["ground_bot"], shade)
+        col = sky.mix(sky.mix(m["haze"], m["horizon"], 0.5), col, strength)
+        img = sky.mix(img, col, cover)
+    return img
+
+
+def generate(scene: str, mood_name: str, seed: int, w: int, h: int) -> Image.Image:
+    rng = np.random.default_rng(seed)
+    m = sky.mood(mood_name, rng)
+    if scene == "ranges":
+        keys = ("zenith", "zenith2", "horizon", "horizon2", "low", "glow", "haze", "ground_top", "ground_bot")
+        img = _ranges([sky.to_srgb(m[k]) for k in keys], rng, w, h)
+        if m.get("stars"):
+            img = sky.stars(img, rng, 0.7, 0.8)
+        return Image.fromarray(np.clip(img + 0.5, 0, 255).astype(np.uint8))
+    # soft scenes are computed at up to 1920 wide and upscaled; stars and grain at full size
+    w0 = min(w, 1920)
+    h0 = int(round(h * w0 / w))
+    yy, xx = np.mgrid[0:h0, 0:w0].astype(np.float32)
+    x, y = xx / w0, yy / h0
+    aspect = w0 / h0
+    noise = sky.Noise(rng)
+    mirror = rng.random() < 0.4
+    if scene == "sea":
+        horizon = rng.uniform(0.56, 0.64)
+        sun = (rng.uniform(0.25, 0.42), horizon - rng.uniform(0.03, 0.09))
+    elif scene in ("night", "aurora"):
+        horizon = rng.uniform(0.84, 0.93)
+        sun = (rng.uniform(0.2, 0.4), rng.uniform(0.18, 0.35))    # the moon
+    else:
+        horizon = rng.uniform(0.8, 0.93)
+        sun = (rng.uniform(0.12, 0.38), horizon - rng.uniform(0.02, 0.1))
+    img = sky.sky_gradient(m, x, y, horizon, sun, aspect)
+    if scene == "clouds":
+        img = sky.cloud_deck(img, m, x, y, horizon, sun, aspect, rng, noise,
+                             cover=rng.uniform(0.0, 0.3), soft=rng.uniform(0.35, 0.6))
+        img = _ground(img, m, x, y, horizon, rng)
+    elif scene == "cumulus":
+        img = sky.cloud_deck(img, m, x, y, horizon, sun, aspect, rng, noise, cover=0.45, soft=0.5, alpha=0.5)
+        img = sky.cumulus(img, m, x, y, horizon, sun, aspect, rng, noise)
+        img = _ground(img, m, x, y, horizon, rng)
+    elif scene == "sea":
+        img = sky.cloud_deck(img, m, x, y, horizon, sun, aspect, rng, noise,
+                             cover=rng.uniform(0.2, 0.45), soft=0.5)
+        img = sky.sun_disc(img, m, x, y, sun, aspect, 0.022)
+        img = sky.sea(img, m, x, y, horizon, sun, aspect, rng, noise)
+    elif scene in ("night", "aurora"):
+        img = sky.milky_way(img, x, y, horizon, aspect, rng, noise)
+        if scene == "aurora":
+            img = sky.aurora(img, x, y, horizon, aspect, rng, noise)
+        elif rng.random() < 0.6:
+            img = sky.sun_disc(img, m, x, y, sun, aspect, 0.018, 0.9)
+        if rng.random() < 0.5:
+            img = sky.cloud_deck(img, m, x, y, horizon, sun, aspect, rng, noise, cover=0.35, soft=0.5, alpha=0.6)
+        img = _ground(img, m, x, y, horizon, rng)
+    else:
+        raise SystemExit(f"unknown scene {scene}: {', '.join(sky.PAIRS)}")
+    out = sky.to_srgb(img)
+    if mirror:
+        out = out[:, ::-1]
+    if (w0, h0) != (w, h):
+        out = np.stack([np.asarray(Image.fromarray(out[..., c].astype(np.float32), "F").resize((w, h), Image.BICUBIC))
+                        for c in range(3)], -1)
+    if m.get("stars"):
+        out = sky.stars(out, rng, horizon if not mirror else horizon, 1.0)
+    out = out + rng.normal(0, 1.4, out.shape).astype(np.float32)
+    return Image.fromarray(np.clip(out + 0.5, 0, 255).astype(np.uint8))
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--palette", default="dusk", help=f"{', '.join(PALETTES)} or all")
+    ap.add_argument("--scene", default=None, help=f"{', '.join(sky.PAIRS)}, all, or leave out for a curated mix")
+    ap.add_argument("--mood", "--palette", dest="mood", default=None,
+                    help=f"{', '.join(sky.MOODS)} (leave out: one that suits the scene)")
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--count", type=int, default=1, help="this many seeds from --seed on")
     ap.add_argument("--size", default="3840x2160")
@@ -166,14 +247,22 @@ def main() -> None:
     w, h = (int(v) for v in args.size.lower().split("x"))
     out = args.out or load().workspace / "output" / "backgrounds"
     out.mkdir(parents=True, exist_ok=True)
-    names = list(PALETTES) if args.palette == "all" else [args.palette]
+    jobs = []
+    scenes = list(sky.PAIRS) if args.scene == "all" else [args.scene]
+    for scene in scenes:
+        for i, seed in enumerate(range(args.seed, args.seed + args.count)):
+            mood_name = args.mood
+            if args.scene == "all" and not mood_name:
+                mood_name = sky.PAIRS[scene][i % len(sky.PAIRS[scene])]
+            jobs.append((seed, *pick(seed, scene, mood_name)))
     made = []
-    for name in names:
-        for seed in range(args.seed, args.seed + args.count):
-            path = out / f"{name}_{seed}.png"
-            generate(name, seed, w, h).save(path)
-            made.append(path)
-            print(path)
+    for seed, scene, mood_name in jobs:
+        if mood_name not in sky.PAIRS[scene]:
+            print(f"  note: {mood_name} is not a usual mood for {scene}")
+        path = out / f"{scene}_{mood_name}_{seed}.png"
+        generate(scene, mood_name, seed, w, h).save(path)
+        made.append(path)
+        print(path)
     if args.sheet and made:
         tw = 480
         th = int(tw * h / w)

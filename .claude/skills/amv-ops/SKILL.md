@@ -402,13 +402,21 @@ ones is transcribed ALONE (whispered build-ups and a chorus ad-lib were missed b
 pass and heard in isolation) -> still unheard: spread over the sung part of the gap, marked
 "[filled]" in `--lines`. Stage directions stay out (nothing heard). Read `--lines` before rendering.
 Full render 1440p30 4:20: python engine ~3.5 min (--jobs 4, NVENC).
-Backgrounds: `./amv.sh bg-gen [--palette dusk|sunset|night|dawn|mint|all] [--seed N --count K]
-[--size 3840x2160] [--sheet]` paints the lyrics-channel sky procedurally (amv/lyric_video/background.py:
-gradient + side glow + faint diagonal cloud streaks + 2 hazy fractal ranges with valley mist + a dark
-two-humped near range + grain) -> workspace/output/backgrounds/; "dusk" is sampled from the reference
-background. ~6 s per 4K image. Traps: folded |noise| crests gave flat mesas (plain fractal noise
-reads as hills); mist measured from the raw ridge made vertical stripes (use a smoothed skyline);
-mirroring only the glow left the sky pink on the wrong side (build left-handed, flip the image).
+Backgrounds: `./amv.sh bg-gen [--count K --seed N] [--scene ranges|clouds|cumulus|sea|night|aurora|all]
+[--mood dusk|cotton_candy|golden_hour|fire_sunset|blue_hour|dawn|day_blue|mint|night] [--size 3840x2160]
+[--sheet]` paints lyrics-channel skies (amv/lyric_video/background.py dispatches, sky.py holds the look
+rules + moods + curated scene/mood PAIRS) -> workspace/output/backgrounds/<scene>_<mood>_<seed>.png.
+Each seed = a curated pair + small palette jitter + composition ranges (never free random colours).
+Rules (researched 2026-10-22): sky deepest at the zenith, paler/whiter at the horizon, warm round the
+sun, a haze band on the horizon, mixed in linear light; clouds = rotated-octave fBm, domain-warped,
+coverage smooth((n-a)/(b-a)), lit by the density difference toward the sun (Quilez), a deck in
+perspective (z ~ 1/elevation) fading into the haze; cumulus = hemisphere puffs merged by a smooth
+max, shaded with real normals. ~8 s per 4K image (soft scenes computed at 1920 and upscaled).
+Traps: folded |noise| crests gave flat mesas; mist from the raw ridge made vertical stripes; mirroring
+only the glow left the sky pink on the wrong side (flip the finished image); sign(sun_x - x) in the
+cloud light made a hard seam under the sun (tanh); a cone puff field + shifted-difference light drew
+petals, not cumulus; dark cloud_shade on blue hour read as smoke; scale 26 / warp 3.5 cloud decks were
+torn-paper scraps (9 / 1.2 read as cloud banks).
 Fonts: `./amv.sh font-trace workspace/global/lyric_videos/fonts/NAME.json` TRACES a font from a
 reference video's burned-in text (known lines at fully-faded-in moments -> glyphs cut per frame,
 sparkles rejected by their missing dark rim, 15 frames x every occurrence averaged after centroid
