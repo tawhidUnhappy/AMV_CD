@@ -14,10 +14,10 @@ config.json "song_generators": {"ace_step": {...}} (how it generates):
     lm        planner LM: auto (by GPU tier: 0.6B up to 12 GB, 1.7B above), none, or a
               name (acestep-5Hz-lm-0.6B / -1.7B / -4B)
     backend   LM backend: auto (vllm on CUDA), vllm or pt
-    steps     diffusion steps (default: 8 turbo, 50 others)
+    steps     diffusion steps (default: 8 turbo, 64 others)
     guidance, adg, shift, dcw
-              non-turbo quality knobs (default 7.0, false, 1.0, false; all on at once broke the
-              singing, 2026-10-22 - try one at a time: song-gen --opt adg=true ...)
+              non-turbo quality knobs (default 8.0, true, 3.0, false - ACE-Step's best-quality
+              advice minus DCW, which made the vocals unintelligible in an A/B, 2026-10-22)
     format    wav (default), flac or mp3
 """
 

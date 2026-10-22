@@ -121,6 +121,11 @@ versions in one call (`--count`) rather than one run per version.
   Without the LM a 132 s song with 26 lines skipped verse 2 in both takes (ending in
   "oh, oh") → fewer lines, or more seconds per line, and check the transcript.
 
+- "The song quality is bad" (2026-10-22) -> ACE-Step's best-quality knobs (64 steps, ADG,
+  guidance 8, shift 3) are now the defaults; DCW is NOT (an A/B: DCW alone sang 0 of 10 lines,
+  whisper heard "Thank you" - the vocals were mush; everything else on sang 10/10). One knob
+  per run: `song-gen ... --opt adg=false --opt steps=50`. Check every take's transcript.
+
 ## Maintenance
 
 When a session hits something new here, add a symptom → cause → rule line

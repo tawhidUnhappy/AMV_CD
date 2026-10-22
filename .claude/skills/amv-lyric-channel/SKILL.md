@@ -65,13 +65,10 @@ male vocal, nightcore after (2026-10-22).
 ## 2. A generated song (ACE-Step)
 
 Follow `amv-song-gen`: ACE-Step 1.5, `lm: "none"`, `acestep-v15-xl-sft` (the
-owner's settings). Song quality is an OPEN problem ("the song quality is bad",
-2026-10-22): ACE-Step's best-quality knobs all at once (64 steps, ADG, guidance 8,
-shift 3, DCW) made two takes whose vocals sang none of the lyrics. An A/B was
-started (workspace/output/songs/ab_run.sh: same 45 s excerpt + seed 7, old vs new
-vs one knob each; only A_old finished) - resume it, check each take's transcript,
-and only then change the defaults. Also untested: all-lower-case lyrics may hurt
-adherence (capitalise them for generation, lower-case only on screen). Write a caption (genre, mood, tempo, vocals) and lyrics with
+owner's settings), at ACE-Step's best-quality knobs minus DCW (defaults since
+2026-10-22: 64 steps, ADG, guidance 8, shift 3). A/B on a 45 s excerpt, seed 7, lines
+sung of 10: old defaults 10, shift 3 9, ADG 10, DCW 0, all minus DCW 10 - DCW turns
+the vocals to mush; never switch it on. Lower-case lyrics sing fine. Write a caption (genre, mood, tempo, vocals) and lyrics with
 section tags ([Verse], [Chorus], ...). Show both in one short block, generate a
 few takes, and keep the take whose transcript has every lyric line. Songs land in
 `workspace/output/songs/<name>/`; the lyrics you wrote are the lyrics file.

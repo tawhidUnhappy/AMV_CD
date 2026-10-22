@@ -32,19 +32,18 @@ def generate(req: dict, job: dict, cfg, dit, llm, lm: str) -> dict:
         text = write_lyrics(req, llm)
 
     turbo = "turbo" in (job.get("model") or "acestep-v15-turbo")
-    # quality knobs for base/SFT (ACE-Step's docs/en/INFERENCE.md advises 64+ steps, use_adg,
-    # guidance 7-9, shift 3.0, and DCW exists). All of them together (2026-10-22) gave two
-    # "left on read" takes whose vocals sang none of the lyrics, so the defaults stay ACE-Step's
-    # own (50 steps, guidance 7, shift 1, no ADG, no DCW) until an A/B finds the safe ones
-    # (song-gen --opt adg=true / shift=3.0 / dcw=true / steps=64 / guidance=8.0).
+    # base/SFT quality (ACE-Step docs/en/INFERENCE.md: 64+ steps, use_adg, guidance 7-9,
+    # shift 3.0). A/B on a 45 s emo-rap excerpt, seed 7 (2026-10-22), lines sung of 10:
+    # defaults 10, shift 3 9, ADG 10, DCW 0 (vocals turned to mush - whisper heard only
+    # "Thank you"), all of these minus DCW 10. So: DCW stays off, the rest on.
     quality = {} if turbo else dict(
-        guidance_scale=float(job.get("guidance", 7.0)), use_adg=bool(job.get("adg", False)),
-        shift=float(job.get("shift", 1.0)), dcw_enabled=bool(job.get("dcw", False)))
+        guidance_scale=float(job.get("guidance", 8.0)), use_adg=bool(job.get("adg", True)),
+        shift=float(job.get("shift", 3.0)), dcw_enabled=bool(job.get("dcw", False)))
     params = GenerationParams(
         caption=text["caption"], lyrics="[Instrumental]" if req.get("instrumental") else text["lyrics"],
         instrumental=bool(req.get("instrumental")), vocal_language=text["language"] or "unknown",
         bpm=text["bpm"], keyscale=text["key"], duration=float(text["duration"] or -1),
-        inference_steps=int(job.get("steps") or (8 if turbo else 50)),
+        inference_steps=int(job.get("steps") or (8 if turbo else 64)),
         seed=int(req.get("seed", -1)), thinking=bool(lm), **quality)
     limit = cfg.max_batch_size_with_lm if lm else cfg.max_batch_size_without_lm
     count = max(1, min(int(req.get("count") or 1), limit))
