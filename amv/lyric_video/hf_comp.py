@@ -72,7 +72,9 @@ def title_layout(title: str, artist: str, font_path: Path, w: int, h: int, case:
         font = look.font_for_cap(font_path, cap)
     blocks = []
     acap = min(artist_cap * h, cap * 0.4) if artist else 0
-    gap = cap * 0.12
+    # the artist line clears the title's descenders (lower-case "g", brackets ran into it)
+    desc = max((font.getbbox(ch)[3] - font.getbbox("H")[3] for ch in set(title) if ch.strip()), default=0)
+    gap = cap * 0.12 + max(0, desc)
     total = cap + (gap + acap if artist else 0)
     top = cy * h - total / 2
     blocks.append((layout_block([title], font, cap, cap, w / 2, top + cap / 2), font.font.size))

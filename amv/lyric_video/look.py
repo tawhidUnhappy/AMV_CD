@@ -233,7 +233,9 @@ def title_sprite(title: str, artist: str, font_path: Path, w: int, h: int,
         afont = font_for_cap(font_path, acap, track)
     k = max(0.5, acap / (CAP * h))
     small = text_block([artist], afont, acap, acap, h, fill=fill, shadow=shadow, rough=rough * k, bold=bold * k)
-    gap = cap * 0.12
+    # the artist line clears the title's descenders (lower-case "g", brackets ran into it)
+    desc = max((font.getbbox(ch)[3] - font.getbbox("H")[3] for ch in set(title) if ch.strip()), default=0)
+    gap = cap * 0.12 + max(0, desc)
     # stack: title caps centred above, artist caps below, the pair centred on 0
     title_cy, artist_cy = -(acap + gap) / 2, (cap + gap) / 2
     return stack([(big, title_cy), (small, artist_cy)])

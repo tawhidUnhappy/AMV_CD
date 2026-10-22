@@ -441,12 +441,17 @@ def lyric_sections(text: str, skip: set[str]) -> str:
 
 
 def tags_for(song: str, artists: list[str], feat: list[str]) -> list[str]:
-    """YouTube tags in the lyrics-channel pattern (song, song lyrics, song + artists, ...)."""
+    """YouTube tags in the lyrics-channel pattern (song, song lyrics, song + artists, ...).
+    A bracketed edit in the title ("left on read (nightcore)") is searched without the
+    brackets: tags use the base title, plus "<base> <edit>" and "<base> <edit> lyrics"."""
+    m = re.match(r"^(.*?)\s*\(([^)]*)\)\s*$", song)
+    edit = m.group(2).lower().strip() if m else ""
+    song = m.group(1) if m else song
     s = song.lower().replace("'", "").replace("’", "")
     a = [x.lower() for x in artists]
     f = [x.lower() for x in feat]
     names = " ".join(a)
-    out = [s, f"{s} lyrics"]
+    out = [s, f"{s} lyrics"] + ([f"{s} {edit}", f"{s} {edit} lyrics"] if edit else [])
     for k in range(1, len(a) + 1):
         out.append(f"{s} lyrics {' '.join(a[:k])}")
     for k in range(1, len(a) + 1):
@@ -492,7 +497,7 @@ def meta(spec: dict, p: dict, out_dir: Path) -> dict[str, Path]:
     follow = m.get("follow") or {name: [] for name in artists + feat}
     skip = {d["text"] for d in p["dropped"] if d.get("cover", 0) == 0}
     tags = tags_for(song, artists, feat)
-    hashtags = [f"#{_camel(x)}" for x in artists + [song] + feat] + ["#Lyrics"] + [f"#{h.lstrip('#')}" for h in m.get("hashtags", [])]
+    hashtags = [f"#{_camel(x)}" for x in artists + [re.sub(r"\s*\([^)]*\)\s*$", "", song)] + feat] + ["#Lyrics"] + [f"#{h.lstrip('#')}" for h in m.get("hashtags", [])]
     if m.get("layout") == "plain":
         # just the lyrics, the tags and related keywords - no links, no channel lines (owner, 2026-10-22)
         keywords = list(dict.fromkeys([*m.get("keywords", []), *tags]))

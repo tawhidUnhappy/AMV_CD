@@ -170,6 +170,16 @@ music", "dreamy synth pop"). The full Vibe Guide layout (links, follow blocks)
 is there only when asked; its missing links stay `<...>`, never guessed. The
 thumbnail is `<name>_thumbnail.jpg` (title + artist over the background).
 
+## Example run (left on read (nightcore), 2026-10-22) - a YouTube link as the brief
+
+Link -> oEmbed (yt-dlp was bot-blocked) -> "Nightcore - cuttin on me [lil happy lil sad]"
+-> research -> original emo-rap lyrics, 130 BPM, male vocal; 2 takes (10 min), 23/23 lines
+sung in one; spec song_fx nightcore (170 s -> 136 s), ShadowsIntoLight lower case, soft
+pink glow, clouds_blue_hour bg; timing 15 min (all 23 lines force-aligned, the lowest
+scores checked on spectrograms); render 4:30; -14.0 LUFS. Traps: a lower-case title's
+descenders ran into the artist line (fixed in code); tags kept "(nightcore)" brackets
+(tags now use the base title + "<base> nightcore").
+
 ## Example run (Neon Lullaby, 2026-10-22)
 
 ACE-Step, 24 lines in 160 s at 112 BPM, 2 takes in 7 min; the take with 23/24 lines
